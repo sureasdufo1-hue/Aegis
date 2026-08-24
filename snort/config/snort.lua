@@ -1,6 +1,10 @@
--- Snort 3 Configuration for SOC Lab
+-- ==============================================================================
+-- Snort 3.12.2.0 Baseline Configuration for SOC Detection & Monitoring Lab
+-- Reference: SOC Architecture HLD v1.0 / LLD v1.0 / Implementation Plan Phase 14
+-- Completion Gate: GATE-SNORT-01
+-- ==============================================================================
 
-HOME_NET = '192.168.0.0/16,10.0.0.0/8,172.16.0.0/12,127.0.0.1/32'
+HOME_NET = '10.77.30.0/24'
 EXTERNAL_NET = '!$HOME_NET'
 
 HTTP_PORTS = '80,8080,8000,3000,8501,8443,443'
@@ -22,14 +26,12 @@ ssh = { }
 ftp_server = { }
 ftp_client = { }
 
--- Detection Engine
+-- Detection Engine & Rules
 ips = {
     enable_builtin_rules = true,
-    include = '/etc/snort/rules/local.rules',
+    include = '/usr/local/etc/snort/rules/9100-local.rules',
     rules = [[
-        include /etc/snort/rules/web_attacks.rules
-        include /etc/snort/rules/c2_malware.rules
-        include /etc/snort/rules/scan_recon.rules
+        include /usr/local/etc/snort/rules/9100-local.rules
     ]]
 }
 

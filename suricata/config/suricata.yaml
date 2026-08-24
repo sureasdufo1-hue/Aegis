@@ -1,10 +1,14 @@
 %YAML 1.1
 ---
-# Suricata 7.x High-Performance Configuration for SOC Lab
+# ==============================================================================
+# Suricata 8.0.6 Baseline Configuration for SOC Detection & Monitoring Lab
+# Reference: SOC Architecture HLD v1.0 / LLD v1.0 / Implementation Plan Phase 10
+# Completion Gate: GATE-SURI-01
+# ==============================================================================
 
 vars:
   address-groups:
-    HOME_NET: "[192.168.0.0/16,10.0.0.0/8,172.16.0.0/12,127.0.0.1/32]"
+    HOME_NET: "[10.77.30.0/24]"
     EXTERNAL_NET: "!$HOME_NET"
     HTTP_SERVERS: "$HOME_NET"
     SQL_SERVERS: "$HOME_NET"
@@ -18,14 +22,18 @@ vars:
 
 default-log-dir: /var/log/suricata
 
+stats:
+  enabled: yes
+  interval: 10sec
+
 outputs:
-  # Fast log for simple text alerts
+  # 1. Fast log for quick console triage
   - fast:
       enabled: yes
       filename: fast.log
       append: yes
 
-  # EVE JSON - Main structured telemetry for SOC/SIEM analysis
+  # 2. EVE JSON - Structured SIEM telemetry for Wazuh 4.14.7
   - eve-log:
       enabled: yes
       filetype: regular
@@ -67,6 +75,15 @@ outputs:
         - flow
         - netflow
 
+# Passive Packet Capture Configuration (AF_PACKET)
+af-packet:
+  - interface: eth1
+    cluster-id: 99
+    cluster-type: cluster_flow
+    defrag: yes
+    use-mmsg: yes
+    buffer-size: 32768
+
 # App-layer parsers
 app-layer:
   protocols:
@@ -84,8 +101,6 @@ app-layer:
       enabled: yes
     imap:
       enabled: yes
-    msn:
-      enabled: no
     smb:
       enabled: yes
       detection-ports:
@@ -108,7 +123,8 @@ app-layer:
 # Rule file inclusions
 default-rule-path: /var/lib/suricata/rules
 rule-files:
-  - custom.rules
-  - web_attacks.rules
-  - c2_malware.rules
-  - scan_recon.rules
+  - suricata.rules
+  - /etc/suricata/rules/9000-network-recon.rules
+  - /etc/suricata/rules/9010-web-attacks.rules
+  - /etc/suricata/rules/9020-auth-bruteforce.rules
+  - /etc/suricata/rules/9030-malware-c2.rules
