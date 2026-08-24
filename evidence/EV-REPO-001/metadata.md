@@ -15,6 +15,7 @@
 | **Expected** | 27 standard directories created, `.gitignore` protecting secrets/logs/raw pcaps, `.env.example` created with safe placeholders, all tests PASS |
 | **Actual** | All 27 directories created with tracking, `.gitignore` active, `.env.example` in place, 10/10 pytest unit tests PASS |
 | **Result** | `PASS` |
+| **Git Commit** | `9d1ad7cf6a04d75149ea27d83b2d4b614873cb90` |
 | **Completion Gate** | `GATE-REPO-01 = PASS` |
 
 ---
