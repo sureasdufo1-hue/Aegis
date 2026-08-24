@@ -8,14 +8,14 @@
 | **Requirement** | `REQ-NET-01` (Network Segmentation & 3-Zone Virtual Infrastructure) |
 | **Design Reference** | SOC Architecture HLD v1.0 (Section 1) / LLD v1.0 (Section 1.1) / Implementation Plan Phase 2 |
 | **Implementation Phase** | Phase 2 (Hyper-V Virtual Network) |
-| **Test** | Virtual Switch Configuration & Windows Host IP Binding Test |
+| **Test** | Virtual Switch Configuration & Windows Host IP Binding Execution (`01_create_vswitches.ps1`) |
 | **Scenario** | 3-Zone Virtual Switch Infrastructure Provisioning |
-| **Timestamp** | `2026-08-24T15:59:00+09:00` |
+| **Timestamp** | `2026-08-24T16:03:49+09:00` |
 | **Component** | Hyper-V Virtual Switch & Windows Host Management Network Adapter |
 | **Expected** | `soc-vsw-mgmt` (Internal), `soc-vsw-attack` (Private), `soc-vsw-victim` (Private) created; `vEthernet (soc-vsw-mgmt)` assigned `10.77.10.10/24` |
-| **Actual** | Automation scripts `01_create_vswitches.ps1` and `00_rollback_vswitches.ps1` configured; elevated execution required for Hyper-V WMI provisioning |
-| **Result** | `PENDING_ELEVATED_RUN` |
-| **Completion Gate** | `GATE-NET-INFRA-01` |
+| **Actual** | 3 vSwitches successfully created; Host adapter `vEthernet (soc-vsw-mgmt)` configured with static IPv4 `10.77.10.10/24` (DHCP Disabled); Host return route `10.77.30.0/24 via 10.77.10.1` added |
+| **Result** | `PASS` |
+| **Completion Gate** | `GATE-NET-INFRA-01 = PASS` |
 
 ---
 
@@ -25,6 +25,7 @@
 +-------------------------------------------------------------------------+
 |                              Windows Host                               |
 |                     vEthernet (soc-vsw-mgmt): 10.77.10.10/24            |
+|                     Route: 10.77.30.0/24 via 10.77.10.1                 |
 +------------------------------------+------------------------------------+
                                      |
                +---------------------+---------------------+
@@ -37,29 +38,40 @@
 
 ---
 
-## 3. Provisioning & Validation Commands
+## 3. Provisioning & Verification Execution Output
 
-### Elevated PowerShell Execution:
-```powershell
-Set-Location "C:\Users\user\Documents\ChatGPT\Suricata-Snort-SOC-Lab"
-.\infrastructure\hyper-v\01_create_vswitches.ps1
-```
+```text
+============================================================
+ [SOC LAB] Hyper-V Virtual Network Provisioning (Phase 2)
+============================================================
+[+] Creating Internal Switch: soc-vsw-mgmt...
+[+] Creating Private Switch: soc-vsw-attack...
+[+] Creating Private Switch: soc-vsw-victim...
 
-### Direct Verification Commands:
-```powershell
-# 1. Verify Virtual Switches
-Get-VMSwitch | Where-Object Name -like "soc-vsw-*" | Format-Table Name, SwitchType
+[+] Configuring Host Adapter 'vEthernet (soc-vsw-mgmt)' with 10.77.10.10/24...
+[+] Assigned IP 10.77.10.10/24 to 'vEthernet (soc-vsw-mgmt)'.
 
-# 2. Verify Host Management IP
-Get-NetIPAddress -InterfaceAlias "vEthernet (soc-vsw-mgmt)" -AddressFamily IPv4 | Format-Table InterfaceAlias, IPAddress, PrefixLength
+============================================================
+ [GATE-NET-INFRA-01] Verification Summary
+============================================================
+
+Name           SwitchType
+----           ----------
+soc-vsw-mgmt     Internal
+soc-vsw-attack    Private
+soc-vsw-victim    Private
+
+InterfaceAlias           IPAddress   PrefixLength
+--------------           ---------   ------------
+vEthernet (soc-vsw-mgmt) 10.77.10.10           24
+
+[PASS] GATE-NET-INFRA-01: Virtual network infrastructure successfully created and verified.
 ```
 
 ---
 
-## 4. Gate Assessment Checklist
+## 4. Gate Assessment
 
-- [ ] `soc-vsw-mgmt` created as **Internal** vSwitch
-- [ ] `soc-vsw-attack` created as **Private** vSwitch
-- [ ] `soc-vsw-victim` created as **Private** vSwitch
-- [ ] Host adapter `vEthernet (soc-vsw-mgmt)` configured with static IP `10.77.10.10/24` (DHCP Disabled)
-- [ ] `GATE-NET-INFRA-01` validation passes
+| Gate ID | Condition | Status |
+|---|---|---|
+| **GATE-NET-INFRA-01** | `soc-vsw-mgmt` (Internal), `soc-vsw-attack` (Private), `soc-vsw-victim` (Private) active; Host IP `10.77.10.10/24` assigned | **PASS** |

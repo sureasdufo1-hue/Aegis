@@ -1,0 +1,19 @@
+# Netplan configuration for soc-victim (Ubuntu 22.04 + OWASP Target)
+# Reference: SOC Lab LLD v1.0 & Implementation Plan Phase 4.3
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    # Victim Interface (Connected to soc-vsw-victim, Port Mirroring Source)
+    eth0:
+      match:
+        name: eth0
+      addresses:
+        - 10.77.30.20/24
+      routes:
+        - to: default
+          via: 10.77.30.1
+      nameservers:
+        addresses:
+          - 1.1.1.1
+          - 8.8.8.8

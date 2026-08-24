@@ -1,0 +1,8 @@
+"VMName","Name","SwitchName","MacAddress"
+"soc-gateway","nic-mgmt","soc-vsw-mgmt","000000000000"
+"soc-gateway","nic-attack","soc-vsw-attack","000000000000"
+"soc-gateway","nic-victim","soc-vsw-victim","000000000000"
+"soc-victim","nic-victim","soc-vsw-victim","000000000000"
+"soc-sensor","nic-mgmt","soc-vsw-mgmt","000000000000"
+"soc-sensor","nic-monitor","soc-vsw-victim","000000000000"
+"soc-attacker","nic-attack","soc-vsw-attack","000000000000"
