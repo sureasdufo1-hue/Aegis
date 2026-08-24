@@ -1,7 +1,7 @@
 services:
   # 1. Suricata IDS/IPS Engine
   suricata:
-    image: jasonish/suricata:7.0
+    image: jasonish/suricata:latest
     container_name: soc_suricata
     network_mode: host
     cap_add:
@@ -15,19 +15,21 @@ services:
     command: -c /etc/suricata/suricata.yaml -i eth0
     restart: unless-stopped
 
-  # 2. Snort 3 IDS/IPS Engine
+  # 2. Snort IDS/IPS Engine
   snort:
-    image: ciscotalos/snort3:latest
+    image: soc-snort:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.snort
     container_name: soc_snort
     network_mode: host
     cap_add:
       - NET_ADMIN
       - NET_RAW
     volumes:
-      - ./configs/snort/snort.lua:/etc/snort/snort.lua:ro
       - ./rules/snort:/etc/snort/rules:ro
       - ./logs/snort:/var/log/snort
-    command: snort -c /etc/snort/snort.lua -i eth0 -l /var/log/snort -A alert_json
+    command: -c /etc/snort/rules/local.rules -l /var/log/snort -A console
     restart: unless-stopped
 
   # 3. SOC Real-time Log Analyzer & Dashboard
