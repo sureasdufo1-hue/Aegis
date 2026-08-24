@@ -1,0 +1,5 @@
+# Snort 3 Web Attack Rules
+alert tcp any any -> $HTTP_SERVERS $HTTP_PORTS (msg:"SNORT-ATTACK: Web SQL Injection UNION SELECT"; flow:to_server,established; http_uri; content:"union",nocase; content:"select",nocase; classtype:web-application-attack; sid:2000010; rev:1;)
+alert tcp any any -> $HTTP_SERVERS $HTTP_PORTS (msg:"SNORT-ATTACK: Web Cross-Site Scripting Script Tag"; flow:to_server,established; http_uri; pcre:"/<script[^>]*>|%3Cscript/i"; classtype:web-application-attack; sid:2000011; rev:1;)
+alert tcp any any -> $HTTP_SERVERS $HTTP_PORTS (msg:"SNORT-ATTACK: Web Path Traversal /etc/passwd"; flow:to_server,established; http_uri; content:"/etc/passwd"; classtype:web-application-attack; sid:2000012; rev:1;)
+alert tcp any any -> $HTTP_SERVERS $HTTP_PORTS (msg:"SNORT-ATTACK: Apache Log4j JNDI RCE Attempt"; flow:to_server,established; http_header; pcre:"/\$\{jndi:(ldap|rmi|dns):\/\//i"; classtype:attempted-admin; sid:2000013; rev:1;)

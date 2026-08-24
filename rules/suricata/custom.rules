@@ -1,0 +1,10 @@
+# ==============================================================================
+# Custom & ICMP / Testing Rules (Suricata 7.x)
+# ==============================================================================
+
+# 1. ICMP Ping Echo Request & Flood
+alert icmp $EXTERNAL_NET any -> $HOME_NET any (msg:"SOC-INFO: ICMP Ping Request Detected"; itype:8; icode:0; classtype:misc-activity; sid:1000301; rev:1; metadata:severity Info;)
+alert icmp $EXTERNAL_NET any -> $HOME_NET any (msg:"SOC-ATTACK: ICMP Ping Flood Detected"; itype:8; icode:0; threshold:type both, track by_src, count 20, seconds 5; classtype:denial-of-service; sid:1000302; rev:1; metadata:attack_technique T1498, severity High;)
+
+# 2. Plaintext Sensitive Data Transmission
+alert tcp $HOME_NET any -> $EXTERNAL_NET any (msg:"SOC-POLICY: Plaintext Credit Card / Sensitive Number Transmission"; flow:established,to_server; pcre:"/\b(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|3[47][0-9]{13})\b/"; classtype:policy-violation; sid:1000310; rev:1; metadata:attack_technique T1048, severity High;)

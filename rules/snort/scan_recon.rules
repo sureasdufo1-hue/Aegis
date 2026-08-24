@@ -1,0 +1,4 @@
+# Snort 3 Scan & Recon Rules
+alert tcp $EXTERNAL_NET any -> $HOME_NET any (msg:"SNORT-SCAN: Nmap Stealth NULL Scan"; flags:0; classtype:attempted-recon; sid:2000020; rev:1;)
+alert tcp $EXTERNAL_NET any -> $HOME_NET any (msg:"SNORT-SCAN: Nmap Stealth XMAS Scan"; flags:FPU; classtype:attempted-recon; sid:2000021; rev:1;)
+alert tcp $EXTERNAL_NET any -> $HOME_NET any (msg:"SNORT-SCAN: Nmap Stealth FIN Scan"; flags:F; classtype:attempted-recon; sid:2000022; rev:1;)

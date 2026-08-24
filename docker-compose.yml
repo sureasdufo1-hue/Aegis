@@ -1,0 +1,64 @@
+services:
+  # 1. Suricata IDS/IPS Engine
+  suricata:
+    image: jasonish/suricata:7.0
+    container_name: soc_suricata
+    network_mode: host
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+      - SYS_NICE
+    volumes:
+      - ./configs/suricata/suricata.yaml:/etc/suricata/suricata.yaml:ro
+      - ./rules/suricata:/var/lib/suricata/rules:ro
+      - ./logs/suricata:/var/log/suricata
+    command: -c /etc/suricata/suricata.yaml -i eth0
+    restart: unless-stopped
+
+  # 2. Snort 3 IDS/IPS Engine
+  snort:
+    image: ciscotalos/snort3:latest
+    container_name: soc_snort
+    network_mode: host
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    volumes:
+      - ./configs/snort/snort.lua:/etc/snort/snort.lua:ro
+      - ./rules/snort:/etc/snort/rules:ro
+      - ./logs/snort:/var/log/snort
+    command: snort -c /etc/snort/snort.lua -i eth0 -l /var/log/snort -A alert_json
+    restart: unless-stopped
+
+  # 3. SOC Real-time Log Analyzer & Dashboard
+  soc-dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: soc_dashboard
+    ports:
+      - "8501:8501"
+    environment:
+      - SURICATA_EVE_PATH=/var/log/suricata/eve.json
+      - SNORT_ALERT_PATH=/var/log/snort/alert_json.txt
+      - PORT=8501
+    volumes:
+      - ./logs/suricata:/var/log/suricata:ro
+      - ./logs/snort:/var/log/snort:ro
+      - ./rules:/app/rules:ro
+      - ./playbooks:/app/playbooks:ro
+    restart: unless-stopped
+    depends_on:
+      - victim-web
+
+  # 4. Target Victim Web Application for Attack Simulation
+  victim-web:
+    image: bkimminich/juice-shop:v16.0.0
+    container_name: soc_victim_web
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+
+networks:
+  soc-net:
+    driver: bridge

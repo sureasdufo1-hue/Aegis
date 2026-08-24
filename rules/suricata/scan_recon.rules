@@ -1,0 +1,16 @@
+# ==============================================================================
+# Port Scan & Reconnaissance Rules (Suricata 7.x)
+# ==============================================================================
+
+# 1. Nmap Stealth & Abnormal Scans
+alert tcp $EXTERNAL_NET any -> $HOME_NET any (msg:"SOC-SCAN: Nmap Stealth NULL Scan Detected (No Flags)"; flags:0; classtype:attempted-recon; sid:1000101; rev:1; metadata:attack_technique T1046, severity Medium;)
+alert tcp $EXTERNAL_NET any -> $HOME_NET any (msg:"SOC-SCAN: Nmap Stealth XMAS Scan Detected (FPU Flags)"; flags:FPU; classtype:attempted-recon; sid:1000102; rev:1; metadata:attack_technique T1046, severity Medium;)
+alert tcp $EXTERNAL_NET any -> $HOME_NET any (msg:"SOC-SCAN: Nmap Stealth FIN Scan Detected"; flags:F; classtype:attempted-recon; sid:1000103; rev:1; metadata:attack_technique T1046, severity Medium;)
+alert tcp $EXTERNAL_NET any -> $HOME_NET any (msg:"SOC-SCAN: Nmap SYN-FIN Scan Detected"; flags:SF; classtype:attempted-recon; sid:1000104; rev:1; metadata:attack_technique T1046, severity High;)
+
+# 2. Automated Vulnerability & Directory Scanners User-Agent
+alert http $EXTERNAL_NET any -> $HTTP_SERVERS $HTTP_PORTS (msg:"SOC-SCAN: Automated Vulnerability Scanner - Nikto Detected"; flow:established,to_server; http.user_agent; content:"Nikto",nocase; classtype:web-application-activity; sid:1000110; rev:1; metadata:attack_technique T1595, severity Low;)
+alert http $EXTERNAL_NET any -> $HTTP_SERVERS $HTTP_PORTS (msg:"SOC-SCAN: Automated Directory Brute-Forcer - Gobuster/Dirbuster"; flow:established,to_server; http.user_agent; pcre:"/(gobuster|dirbuster|ffuf|sqlmap|nuclei)/i"; classtype:web-application-activity; sid:1000111; rev:1; metadata:attack_technique T1595, severity Medium;)
+
+# 3. SSH Brute Force Rate Limiting
+alert tcp $EXTERNAL_NET any -> $HOME_NET 22 (msg:"SOC-ATTACK: SSH Brute Force Attack - High Frequency Connection"; flow:to_server; flags:S; threshold:type both, track by_src, count 5, seconds 30; classtype:attempted-admin; sid:1000120; rev:1; metadata:attack_technique T1110, severity High;)
