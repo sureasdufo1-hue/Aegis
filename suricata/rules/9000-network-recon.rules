@@ -1,0 +1,19 @@
+# ==============================================================================
+# Suricata 8.0.6 Official Custom Rules - Network Reconnaissance & Scans
+# SID Range: 9000000 - 9009999
+# Reference: SOC Detection & Monitoring Lab LLD v1.0
+# ==============================================================================
+
+# 1. Nmap Stealth & Abnormal Scans
+alert tcp $EXTERNAL_NET any -> $HOME_NET any (msg:"SOC-SCAN: Nmap Stealth NULL Scan Detected (Zero Flags)"; flags:0; classtype:attempted-recon; sid:9000001; rev:1; metadata:attack_technique T1046, severity Medium, stage Reconnaissance;)
+alert tcp $EXTERNAL_NET any -> $HOME_NET any (msg:"SOC-SCAN: Nmap Stealth XMAS Scan Detected (FPU Flags)"; flags:FPU; classtype:attempted-recon; sid:9000002; rev:1; metadata:attack_technique T1046, severity Medium, stage Reconnaissance;)
+alert tcp $EXTERNAL_NET any -> $HOME_NET any (msg:"SOC-SCAN: Nmap Stealth FIN Scan Detected"; flags:F; classtype:attempted-recon; sid:9000003; rev:1; metadata:attack_technique T1046, severity Medium, stage Reconnaissance;)
+alert tcp $EXTERNAL_NET any -> $HOME_NET any (msg:"SOC-SCAN: Nmap SYN-FIN Anomaly Scan Detected"; flags:SF; classtype:attempted-recon; sid:9000004; rev:1; metadata:attack_technique T1046, severity High, stage Reconnaissance;)
+
+# 2. Automated Vulnerability Scanners
+alert http $EXTERNAL_NET any -> $HOME_NET any (msg:"SOC-SCAN: Automated Vulnerability Scanner - Nikto Probe Detected"; flow:established,to_server; http.user_agent; content:"Nikto",nocase; classtype:web-application-activity; sid:9000010; rev:1; metadata:attack_technique T1595, severity Low, stage Reconnaissance;)
+alert http $EXTERNAL_NET any -> $HOME_NET any (msg:"SOC-SCAN: Automated Directory Enumeration Tool - Gobuster/Dirbuster"; flow:established,to_server; http.user_agent; pcre:"/(gobuster|dirbuster|ffuf|sqlmap|nuclei)/i"; classtype:web-application-activity; sid:9000011; rev:1; metadata:attack_technique T1595, severity Medium, stage Reconnaissance;)
+
+# 3. ICMP Ping Sweep & Flood
+alert icmp $EXTERNAL_NET any -> $HOME_NET any (msg:"SOC-INFO: ICMP Ping Echo Request Received"; itype:8; icode:0; classtype:misc-activity; sid:9000020; rev:1; metadata:severity Info, stage Reconnaissance;)
+alert icmp $EXTERNAL_NET any -> $HOME_NET any (msg:"SOC-ATTACK: ICMP Ping Flood Denial of Service Attempt"; itype:8; icode:0; threshold:type both, track by_src, count 25, seconds 5; classtype:denial-of-service; sid:9000021; rev:1; metadata:attack_technique T1498, severity High, stage DoS;)

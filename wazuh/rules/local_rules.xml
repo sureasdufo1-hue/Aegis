@@ -1,0 +1,54 @@
+<!-- ===================================================================== -->
+<!-- Wazuh 4.14.7 Custom Rules for Suricata 8.0.6 EVE JSON Integration     -->
+<!-- Reference: SOC Detection & Monitoring Lab LLD v1.0 (Phase 19)        -->
+<!-- ===================================================================== -->
+
+<group name="suricata,ids,">
+  <!-- Parent rule for all Suricata EVE alerts -->
+  <rule id="100100" level="3">
+    <decoded_as>json</decoded_as>
+    <field name="event_type">^alert$</field>
+    <description>Suricata: Security Alert Detected [$(alert.signature)]</description>
+  </rule>
+
+  <!-- Reconnaissance & Scans -->
+  <rule id="100101" level="6">
+    <if_sid>100100</if_sid>
+    <field name="alert.signature_id">^9000</field>
+    <mitre>
+      <id>T1046</id>
+    </mitre>
+    <description>SOC-RECON: Network Scanning & Reconnaissance Detected [$(alert.signature)] from $(src_ip)</description>
+  </rule>
+
+  <!-- Web Application Attacks (SQLi, XSS, Path Traversal, Log4j) -->
+  <rule id="100102" level="10">
+    <if_sid>100100</if_sid>
+    <field name="alert.signature_id">^9010</field>
+    <mitre>
+      <id>T1190</id>
+    </mitre>
+    <description>SOC-WEB: Web Application Attack Exploitation Attempt [$(alert.signature)] targeting $(dest_ip):$(dest_port)</description>
+  </rule>
+
+  <!-- Authentication Brute Force -->
+  <rule id="100103" level="8">
+    <if_sid>100100</if_sid>
+    <field name="alert.signature_id">^9020</field>
+    <mitre>
+      <id>T1110</id>
+    </mitre>
+    <description>SOC-AUTH: High-Frequency Brute Force Authentication Attempt [$(alert.signature)]</description>
+  </rule>
+
+  <!-- Critical Malware C2 & Reverse Shell Execution -->
+  <rule id="100104" level="13">
+    <if_sid>100100</if_sid>
+    <field name="alert.signature_id">^9030</field>
+    <mitre>
+      <id>T1071</id>
+      <id>T1059.004</id>
+    </mitre>
+    <description>SOC-CRITICAL: Active Malware C2 Communication / Reverse Shell Established [$(alert.signature)]</description>
+  </rule>
+</group>

@@ -1,4 +1,44 @@
-# Python
+# ==============================================================================
+# Security & Secret Ignore Rules (MANDATORY - AGENTS.md Baseline)
+# ==============================================================================
+.env
+.env.local
+.env.*.local
+*.key
+*.pem
+*.p12
+*.pfx
+secrets/
+credentials/
+runtime/
+*.sqlite
+*.sqlite3
+
+# ==============================================================================
+# Logs & Large Raw Artifacts
+# ==============================================================================
+logs/
+!logs/.gitkeep
+!logs/suricata/.gitkeep
+!logs/snort/.gitkeep
+pcaps/raw/
+pcaps/archive/
+*.pcap
+*.pcapng
+!pcaps/sample_attacks/*.pcap
+
+# ==============================================================================
+# Virtual Machines & Virtual Disks
+# ==============================================================================
+*.vhdx
+*.vhd
+*.vmdk
+*.iso
+vm/
+
+# ==============================================================================
+# Python & Virtual Environments
+# ==============================================================================
 __pycache__/
 *.py[cod]
 *$py.class
@@ -25,23 +65,9 @@ share/python-wheels/
 .installed.cfg
 *.egg
 
-# Logs & Data
-logs/suricata/*
-!logs/suricata/.gitkeep
-logs/snort/*
-!logs/snort/.gitkeep
-*.log
-*.sqlite
-*.sqlite3
-
-# PCAP Large Files
-pcaps/*.pcap
-pcaps/*.pcapng
-!pcaps/sample_attacks/*.pcap
-
-# Docker & Temp
-.env
-.env.local
+# ==============================================================================
+# IDE & System Files
+# ==============================================================================
 .DS_Store
 Thumbs.db
 .idea/
@@ -49,7 +75,9 @@ Thumbs.db
 *.swp
 *.swo
 
-# Test & Coverage
+# ==============================================================================
+# Testing & Coverage
+# ==============================================================================
 .pytest_cache/
 .coverage
 htmlcov/

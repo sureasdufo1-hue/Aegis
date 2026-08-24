@@ -1,0 +1,30 @@
+# Netplan configuration for soc-sensor (Ubuntu 22.04 LTS)
+# Note: Interface names (ens18, ens19) should be verified with `ip -br link`
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    # 1. Management Interface (Connected to soc-vsw-mgmt)
+    eth0:
+      match:
+        name: eth0
+      addresses:
+        - 10.77.10.20/24
+      routes:
+        - to: default
+          via: 10.77.10.1
+      nameservers:
+        addresses:
+          - 1.1.1.1
+          - 8.8.8.8
+
+    # 2. Passive Packet Capture Monitoring Interface (Connected to soc-vsw-victim Port Mirror)
+    # CRITICAL: NO L3 IP ASSIGNMENT (Passively captures raw frames via AF_PACKET)
+    eth1:
+      match:
+        name: eth1
+      dhcp4: false
+      dhcp6: false
+      link-local: []
+      accept-ra: false
+      optional: true
