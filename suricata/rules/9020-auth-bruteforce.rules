@@ -4,8 +4,8 @@
 # Reference: SOC Detection & Monitoring Lab LLD v1.0
 # ==============================================================================
 
-# 1. SSH Brute Force Rate Limiting
-alert tcp $EXTERNAL_NET any -> $HOME_NET 22 (msg:"SOC-ATTACK: SSH Brute Force Attack - High Frequency Connection Threshold Exceeded"; flow:to_server; flags:S; threshold:type both, track by_src, count 5, seconds 30; classtype:attempted-admin; sid:9020001; rev:1; metadata:attack_technique T1110, severity High, stage Credential_Access;)
+# 1. SSH Connection Threshold Rate Limiting (Network Connection Anomaly, not Auth Failure)
+alert tcp $EXTERNAL_NET any -> $HOME_NET 22 (msg:"SOC-ANOMALY: High-Frequency SSH Connection Threshold Exceeded (Potential Brute Force Attempt)"; flow:to_server; flags:S; threshold:type both, track by_src, count 5, seconds 30; classtype:attempted-admin; sid:9020001; rev:2; metadata:attack_technique T1110, severity Medium, confidence Low, stage Credential_Access_Attempt;)
 
-# 2. Web HTTP Basic / Form Auth Brute Force
-alert http $EXTERNAL_NET any -> $HOME_NET [80,443,3000] (msg:"SOC-ATTACK: Web Login Brute Force - High Volume POST Requests to Login Endpoint"; flow:established,to_server; http.method; content:"POST"; http.uri; content:"/login"; threshold:type both, track by_src, count 10, seconds 60; classtype:attempted-admin; sid:9020010; rev:1; metadata:attack_technique T1110.001, severity High, stage Credential_Access;)
+# 2. Web HTTP Basic / Form Auth POST Volume Anomaly
+alert http $EXTERNAL_NET any -> $HOME_NET [80,443,3000] (msg:"SOC-ANOMALY: High-Volume HTTP POST to Login Endpoint (Potential Web Auth Brute Force)"; flow:established,to_server; http.method; content:"POST"; http.uri; content:"/login"; threshold:type both, track by_src, count 10, seconds 60; classtype:attempted-admin; sid:9020010; rev:2; metadata:attack_technique T1110.001, severity Medium, confidence Low, stage Credential_Access_Attempt;)

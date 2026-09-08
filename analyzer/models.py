@@ -7,6 +7,8 @@ from pydantic import BaseModel, Field
 class EngineType(StrEnum):
     SURICATA = "SURICATA"
     SNORT = "SNORT"
+    WAZUH = "WAZUH"
+    HOST = "HOST"
     GENERIC = "GENERIC"
 
 

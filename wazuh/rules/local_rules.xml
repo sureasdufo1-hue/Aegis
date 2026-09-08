@@ -4,26 +4,25 @@
 <!-- ===================================================================== -->
 
 <group name="suricata,ids,">
-  <!-- Parent rule for all Suricata EVE alerts -->
+  <!-- Parent rule for all Suricata EVE alerts (hooks into default 86601) -->
   <rule id="100100" level="3">
-    <decoded_as>json</decoded_as>
-    <field name="event_type">^alert$</field>
+    <if_sid>86601</if_sid>
     <description>Suricata: Security Alert Detected [$(alert.signature)]</description>
   </rule>
 
   <!-- Reconnaissance & Scans -->
   <rule id="100101" level="6">
-    <if_sid>100100</if_sid>
+    <if_sid>86601,100100</if_sid>
     <field name="alert.signature_id">^9000</field>
     <mitre>
       <id>T1046</id>
     </mitre>
-    <description>SOC-RECON: Network Scanning & Reconnaissance Detected [$(alert.signature)] from $(src_ip)</description>
+    <description>SOC-RECON: Network Scanning &amp; Reconnaissance Detected [$(alert.signature)] from $(src_ip)</description>
   </rule>
 
   <!-- Web Application Attacks (SQLi, XSS, Path Traversal, Log4j) -->
   <rule id="100102" level="10">
-    <if_sid>100100</if_sid>
+    <if_sid>86601,100100</if_sid>
     <field name="alert.signature_id">^9010</field>
     <mitre>
       <id>T1190</id>
@@ -33,7 +32,7 @@
 
   <!-- Authentication Brute Force -->
   <rule id="100103" level="8">
-    <if_sid>100100</if_sid>
+    <if_sid>86601,100100</if_sid>
     <field name="alert.signature_id">^9020</field>
     <mitre>
       <id>T1110</id>
@@ -43,7 +42,7 @@
 
   <!-- Critical Malware C2 & Reverse Shell Execution -->
   <rule id="100104" level="13">
-    <if_sid>100100</if_sid>
+    <if_sid>86601,100100</if_sid>
     <field name="alert.signature_id">^9030</field>
     <mitre>
       <id>T1071</id>
@@ -52,3 +51,33 @@
     <description>SOC-CRITICAL: Active Malware C2 Communication / Reverse Shell Established [$(alert.signature)]</description>
   </rule>
 </group>
+
+<!-- ===================================================================== -->
+<!-- Cross-Correlation Rules: Network Anomaly + Endpoint Host Telemetry    -->
+<!-- ===================================================================== -->
+<group name="soc_correlation,">
+  <!-- High-Confidence SSH Brute Force: Network Connection Anomaly + Host Auth Failures -->
+  <rule id="100110" level="11" timeframe="120">
+    <if_matched_sid>100103</if_matched_sid>
+    <if_sid>5710, 5716, 5720</if_sid>
+    <same_source_ip />
+    <description>SOC-CORRELATION: Confirmed SSH Brute Force - Network Anomaly Correlated with Host Auth Failures [$(src_ip)]</description>
+    <mitre>
+      <id>T1110</id>
+      <id>T1110.001</id>
+    </mitre>
+  </rule>
+
+  <!-- Critical Account Takeover: Successful Login Following Brute Force Anomaly -->
+  <rule id="100111" level="14" timeframe="180">
+    <if_matched_sid>100103</if_matched_sid>
+    <if_sid>5715</if_sid>
+    <same_source_ip />
+    <description>SOC-CRITICAL: Potential Account Takeover - Successful SSH Login Following Brute Force Anomaly [$(src_ip)]</description>
+    <mitre>
+      <id>T1110</id>
+      <id>T1078</id>
+    </mitre>
+  </rule>
+</group>
+
