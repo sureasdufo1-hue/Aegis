@@ -1,0 +1,512 @@
+{
+  "phase": "Phase 31",
+  "run_id": "phase31_1788779453",
+  "start_time": "2026-09-07T11:10:53.036466+00:00",
+  "gates": {},
+  "stages": {
+    "containers": {
+      "soc-wazuh-indexer": "running",
+      "soc-wazuh-manager": "running",
+      "soc-wazuh-dashboard": "running"
+    },
+    "initial_doc_count": 204,
+    "generated_events": [
+      {
+        "timestamp": "2026-09-07T11:10:53.036466+00:00",
+        "flow_id": 920000000079454,
+        "event_type": "alert",
+        "src_ip": "10.77.20.20",
+        "src_port": 49152,
+        "dest_ip": "10.77.30.20",
+        "dest_port": 80,
+        "proto": "TCP",
+        "run_id": "phase31_1788779453",
+        "community_id": "1:soc_phase31_phase31_1788779453_Recon",
+        "alert": {
+          "action": "allowed",
+          "gid": 1,
+          "signature_id": 9000001,
+          "rev": 1,
+          "signature": "SOC-SCAN: Nmap Stealth NULL Scan Detected (Zero Flags)",
+          "category": "Attempted Information Leak",
+          "severity": 3,
+          "metadata": {
+            "attack_technique": [
+              "T1046"
+            ],
+            "run_id": [
+              "phase31_1788779453"
+            ],
+            "stage": [
+              "Recon"
+            ]
+          }
+        }
+      },
+      {
+        "timestamp": "2026-09-07T11:11:23.036466+00:00",
+        "flow_id": 920000000079455,
+        "event_type": "alert",
+        "src_ip": "10.77.20.20",
+        "src_port": 49153,
+        "dest_ip": "10.77.30.20",
+        "dest_port": 3000,
+        "proto": "TCP",
+        "run_id": "phase31_1788779453",
+        "community_id": "1:soc_phase31_phase31_1788779453_Initial Access",
+        "alert": {
+          "action": "allowed",
+          "gid": 1,
+          "signature_id": 9010001,
+          "rev": 1,
+          "signature": "SOC-ATTACK: Web SQL Injection - UNION SELECT Pattern Detected",
+          "category": "Web Application Attack",
+          "severity": 2,
+          "metadata": {
+            "attack_technique": [
+              "T1190"
+            ],
+            "run_id": [
+              "phase31_1788779453"
+            ],
+            "stage": [
+              "Initial Access"
+            ]
+          }
+        },
+        "http": {
+          "hostname": "victim-shop.local",
+          "url": "/rest/products/search?q=apple'+UNION+SELECT+1,2,3,database()--",
+          "http_user_agent": "Mozilla/5.0"
+        }
+      },
+      {
+        "timestamp": "2026-09-07T11:11:53.036466+00:00",
+        "flow_id": 920000000079456,
+        "event_type": "alert",
+        "src_ip": "10.77.20.20",
+        "src_port": 49154,
+        "dest_ip": "10.77.30.20",
+        "dest_port": 4444,
+        "proto": "TCP",
+        "run_id": "phase31_1788779453",
+        "community_id": "1:soc_phase31_phase31_1788779453_C2 & Exfil",
+        "alert": {
+          "action": "allowed",
+          "gid": 1,
+          "signature_id": 9030010,
+          "rev": 1,
+          "signature": "SOC-MALWARE: Interactive Reverse Shell Session Established (/bin/sh prompt detected)",
+          "category": "A Network Trojan was detected",
+          "severity": 1,
+          "metadata": {
+            "attack_technique": [
+              "T1059.004"
+            ],
+            "run_id": [
+              "phase31_1788779453"
+            ],
+            "stage": [
+              "C2 & Exfil"
+            ]
+          }
+        }
+      }
+    ],
+    "indexed_hits_count": 2,
+    "indexed_hits": [
+      {
+        "agent": {
+          "name": "soc-wazuh-manager",
+          "id": "000"
+        },
+        "manager": {
+          "name": "soc-wazuh-manager"
+        },
+        "data": {
+          "src_ip": "10.77.20.20",
+          "src_port": "49153",
+          "community_id": "1:soc_phase31_phase31_1788779453_Initial Access",
+          "event_type": "alert",
+          "run_id": "phase31_1788779453",
+          "alert": {
+            "severity": "2",
+            "signature_id": "9010001",
+            "rev": "1",
+            "metadata": {
+              "attack_technique": [
+                "T1190"
+              ],
+              "run_id": [
+                "phase31_1788779453"
+              ],
+              "stage": [
+                "Initial Access"
+              ]
+            },
+            "gid": "1",
+            "signature": "SOC-ATTACK: Web SQL Injection - UNION SELECT Pattern Detected",
+            "action": "allowed",
+            "category": "Web Application Attack"
+          },
+          "flow_id": "920000000079455.000000",
+          "dest_ip": "10.77.30.20",
+          "proto": "TCP",
+          "http": {
+            "hostname": "victim-shop.local",
+            "url": "/rest/products/search?q=apple'+UNION+SELECT+1,2,3,database()--",
+            "http_user_agent": "Mozilla/5.0"
+          },
+          "dest_port": "3000",
+          "timestamp": "2026-09-07T11:11:23.036466+00:00"
+        },
+        "rule": {
+          "firedtimes": 3,
+          "mail": false,
+          "level": 3,
+          "description": "Suricata: Alert - SOC-ATTACK: Web SQL Injection - UNION SELECT Pattern Detected",
+          "groups": [
+            "ids",
+            "suricata"
+          ],
+          "id": "86601"
+        },
+        "decoder": {
+          "name": "json"
+        },
+        "input": {
+          "type": "log"
+        },
+        "@timestamp": "2026-09-07T11:11:07.031Z",
+        "location": "/var/ossec/logs/eve.json",
+        "id": "1788779467.3082",
+        "timestamp": "2026-09-07T11:11:07.031+0000"
+      },
+      {
+        "agent": {
+          "name": "soc-wazuh-manager",
+          "id": "000"
+        },
+        "manager": {
+          "name": "soc-wazuh-manager"
+        },
+        "data": {
+          "src_ip": "10.77.20.20",
+          "src_port": "49154",
+          "community_id": "1:soc_phase31_phase31_1788779453_C2 & Exfil",
+          "event_type": "alert",
+          "run_id": "phase31_1788779453",
+          "alert": {
+            "severity": "1",
+            "signature_id": "9030010",
+            "rev": "1",
+            "metadata": {
+              "attack_technique": [
+                "T1059.004"
+              ],
+              "run_id": [
+                "phase31_1788779453"
+              ],
+              "stage": [
+                "C2 & Exfil"
+              ]
+            },
+            "gid": "1",
+            "signature": "SOC-MALWARE: Interactive Reverse Shell Session Established (/bin/sh prompt detected)",
+            "action": "allowed",
+            "category": "A Network Trojan was detected"
+          },
+          "flow_id": "920000000079456.000000",
+          "dest_ip": "10.77.30.20",
+          "proto": "TCP",
+          "dest_port": "4444",
+          "timestamp": "2026-09-07T11:11:53.036466+00:00"
+        },
+        "rule": {
+          "firedtimes": 1,
+          "mail": false,
+          "level": 3,
+          "description": "Suricata: Alert - SOC-MALWARE: Interactive Reverse Shell Session Established (/bin/sh prompt detected)",
+          "groups": [
+            "ids",
+            "suricata"
+          ],
+          "id": "86601"
+        },
+        "decoder": {
+          "name": "json"
+        },
+        "input": {
+          "type": "log"
+        },
+        "@timestamp": "2026-09-07T11:11:07.031Z",
+        "location": "/var/ossec/logs/eve.json",
+        "id": "1788779467.253",
+        "timestamp": "2026-09-07T11:11:07.031+0000"
+      }
+    ],
+    "incident": {
+      "incident_id": "INC-10.77.20.20-1788779513",
+      "src_ip": "10.77.20.20",
+      "target_ips": [
+        "10.77.30.20"
+      ],
+      "attack_stages": [
+        "1. Reconnaissance",
+        "2. Initial Access / Exploitation",
+        "3. Command & Control / Execution"
+      ],
+      "alerts": [
+        {
+          "id": "b19e1358-07b4-4569-9fb9-5f9382a347a2",
+          "timestamp": "2026-09-07T11:10:53.036466Z",
+          "engine": "SURICATA",
+          "event_type": "ALERT",
+          "signature": "SOC-SCAN: Nmap Stealth NULL Scan Detected (Zero Flags)",
+          "sid": 9000001,
+          "rev": 1,
+          "gid": 1,
+          "category": "Attempted Information Leak",
+          "severity": "MEDIUM",
+          "src_ip": "10.77.20.20",
+          "src_port": 49152,
+          "dst_ip": "10.77.30.20",
+          "dst_port": 80,
+          "protocol": "TCP",
+          "community_id": "1:soc_phase31_phase31_1788779453_Recon",
+          "mitre_technique": "T1046",
+          "payload_printable": null,
+          "http_hostname": null,
+          "http_uri": null,
+          "http_user_agent": null,
+          "dns_query": null,
+          "tls_sni": null,
+          "raw_data": {
+            "timestamp": "2026-09-07T11:10:53.036466+00:00",
+            "flow_id": 920000000079454,
+            "event_type": "alert",
+            "src_ip": "10.77.20.20",
+            "src_port": 49152,
+            "dest_ip": "10.77.30.20",
+            "dest_port": 80,
+            "proto": "TCP",
+            "run_id": "phase31_1788779453",
+            "community_id": "1:soc_phase31_phase31_1788779453_Recon",
+            "alert": {
+              "action": "allowed",
+              "gid": 1,
+              "signature_id": 9000001,
+              "rev": 1,
+              "signature": "SOC-SCAN: Nmap Stealth NULL Scan Detected (Zero Flags)",
+              "category": "Attempted Information Leak",
+              "severity": 3,
+              "metadata": {
+                "attack_technique": [
+                  "T1046"
+                ],
+                "run_id": [
+                  "phase31_1788779453"
+                ],
+                "stage": [
+                  "Recon"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "id": "90b6de45-f31d-432a-94d3-dafdaeb85c61",
+          "timestamp": "2026-09-07T11:11:23.036466Z",
+          "engine": "SURICATA",
+          "event_type": "ALERT",
+          "signature": "SOC-ATTACK: Web SQL Injection - UNION SELECT Pattern Detected",
+          "sid": 9010001,
+          "rev": 1,
+          "gid": 1,
+          "category": "Web Application Attack",
+          "severity": "HIGH",
+          "src_ip": "10.77.20.20",
+          "src_port": 49153,
+          "dst_ip": "10.77.30.20",
+          "dst_port": 3000,
+          "protocol": "TCP",
+          "community_id": "1:soc_phase31_phase31_1788779453_Initial Access",
+          "mitre_technique": "T1190",
+          "payload_printable": null,
+          "http_hostname": "victim-shop.local",
+          "http_uri": "/rest/products/search?q=apple'+UNION+SELECT+1,2,3,database()--",
+          "http_user_agent": "Mozilla/5.0",
+          "dns_query": null,
+          "tls_sni": null,
+          "raw_data": {
+            "timestamp": "2026-09-07T11:11:23.036466+00:00",
+            "flow_id": 920000000079455,
+            "event_type": "alert",
+            "src_ip": "10.77.20.20",
+            "src_port": 49153,
+            "dest_ip": "10.77.30.20",
+            "dest_port": 3000,
+            "proto": "TCP",
+            "run_id": "phase31_1788779453",
+            "community_id": "1:soc_phase31_phase31_1788779453_Initial Access",
+            "alert": {
+              "action": "allowed",
+              "gid": 1,
+              "signature_id": 9010001,
+              "rev": 1,
+              "signature": "SOC-ATTACK: Web SQL Injection - UNION SELECT Pattern Detected",
+              "category": "Web Application Attack",
+              "severity": 2,
+              "metadata": {
+                "attack_technique": [
+                  "T1190"
+                ],
+                "run_id": [
+                  "phase31_1788779453"
+                ],
+                "stage": [
+                  "Initial Access"
+                ]
+              }
+            },
+            "http": {
+              "hostname": "victim-shop.local",
+              "url": "/rest/products/search?q=apple'+UNION+SELECT+1,2,3,database()--",
+              "http_user_agent": "Mozilla/5.0"
+            }
+          }
+        },
+        {
+          "id": "f8b4096c-e43d-4d11-a6b0-ebaa3e272083",
+          "timestamp": "2026-09-07T11:11:53.036466Z",
+          "engine": "SURICATA",
+          "event_type": "ALERT",
+          "signature": "SOC-MALWARE: Interactive Reverse Shell Session Established (/bin/sh prompt detected)",
+          "sid": 9030010,
+          "rev": 1,
+          "gid": 1,
+          "category": "A Network Trojan was detected",
+          "severity": "CRITICAL",
+          "src_ip": "10.77.20.20",
+          "src_port": 49154,
+          "dst_ip": "10.77.30.20",
+          "dst_port": 4444,
+          "protocol": "TCP",
+          "community_id": "1:soc_phase31_phase31_1788779453_C2 & Exfil",
+          "mitre_technique": "T1059.004",
+          "payload_printable": null,
+          "http_hostname": null,
+          "http_uri": null,
+          "http_user_agent": null,
+          "dns_query": null,
+          "tls_sni": null,
+          "raw_data": {
+            "timestamp": "2026-09-07T11:11:53.036466+00:00",
+            "flow_id": 920000000079456,
+            "event_type": "alert",
+            "src_ip": "10.77.20.20",
+            "src_port": 49154,
+            "dest_ip": "10.77.30.20",
+            "dest_port": 4444,
+            "proto": "TCP",
+            "run_id": "phase31_1788779453",
+            "community_id": "1:soc_phase31_phase31_1788779453_C2 & Exfil",
+            "alert": {
+              "action": "allowed",
+              "gid": 1,
+              "signature_id": 9030010,
+              "rev": 1,
+              "signature": "SOC-MALWARE: Interactive Reverse Shell Session Established (/bin/sh prompt detected)",
+              "category": "A Network Trojan was detected",
+              "severity": 1,
+              "metadata": {
+                "attack_technique": [
+                  "T1059.004"
+                ],
+                "run_id": [
+                  "phase31_1788779453"
+                ],
+                "stage": [
+                  "C2 & Exfil"
+                ]
+              }
+            }
+          }
+        }
+      ],
+      "start_time": "2026-09-07T11:10:53.036466Z",
+      "last_seen": "2026-09-07T11:11:53.036466Z",
+      "highest_severity": "CRITICAL",
+      "verdict": "Multi-Stage Attack Chain Detected: 1. Reconnaissance -> 2. Initial Access / Exploitation -> 3. Command & Control / Execution from 10.77.20.20 targeting 1 internal host(s).",
+      "playbook_ref": "playbooks/04_malware_c2_investigation.md"
+    },
+    "idempotency_pass": true,
+    "api_validation": {
+      "status_code_health": 200,
+      "health_body": {
+        "status": "healthy",
+        "service": "soc-dashboard",
+        "timestamp": "2026-09-07T20:11:35.709535",
+        "eve_log_exists": true,
+        "snort_log_exists": true
+      },
+      "stats_body": {
+        "total_alerts": 84,
+        "critical_alerts": 18,
+        "high_alerts": 37,
+        "medium_alerts": 23,
+        "low_info_alerts": 6,
+        "engine_distribution": {
+          "SURICATA": 59,
+          "SNORT": 25
+        },
+        "category_distribution": {
+          "A Network Trojan was detected": 26,
+          "Web Application Attack": 14,
+          "Attempted Administrator Privilege Gain": 20,
+          "Attempted Information Leak": 16,
+          "Web Application Activity": 8
+        },
+        "top_attackers": [
+          [
+            "10.77.20.20",
+            37
+          ],
+          [
+            "198.51.100.44",
+            24
+          ],
+          [
+            "185.220.101.5",
+            23
+          ]
+        ],
+        "top_targeted_ports": [
+          [
+            "3000",
+            29
+          ],
+          [
+            "80",
+            23
+          ],
+          [
+            "22",
+            20
+          ],
+          [
+            "443",
+            9
+          ],
+          [
+            "4444",
+            3
+          ]
+        ],
+        "incident_count": 80
+      },
+      "incidents_count": 10
+    }
+  },
+  "status": "PARTIAL"
+}

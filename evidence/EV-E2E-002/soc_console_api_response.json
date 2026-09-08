@@ -1,0 +1,62 @@
+{
+  "api_endpoint_health": {
+    "status_code": 200,
+    "body": {
+      "status": "healthy",
+      "service": "soc-dashboard",
+      "timestamp": "2026-08-26T15:56:57.383501",
+      "eve_log_exists": true,
+      "snort_log_exists": true
+    }
+  },
+  "api_endpoint_stats": {
+    "status_code": 200,
+    "body": {
+      "total_alerts": 81,
+      "critical_alerts": 17,
+      "high_alerts": 36,
+      "medium_alerts": 22,
+      "low_info_alerts": 6,
+      "engine_distribution": {
+        "SURICATA": 56,
+        "SNORT": 25
+      },
+      "category_distribution": {
+        "A Network Trojan was detected": 25,
+        "Web Application Attack": 13,
+        "Attempted Administrator Privilege Gain": 20,
+        "Attempted Information Leak": 15,
+        "Web Application Activity": 8
+      },
+      "top_attackers": [
+        ["10.77.20.20", 34],
+        ["198.51.100.44", 24],
+        ["185.220.101.5", 23]
+      ],
+      "top_targeted_ports": [
+        ["3000", 28],
+        ["80", 22],
+        ["22", 20],
+        ["443", 9],
+        ["4444", 2]
+      ],
+      "incident_count": 78
+    }
+  },
+  "api_endpoint_incidents": {
+    "status_code": 200,
+    "sample_incident": {
+      "incident_id": "INC-10.77.20.20-1787727443",
+      "src_ip": "10.77.20.20",
+      "target_ips": ["10.77.30.20"],
+      "attack_stages": [
+        "1. Reconnaissance",
+        "2. Initial Access / Exploitation",
+        "3. Command & Control / Execution"
+      ],
+      "highest_severity": "CRITICAL",
+      "verdict": "Multi-Stage Attack Chain Detected: 1. Reconnaissance -> 2. Initial Access / Exploitation -> 3. Command & Control / Execution from 10.77.20.20 targeting 1 internal host(s).",
+      "playbook_ref": "playbooks/04_malware_c2_investigation.md"
+    }
+  }
+}

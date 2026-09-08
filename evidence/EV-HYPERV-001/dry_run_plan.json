@@ -1,0 +1,103 @@
+{
+  "phase": "Phase 32",
+  "plan_type": "DryRun / WhatIf Specification",
+  "timestamp": "2026-08-26T16:31:20+09:00",
+  "switches": [
+    {
+      "name": "soc-vsw-mgmt",
+      "type": "Internal",
+      "cidr": "10.77.10.0/24",
+      "host_ip": "10.77.10.10/24",
+      "purpose": "Host <-> Gateway <-> Sensor MGMT & Wazuh SIEM"
+    },
+    {
+      "name": "soc-vsw-attack",
+      "type": "Private",
+      "cidr": "10.77.20.0/24",
+      "host_ip": "None",
+      "purpose": "Attacker <-> Gateway (Isolated Attack Zone)"
+    },
+    {
+      "name": "soc-vsw-victim",
+      "type": "Private",
+      "cidr": "10.77.30.0/24",
+      "host_ip": "None",
+      "purpose": "Gateway <-> Victim <-> Sensor Monitoring (Isolated Victim Zone)"
+    }
+  ],
+  "virtual_machines": [
+    {
+      "vm_name": "soc-gateway",
+      "os": "Ubuntu 22.04 LTS",
+      "generation": 2,
+      "vcpu": 1,
+      "ram_mb": 1024,
+      "vhdx_gb": 16,
+      "vhdx_path": "C:\\SOC-Lab\\vm\\soc-gateway\\soc-gateway.vhdx",
+      "network_adapters": [
+        { "name": "nic-mgmt", "switch": "soc-vsw-mgmt", "ip": "10.77.10.1/24" },
+        { "name": "nic-attack", "switch": "soc-vsw-attack", "ip": "10.77.20.1/24" },
+        { "name": "nic-victim", "switch": "soc-vsw-victim", "ip": "10.77.30.1/24" }
+      ],
+      "role": "Routing (net.ipv4.ip_forward=1) & nftables Default Deny Firewall"
+    },
+    {
+      "vm_name": "soc-victim",
+      "os": "Ubuntu 22.04 + OWASP Juice Shop",
+      "generation": 2,
+      "vcpu": 2,
+      "ram_mb": 4096,
+      "vhdx_gb": 30,
+      "vhdx_path": "C:\\SOC-Lab\\vm\\soc-victim\\soc-victim.vhdx",
+      "network_adapters": [
+        { "name": "nic-victim", "switch": "soc-vsw-victim", "ip": "10.77.30.20/24", "gateway": "10.77.30.1", "port_mirroring": "Source" }
+      ],
+      "role": "Authorized Target Host (Port Mirroring Source)"
+    },
+    {
+      "vm_name": "soc-sensor",
+      "os": "Ubuntu 22.04 + Suricata 8.0.6 + Snort 3.12 + Wazuh Agent",
+      "generation": 2,
+      "vcpu": 4,
+      "ram_mb": 8192,
+      "vhdx_gb": 80,
+      "vhdx_path": "C:\\SOC-Lab\\vm\\soc-sensor\\soc-sensor.vhdx",
+      "network_adapters": [
+        { "name": "nic-mgmt", "switch": "soc-vsw-mgmt", "ip": "10.77.10.20/24", "gateway": "10.77.10.1" },
+        { "name": "nic-monitor", "switch": "soc-vsw-victim", "ip": "NO L3 IP (Promiscuous)", "port_mirroring": "Destination" }
+      ],
+      "role": "Passive Network Sensor & Dual IDS Telemetry Pipeline"
+    },
+    {
+      "vm_name": "soc-attacker",
+      "os": "Kali Linux 2026.2",
+      "generation": 2,
+      "vcpu": 2,
+      "ram_mb": 4096,
+      "vhdx_gb": 40,
+      "vhdx_path": "C:\\SOC-Lab\\vm\\soc-attacker\\soc-attacker.vhdx",
+      "network_adapters": [
+        { "name": "nic-attack", "switch": "soc-vsw-attack", "ip": "10.77.20.20/24", "gateway": "10.77.20.1" }
+      ],
+      "role": "Authorized Attack Simulation & Traffic Generation Host"
+    }
+  ],
+  "port_mirroring": {
+    "source_vm": "soc-victim",
+    "source_adapter": "nic-victim",
+    "destination_vm": "soc-sensor",
+    "destination_adapter": "nic-monitor",
+    "switch": "soc-vsw-victim",
+    "mode": "Promiscuous Mirrored Ingestion"
+  },
+  "host_route": {
+    "destination_prefix": "10.77.30.0/24",
+    "next_hop": "10.77.10.1",
+    "interface_alias": "vEthernet (soc-vsw-mgmt)"
+  },
+  "rollback_targets": {
+    "vms": ["soc-gateway", "soc-victim", "soc-sensor", "soc-attacker"],
+    "switches": ["soc-vsw-victim", "soc-vsw-attack", "soc-vsw-mgmt"],
+    "storage_directory": "C:\\SOC-Lab\\vm"
+  }
+}

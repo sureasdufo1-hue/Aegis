@@ -1,0 +1,35 @@
+{
+  "timestamp": "2026-08-26T16:30:40+09:00",
+  "hostname": "DESKTOP-QIFELML",
+  "os_name": "Microsoft Windows 11 Education",
+  "os_version": "Microsoft Windows NT 10.0.26100.0",
+  "hyperv_vmms_service": "Running",
+  "is_admin_elevated": false,
+  "hardware": {
+    "total_cores": 4,
+    "logical_processors": 8,
+    "total_ram_gb": 63.84,
+    "free_ram_gb": 23.90,
+    "required_ram_gb": 17.0,
+    "target_storage_free_gb": 1236.07,
+    "target_storage_path": "C:\\SOC-Lab\\vm"
+  },
+  "iso_images": {
+    "ubuntu_server": {
+      "path": "C:\\SOC-Lab\\iso\\ubuntu-22.04.5-live-server-amd64.iso",
+      "exists": true
+    },
+    "kali_linux": {
+      "path": "C:\\SOC-Lab\\iso\\kali-linux-2026.2-installer-amd64.iso",
+      "exists": true
+    }
+  },
+  "subnet_collisions": [
+    "Subnet 10.77.10. conflicts with interface 'VMware Network Adapter VMnet10' (Route: 10.77.10.0/24, IP: 10.77.10.1)"
+  ],
+  "pass_assessment": false,
+  "blocker_reasons": [
+    "Administrator privileges required to create Hyper-V vSwitches, assign host IPs, and provision VMs.",
+    "Subnet 10.77.10.0/24 conflicts with host adapter 'VMware Network Adapter VMnet10'."
+  ]
+}

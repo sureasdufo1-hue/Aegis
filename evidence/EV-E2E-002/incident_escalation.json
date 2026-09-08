@@ -1,0 +1,19 @@
+{
+  "incident_id": "INC-10.77.20.20-1787727443",
+  "src_ip": "10.77.20.20",
+  "target_ips": [
+    "10.77.30.20"
+  ],
+  "attack_stages": [
+    "1. Reconnaissance",
+    "2. Initial Access / Exploitation",
+    "3. Command & Control / Execution"
+  ],
+  "start_time": "2026-08-26T06:56:23.838002Z",
+  "last_seen": "2026-08-26T06:57:23.838002Z",
+  "highest_severity": "CRITICAL",
+  "verdict": "Multi-Stage Attack Chain Detected: 1. Reconnaissance -> 2. Initial Access / Exploitation -> 3. Command & Control / Execution from 10.77.20.20 targeting 1 internal host(s).",
+  "playbook_ref": "playbooks/04_malware_c2_investigation.md",
+  "idempotency_tested": true,
+  "idempotency_result": "PASS"
+}

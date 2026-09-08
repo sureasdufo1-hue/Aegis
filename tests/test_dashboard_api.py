@@ -32,3 +32,12 @@ def test_dashboard_api_incidents():
     assert response.status_code == 200
     incidents = response.json()
     assert isinstance(incidents, list)
+
+
+def test_dashboard_api_health():
+    response = client.get("/api/health")
+    assert response.status_code == 200
+    data = response.json()
+    assert data["status"] == "healthy"
+    assert data["service"] == "soc-dashboard"
+

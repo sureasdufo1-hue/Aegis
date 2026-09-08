@@ -1,0 +1,697 @@
+﻿{
+    "CollectedAt":  "2026-08-27T12:19:08.0413926+09:00",
+    "Routes":  [
+                   {
+                       "DestinationPrefix":  "255.255.255.255/32",
+                       "NextHop":  "0.0.0.0",
+                       "InterfaceAlias":  "Bluetooth 네트워크 연결",
+                       "InterfaceIndex":  11,
+                       "RouteMetric":  256,
+                       "Protocol":  2
+                   },
+                   {
+                       "DestinationPrefix":  "255.255.255.255/32",
+                       "NextHop":  "0.0.0.0",
+                       "InterfaceAlias":  "이더넷 2",
+                       "InterfaceIndex":  22,
+                       "RouteMetric":  256,
+                       "Protocol":  2
+                   },
+                   {
+                       "DestinationPrefix":  "255.255.255.255/32",
+                       "NextHop":  "0.0.0.0",
+                       "InterfaceAlias":  "이더넷",
+                       "InterfaceIndex":  7,
+                       "RouteMetric":  256,
+                       "Protocol":  2
+                   },
+                   {
+                       "DestinationPrefix":  "255.255.255.255/32",
+                       "NextHop":  "0.0.0.0",
+                       "InterfaceAlias":  "VMware Network Adapter VMnet10",
+                       "InterfaceIndex":  12,
+                       "RouteMetric":  256,
+                       "Protocol":  2
+                   },
+                   {
+                       "DestinationPrefix":  "255.255.255.255/32",
+                       "NextHop":  "0.0.0.0",
+                       "InterfaceAlias":  "VMware Network Adapter VMnet8",
+                       "InterfaceIndex":  24,
+                       "RouteMetric":  256,
+                       "Protocol":  2
+                   },
+                   {
+                       "DestinationPrefix":  "255.255.255.255/32",
+                       "NextHop":  "0.0.0.0",
+                       "InterfaceAlias":  "VMware Network Adapter VMnet1",
+                       "InterfaceIndex":  18,
+                       "RouteMetric":  256,
+                       "Protocol":  2
+                   },
+                   {
+                       "DestinationPrefix":  "255.255.255.255/32",
+                       "NextHop":  "0.0.0.0",
+                       "InterfaceAlias":  "Loopback Pseudo-Interface 1",
+                       "InterfaceIndex":  1,
+                       "RouteMetric":  256,
+                       "Protocol":  2
+                   },
+                   {
+                       "DestinationPrefix":  "224.0.0.0/4",
+                       "NextHop":  "0.0.0.0",
+                       "InterfaceAlias":  "Bluetooth 네트워크 연결",
+                       "InterfaceIndex":  11,
+                       "RouteMetric":  256,
+                       "Protocol":  2
+                   },
+                   {
+                       "DestinationPrefix":  "224.0.0.0/4",
+                       "NextHop":  "0.0.0.0",
+                       "InterfaceAlias":  "이더넷 2",
+                       "InterfaceIndex":  22,
+                       "RouteMetric":  256,
+                       "Protocol":  2
+                   },
+                   {
+                       "DestinationPrefix":  "224.0.0.0/4",
+                       "NextHop":  "0.0.0.0",
+                       "InterfaceAlias":  "이더넷",
+                       "InterfaceIndex":  7,
+                       "RouteMetric":  256,
+                       "Protocol":  2
+                   },
+                   {
+                       "DestinationPrefix":  "224.0.0.0/4",
+                       "NextHop":  "0.0.0.0",
+                       "InterfaceAlias":  "VMware Network Adapter VMnet10",
+                       "InterfaceIndex":  12,
+                       "RouteMetric":  256,
+                       "Protocol":  2
+                   },
+                   {
+                       "DestinationPrefix":  "224.0.0.0/4",
+                       "NextHop":  "0.0.0.0",
+                       "InterfaceAlias":  "VMware Network Adapter VMnet8",
+                       "InterfaceIndex":  24,
+                       "RouteMetric":  256,
+                       "Protocol":  2
+                   },
+                   {
+                       "DestinationPrefix":  "224.0.0.0/4",
+                       "NextHop":  "0.0.0.0",
+                       "InterfaceAlias":  "VMware Network Adapter VMnet1",
+                       "InterfaceIndex":  18,
+                       "RouteMetric":  256,
+                       "Protocol":  2
+                   },
+                   {
+                       "DestinationPrefix":  "224.0.0.0/4",
+                       "NextHop":  "0.0.0.0",
+                       "InterfaceAlias":  "Loopback Pseudo-Interface 1",
+                       "InterfaceIndex":  1,
+                       "RouteMetric":  256,
+                       "Protocol":  2
+                   },
+                   {
+                       "DestinationPrefix":  "192.168.135.255/32",
+                       "NextHop":  "0.0.0.0",
+                       "InterfaceAlias":  "VMware Network Adapter VMnet1",
+                       "InterfaceIndex":  18,
+                       "RouteMetric":  256,
+                       "Protocol":  2
+                   },
+                   {
+                       "DestinationPrefix":  "192.168.135.1/32",
+                       "NextHop":  "0.0.0.0",
+                       "InterfaceAlias":  "VMware Network Adapter VMnet1",
+                       "InterfaceIndex":  18,
+                       "RouteMetric":  256,
+                       "Protocol":  2
+                   },
+                   {
+                       "DestinationPrefix":  "192.168.135.0/24",
+                       "NextHop":  "0.0.0.0",
+                       "InterfaceAlias":  "VMware Network Adapter VMnet1",
+                       "InterfaceIndex":  18,
+                       "RouteMetric":  256,
+                       "Protocol":  2
+                   },
+                   {
+                       "DestinationPrefix":  "192.168.111.255/32",
+                       "NextHop":  "0.0.0.0",
+                       "InterfaceAlias":  "VMware Network Adapter VMnet8",
+                       "InterfaceIndex":  24,
+                       "RouteMetric":  256,
+                       "Protocol":  2
+                   },
+                   {
+                       "DestinationPrefix":  "192.168.111.1/32",
+                       "NextHop":  "0.0.0.0",
+                       "InterfaceAlias":  "VMware Network Adapter VMnet8",
+                       "InterfaceIndex":  24,
+                       "RouteMetric":  256,
+                       "Protocol":  2
+                   },
+                   {
+                       "DestinationPrefix":  "192.168.111.0/24",
+                       "NextHop":  "0.0.0.0",
+                       "InterfaceAlias":  "VMware Network Adapter VMnet8",
+                       "InterfaceIndex":  24,
+                       "RouteMetric":  256,
+                       "Protocol":  2
+                   },
+                   {
+                       "DestinationPrefix":  "127.255.255.255/32",
+                       "NextHop":  "0.0.0.0",
+                       "InterfaceAlias":  "Loopback Pseudo-Interface 1",
+                       "InterfaceIndex":  1,
+                       "RouteMetric":  256,
+                       "Protocol":  2
+                   },
+                   {
+                       "DestinationPrefix":  "127.0.0.1/32",
+                       "NextHop":  "0.0.0.0",
+                       "InterfaceAlias":  "Loopback Pseudo-Interface 1",
+                       "InterfaceIndex":  1,
+                       "RouteMetric":  256,
+                       "Protocol":  2
+                   },
+                   {
+                       "DestinationPrefix":  "127.0.0.0/8",
+                       "NextHop":  "0.0.0.0",
+                       "InterfaceAlias":  "Loopback Pseudo-Interface 1",
+                       "InterfaceIndex":  1,
+                       "RouteMetric":  256,
+                       "Protocol":  2
+                   },
+                   {
+                       "DestinationPrefix":  "10.77.10.255/32",
+                       "NextHop":  "0.0.0.0",
+                       "InterfaceAlias":  "VMware Network Adapter VMnet10",
+                       "InterfaceIndex":  12,
+                       "RouteMetric":  256,
+                       "Protocol":  2
+                   },
+                   {
+                       "DestinationPrefix":  "10.77.10.1/32",
+                       "NextHop":  "0.0.0.0",
+                       "InterfaceAlias":  "VMware Network Adapter VMnet10",
+                       "InterfaceIndex":  12,
+                       "RouteMetric":  256,
+                       "Protocol":  2
+                   },
+                   {
+                       "DestinationPrefix":  "10.77.10.0/24",
+                       "NextHop":  "0.0.0.0",
+                       "InterfaceAlias":  "VMware Network Adapter VMnet10",
+                       "InterfaceIndex":  12,
+                       "RouteMetric":  256,
+                       "Protocol":  2
+                   },
+                   {
+                       "DestinationPrefix":  "10.10.70.255/32",
+                       "NextHop":  "0.0.0.0",
+                       "InterfaceAlias":  "이더넷",
+                       "InterfaceIndex":  7,
+                       "RouteMetric":  256,
+                       "Protocol":  2
+                   },
+                   {
+                       "DestinationPrefix":  "10.10.70.151/32",
+                       "NextHop":  "0.0.0.0",
+                       "InterfaceAlias":  "이더넷",
+                       "InterfaceIndex":  7,
+                       "RouteMetric":  256,
+                       "Protocol":  2
+                   },
+                   {
+                       "DestinationPrefix":  "10.10.70.128/25",
+                       "NextHop":  "0.0.0.0",
+                       "InterfaceAlias":  "이더넷",
+                       "InterfaceIndex":  7,
+                       "RouteMetric":  256,
+                       "Protocol":  2
+                   },
+                   {
+                       "DestinationPrefix":  "0.0.0.0/0",
+                       "NextHop":  "10.10.70.129",
+                       "InterfaceAlias":  "이더넷",
+                       "InterfaceIndex":  7,
+                       "RouteMetric":  256,
+                       "Protocol":  3
+                   },
+                   {
+                       "DestinationPrefix":  "ff00::/8",
+                       "NextHop":  "::",
+                       "InterfaceAlias":  "Bluetooth 네트워크 연결",
+                       "InterfaceIndex":  11,
+                       "RouteMetric":  256,
+                       "Protocol":  2
+                   },
+                   {
+                       "DestinationPrefix":  "ff00::/8",
+                       "NextHop":  "::",
+                       "InterfaceAlias":  "이더넷 2",
+                       "InterfaceIndex":  22,
+                       "RouteMetric":  256,
+                       "Protocol":  2
+                   },
+                   {
+                       "DestinationPrefix":  "ff00::/8",
+                       "NextHop":  "::",
+                       "InterfaceAlias":  "이더넷",
+                       "InterfaceIndex":  7,
+                       "RouteMetric":  256,
+                       "Protocol":  2
+                   },
+                   {
+                       "DestinationPrefix":  "ff00::/8",
+                       "NextHop":  "::",
+                       "InterfaceAlias":  "VMware Network Adapter VMnet10",
+                       "InterfaceIndex":  12,
+                       "RouteMetric":  256,
+                       "Protocol":  2
+                   },
+                   {
+                       "DestinationPrefix":  "ff00::/8",
+                       "NextHop":  "::",
+                       "InterfaceAlias":  "VMware Network Adapter VMnet8",
+                       "InterfaceIndex":  24,
+                       "RouteMetric":  256,
+                       "Protocol":  2
+                   },
+                   {
+                       "DestinationPrefix":  "ff00::/8",
+                       "NextHop":  "::",
+                       "InterfaceAlias":  "VMware Network Adapter VMnet1",
+                       "InterfaceIndex":  18,
+                       "RouteMetric":  256,
+                       "Protocol":  2
+                   },
+                   {
+                       "DestinationPrefix":  "ff00::/8",
+                       "NextHop":  "::",
+                       "InterfaceAlias":  "Loopback Pseudo-Interface 1",
+                       "InterfaceIndex":  1,
+                       "RouteMetric":  256,
+                       "Protocol":  2
+                   },
+                   {
+                       "DestinationPrefix":  "fe80::f793:d82b:c230:8087/128",
+                       "NextHop":  "::",
+                       "InterfaceAlias":  "이더넷 2",
+                       "InterfaceIndex":  22,
+                       "RouteMetric":  256,
+                       "Protocol":  2
+                   },
+                   {
+                       "DestinationPrefix":  "fe80::ea33:2596:9224:f88d/128",
+                       "NextHop":  "::",
+                       "InterfaceAlias":  "VMware Network Adapter VMnet10",
+                       "InterfaceIndex":  12,
+                       "RouteMetric":  256,
+                       "Protocol":  2
+                   },
+                   {
+                       "DestinationPrefix":  "fe80::aaab:7554:e30f:27e7/128",
+                       "NextHop":  "::",
+                       "InterfaceAlias":  "VMware Network Adapter VMnet1",
+                       "InterfaceIndex":  18,
+                       "RouteMetric":  256,
+                       "Protocol":  2
+                   },
+                   {
+                       "DestinationPrefix":  "fe80::9c66:a9e8:63cd:a890/128",
+                       "NextHop":  "::",
+                       "InterfaceAlias":  "VMware Network Adapter VMnet8",
+                       "InterfaceIndex":  24,
+                       "RouteMetric":  256,
+                       "Protocol":  2
+                   },
+                   {
+                       "DestinationPrefix":  "fe80::1b34:7836:9ade:2a45/128",
+                       "NextHop":  "::",
+                       "InterfaceAlias":  "Bluetooth 네트워크 연결",
+                       "InterfaceIndex":  11,
+                       "RouteMetric":  256,
+                       "Protocol":  2
+                   },
+                   {
+                       "DestinationPrefix":  "fe80::158f:656f:1c94:c3d3/128",
+                       "NextHop":  "::",
+                       "InterfaceAlias":  "이더넷",
+                       "InterfaceIndex":  7,
+                       "RouteMetric":  256,
+                       "Protocol":  2
+                   },
+                   {
+                       "DestinationPrefix":  "fe80::/64",
+                       "NextHop":  "::",
+                       "InterfaceAlias":  "Bluetooth 네트워크 연결",
+                       "InterfaceIndex":  11,
+                       "RouteMetric":  256,
+                       "Protocol":  2
+                   },
+                   {
+                       "DestinationPrefix":  "fe80::/64",
+                       "NextHop":  "::",
+                       "InterfaceAlias":  "이더넷 2",
+                       "InterfaceIndex":  22,
+                       "RouteMetric":  256,
+                       "Protocol":  2
+                   },
+                   {
+                       "DestinationPrefix":  "fe80::/64",
+                       "NextHop":  "::",
+                       "InterfaceAlias":  "이더넷",
+                       "InterfaceIndex":  7,
+                       "RouteMetric":  256,
+                       "Protocol":  2
+                   },
+                   {
+                       "DestinationPrefix":  "fe80::/64",
+                       "NextHop":  "::",
+                       "InterfaceAlias":  "VMware Network Adapter VMnet10",
+                       "InterfaceIndex":  12,
+                       "RouteMetric":  256,
+                       "Protocol":  2
+                   },
+                   {
+                       "DestinationPrefix":  "fe80::/64",
+                       "NextHop":  "::",
+                       "InterfaceAlias":  "VMware Network Adapter VMnet8",
+                       "InterfaceIndex":  24,
+                       "RouteMetric":  256,
+                       "Protocol":  2
+                   },
+                   {
+                       "DestinationPrefix":  "fe80::/64",
+                       "NextHop":  "::",
+                       "InterfaceAlias":  "VMware Network Adapter VMnet1",
+                       "InterfaceIndex":  18,
+                       "RouteMetric":  256,
+                       "Protocol":  2
+                   },
+                   {
+                       "DestinationPrefix":  "::1/128",
+                       "NextHop":  "::",
+                       "InterfaceAlias":  "Loopback Pseudo-Interface 1",
+                       "InterfaceIndex":  1,
+                       "RouteMetric":  256,
+                       "Protocol":  2
+                   }
+               ],
+    "IsAdmin":  true,
+    "User":  "DESKTOP-QIFELML\\user",
+    "Adapters":  [
+                     {
+                         "Name":  "VMware Network Adapter VMnet8",
+                         "InterfaceDescription":  "VMware Virtual Ethernet Adapter for VMnet8",
+                         "ifIndex":  24,
+                         "Status":  "Up",
+                         "MacAddress":  "00-50-56-C0-00-08",
+                         "LinkSpeed":  "100 Mbps"
+                     },
+                     {
+                         "Name":  "이더넷 2",
+                         "InterfaceDescription":  "Intel(R) I210 Gigabit Network Connection #2",
+                         "ifIndex":  22,
+                         "Status":  "Disconnected",
+                         "MacAddress":  "A0-36-BC-CA-B6-38",
+                         "LinkSpeed":  "0 bps"
+                     },
+                     {
+                         "Name":  "VMware Network Adapter VMnet1",
+                         "InterfaceDescription":  "VMware Virtual Ethernet Adapter for VMnet1",
+                         "ifIndex":  18,
+                         "Status":  "Up",
+                         "MacAddress":  "00-50-56-C0-00-01",
+                         "LinkSpeed":  "100 Mbps"
+                     },
+                     {
+                         "Name":  "VMware Network Adapter VMnet10",
+                         "InterfaceDescription":  "VMware Virtual Ethernet Adapter for VMnet10",
+                         "ifIndex":  12,
+                         "Status":  "Up",
+                         "MacAddress":  "00-50-56-C0-00-0A",
+                         "LinkSpeed":  "100 Mbps"
+                     },
+                     {
+                         "Name":  "Bluetooth 네트워크 연결",
+                         "InterfaceDescription":  "Bluetooth Device (Personal Area Network)",
+                         "ifIndex":  11,
+                         "Status":  "Disconnected",
+                         "MacAddress":  "B8-FB-B3-2F-F1-22",
+                         "LinkSpeed":  "3 Mbps"
+                     },
+                     {
+                         "Name":  "이더넷",
+                         "InterfaceDescription":  "Intel(R) I210 Gigabit Network Connection",
+                         "ifIndex":  7,
+                         "Status":  "Up",
+                         "MacAddress":  "A0-36-BC-CA-B6-37",
+                         "LinkSpeed":  "1 Gbps"
+                     }
+                 ],
+    "IPAddresses":  [
+                        {
+                            "InterfaceAlias":  "VMware Network Adapter VMnet10",
+                            "InterfaceIndex":  12,
+                            "IPAddress":  "fe80::ea33:2596:9224:f88d%12",
+                            "IPv4Address":  null,
+                            "PrefixLength":  64,
+                            "AddressFamily":  23,
+                            "Type":  1
+                        },
+                        {
+                            "InterfaceAlias":  "Bluetooth 네트워크 연결",
+                            "InterfaceIndex":  11,
+                            "IPAddress":  "fe80::1b34:7836:9ade:2a45%11",
+                            "IPv4Address":  null,
+                            "PrefixLength":  64,
+                            "AddressFamily":  23,
+                            "Type":  1
+                        },
+                        {
+                            "InterfaceAlias":  "VMware Network Adapter VMnet8",
+                            "InterfaceIndex":  24,
+                            "IPAddress":  "fe80::9c66:a9e8:63cd:a890%24",
+                            "IPv4Address":  null,
+                            "PrefixLength":  64,
+                            "AddressFamily":  23,
+                            "Type":  1
+                        },
+                        {
+                            "InterfaceAlias":  "VMware Network Adapter VMnet1",
+                            "InterfaceIndex":  18,
+                            "IPAddress":  "fe80::aaab:7554:e30f:27e7%18",
+                            "IPv4Address":  null,
+                            "PrefixLength":  64,
+                            "AddressFamily":  23,
+                            "Type":  1
+                        },
+                        {
+                            "InterfaceAlias":  "이더넷 2",
+                            "InterfaceIndex":  22,
+                            "IPAddress":  "fe80::f793:d82b:c230:8087%22",
+                            "IPv4Address":  null,
+                            "PrefixLength":  64,
+                            "AddressFamily":  23,
+                            "Type":  1
+                        },
+                        {
+                            "InterfaceAlias":  "이더넷",
+                            "InterfaceIndex":  7,
+                            "IPAddress":  "fe80::158f:656f:1c94:c3d3%7",
+                            "IPv4Address":  null,
+                            "PrefixLength":  64,
+                            "AddressFamily":  23,
+                            "Type":  1
+                        },
+                        {
+                            "InterfaceAlias":  "Loopback Pseudo-Interface 1",
+                            "InterfaceIndex":  1,
+                            "IPAddress":  "::1",
+                            "IPv4Address":  null,
+                            "PrefixLength":  128,
+                            "AddressFamily":  23,
+                            "Type":  1
+                        },
+                        {
+                            "InterfaceAlias":  "VMware Network Adapter VMnet10",
+                            "InterfaceIndex":  12,
+                            "IPAddress":  "10.77.10.1",
+                            "IPv4Address":  "10.77.10.1",
+                            "PrefixLength":  24,
+                            "AddressFamily":  2,
+                            "Type":  1
+                        },
+                        {
+                            "InterfaceAlias":  "Bluetooth 네트워크 연결",
+                            "InterfaceIndex":  11,
+                            "IPAddress":  "169.254.84.199",
+                            "IPv4Address":  "169.254.84.199",
+                            "PrefixLength":  16,
+                            "AddressFamily":  2,
+                            "Type":  1
+                        },
+                        {
+                            "InterfaceAlias":  "VMware Network Adapter VMnet8",
+                            "InterfaceIndex":  24,
+                            "IPAddress":  "192.168.111.1",
+                            "IPv4Address":  "192.168.111.1",
+                            "PrefixLength":  24,
+                            "AddressFamily":  2,
+                            "Type":  1
+                        },
+                        {
+                            "InterfaceAlias":  "VMware Network Adapter VMnet1",
+                            "InterfaceIndex":  18,
+                            "IPAddress":  "192.168.135.1",
+                            "IPv4Address":  "192.168.135.1",
+                            "PrefixLength":  24,
+                            "AddressFamily":  2,
+                            "Type":  1
+                        },
+                        {
+                            "InterfaceAlias":  "이더넷 2",
+                            "InterfaceIndex":  22,
+                            "IPAddress":  "169.254.123.195",
+                            "IPv4Address":  "169.254.123.195",
+                            "PrefixLength":  16,
+                            "AddressFamily":  2,
+                            "Type":  1
+                        },
+                        {
+                            "InterfaceAlias":  "이더넷",
+                            "InterfaceIndex":  7,
+                            "IPAddress":  "10.10.70.151",
+                            "IPv4Address":  "10.10.70.151",
+                            "PrefixLength":  25,
+                            "AddressFamily":  2,
+                            "Type":  1
+                        },
+                        {
+                            "InterfaceAlias":  "Loopback Pseudo-Interface 1",
+                            "InterfaceIndex":  1,
+                            "IPAddress":  "127.0.0.1",
+                            "IPv4Address":  "127.0.0.1",
+                            "PrefixLength":  8,
+                            "AddressFamily":  2,
+                            "Type":  1
+                        }
+                    ],
+    "DNS":  [
+                {
+                    "InterfaceAlias":  "이더넷 2",
+                    "InterfaceIndex":  22,
+                    "ServerAddresses":  [
+
+                                        ]
+                },
+                {
+                    "InterfaceAlias":  "이더넷 2",
+                    "InterfaceIndex":  22,
+                    "ServerAddresses":  [
+                                            "fec0:0:0:ffff::1",
+                                            "fec0:0:0:ffff::2",
+                                            "fec0:0:0:ffff::3"
+                                        ]
+                },
+                {
+                    "InterfaceAlias":  "이더넷",
+                    "InterfaceIndex":  7,
+                    "ServerAddresses":  [
+                                            "8.8.8.8"
+                                        ]
+                },
+                {
+                    "InterfaceAlias":  "이더넷",
+                    "InterfaceIndex":  7,
+                    "ServerAddresses":  [
+
+                                        ]
+                },
+                {
+                    "InterfaceAlias":  "VMware Network Adapter VMnet1",
+                    "InterfaceIndex":  18,
+                    "ServerAddresses":  [
+
+                                        ]
+                },
+                {
+                    "InterfaceAlias":  "VMware Network Adapter VMnet1",
+                    "InterfaceIndex":  18,
+                    "ServerAddresses":  [
+                                            "fec0:0:0:ffff::1",
+                                            "fec0:0:0:ffff::2",
+                                            "fec0:0:0:ffff::3"
+                                        ]
+                },
+                {
+                    "InterfaceAlias":  "VMware Network Adapter VMnet8",
+                    "InterfaceIndex":  24,
+                    "ServerAddresses":  [
+
+                                        ]
+                },
+                {
+                    "InterfaceAlias":  "VMware Network Adapter VMnet8",
+                    "InterfaceIndex":  24,
+                    "ServerAddresses":  [
+                                            "fec0:0:0:ffff::1",
+                                            "fec0:0:0:ffff::2",
+                                            "fec0:0:0:ffff::3"
+                                        ]
+                },
+                {
+                    "InterfaceAlias":  "VMware Network Adapter VMnet10",
+                    "InterfaceIndex":  12,
+                    "ServerAddresses":  [
+
+                                        ]
+                },
+                {
+                    "InterfaceAlias":  "VMware Network Adapter VMnet10",
+                    "InterfaceIndex":  12,
+                    "ServerAddresses":  [
+                                            "fec0:0:0:ffff::1",
+                                            "fec0:0:0:ffff::2",
+                                            "fec0:0:0:ffff::3"
+                                        ]
+                },
+                {
+                    "InterfaceAlias":  "Bluetooth 네트워크 연결",
+                    "InterfaceIndex":  11,
+                    "ServerAddresses":  [
+
+                                        ]
+                },
+                {
+                    "InterfaceAlias":  "Bluetooth 네트워크 연결",
+                    "InterfaceIndex":  11,
+                    "ServerAddresses":  [
+                                            "fec0:0:0:ffff::1",
+                                            "fec0:0:0:ffff::2",
+                                            "fec0:0:0:ffff::3"
+                                        ]
+                },
+                {
+                    "InterfaceAlias":  "Loopback Pseudo-Interface 1",
+                    "InterfaceIndex":  1,
+                    "ServerAddresses":  [
+
+                                        ]
+                },
+                {
+                    "InterfaceAlias":  "Loopback Pseudo-Interface 1",
+                    "InterfaceIndex":  1,
+                    "ServerAddresses":  [
+                                            "fec0:0:0:ffff::1",
+                                            "fec0:0:0:ffff::2",
+                                            "fec0:0:0:ffff::3"
+                                        ]
+                }
+            ]
+}

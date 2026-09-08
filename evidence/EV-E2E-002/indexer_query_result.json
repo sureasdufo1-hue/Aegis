@@ -1,0 +1,82 @@
+{
+  "query_run_id": "phase31_1787727383",
+  "total_hits": 3,
+  "indexer_endpoint": "http://127.0.0.1:9200",
+  "hits": [
+    {
+      "doc_id": "1787727385.25830",
+      "index": "wazuh-alerts-4.x-2026.08.26",
+      "rule": {
+        "id": "86601",
+        "level": 3,
+        "description": "Suricata: Alert - SOC-SCAN: Nmap Stealth NULL Scan Detected (Zero Flags)",
+        "groups": ["ids", "suricata"]
+      },
+      "data": {
+        "flow_id": "920000000027384.000000",
+        "run_id": "phase31_1787727383",
+        "src_ip": "10.77.20.20",
+        "dest_ip": "10.77.30.20",
+        "dest_port": "80",
+        "alert": {
+          "signature_id": "9000001",
+          "signature": "SOC-SCAN: Nmap Stealth NULL Scan Detected (Zero Flags)",
+          "metadata": {
+            "attack_technique": ["T1046"],
+            "stage": ["Recon"]
+          }
+        }
+      }
+    },
+    {
+      "doc_id": "1787727385.27182",
+      "index": "wazuh-alerts-4.x-2026.08.26",
+      "rule": {
+        "id": "86601",
+        "level": 3,
+        "description": "Suricata: Alert - SOC-ATTACK: Web SQL Injection - UNION SELECT Pattern Detected",
+        "groups": ["ids", "suricata"]
+      },
+      "data": {
+        "flow_id": "920000000027385.000000",
+        "run_id": "phase31_1787727383",
+        "src_ip": "10.77.20.20",
+        "dest_ip": "10.77.30.20",
+        "dest_port": "3000",
+        "alert": {
+          "signature_id": "9010001",
+          "signature": "SOC-ATTACK: Web SQL Injection - UNION SELECT Pattern Detected",
+          "metadata": {
+            "attack_technique": ["T1190"],
+            "stage": ["Initial Access"]
+          }
+        }
+      }
+    },
+    {
+      "doc_id": "1787727385.24350",
+      "index": "wazuh-alerts-4.x-2026.08.26",
+      "rule": {
+        "id": "86601",
+        "level": 3,
+        "description": "Suricata: Alert - SOC-MALWARE: Interactive Reverse Shell Session Established (/bin/sh prompt detected)",
+        "groups": ["ids", "suricata"]
+      },
+      "data": {
+        "flow_id": "920000000027386.000000",
+        "run_id": "phase31_1787727383",
+        "src_ip": "10.77.20.20",
+        "dest_ip": "10.77.30.20",
+        "dest_port": "4444",
+        "alert": {
+          "signature_id": "9030010",
+          "signature": "SOC-MALWARE: Interactive Reverse Shell Session Established (/bin/sh prompt detected)",
+          "metadata": {
+            "attack_technique": ["T1059.004"],
+            "stage": ["C2 & Exfil"]
+          }
+        }
+      }
+    }
+  ]
+}

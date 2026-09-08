@@ -1,0 +1,129 @@
+﻿================================================================================
+VMware & VMnet10 Dependency & State Check
+Collected: 2026-08-27T12:19:09.5304992+09:00
+Host: DESKTOP-QIFELML
+User: DESKTOP-QIFELML\user
+IsAdmin: True
+================================================================================
+
+1. VMware Services:
+
+Name                   DisplayName               Status StartType
+----                   -----------               ------ ---------
+VMnetDHCP              VMware DHCP Service      Running Automatic
+VMware NAT Service     VMware NAT Service       Running Automatic
+VmwareAutostartService VMware Autostart Service Stopped    Manual
+
+
+
+2. VMware Running Processes:
+
+   Id ProcessName            Path                                                                      Company     
+   -- -----------            ----                                                                      -------     
+ 4352 vmnat                  C:\WINDOWS\SysWOW64\vmnat.exe                                             VMware, Inc.
+ 4400 vmnetdhcp              C:\WINDOWS\SysWOW64\vmnetdhcp.exe                                         VMware, Inc.
+20836 vmware                 C:\Program Files (x86)\VMware\VMware Workstation\vmware.exe               VMware, Inc.
+ 5240 vmware-authd           C:\Program Files (x86)\VMware\VMware Workstation\vmware-authd.exe         VMware, Inc.
+19428 vmware-tray            C:\Program Files (x86)\VMware\VMware Workstation\vmware-tray.exe          VMware, Inc.
+15876 vmware-unity-helper    C:\Program Files (x86)\VMware\VMware Workstation\vmware-unity-helper.exe  VMware, Inc.
+ 5248 vmware-usbarbitrator64 C:\Program Files (x86)\Common Files\VMware\USB\vmware-usbarbitrator64.exe VMware, Inc.
+ 5200 vmware-vmx             C:\Program Files (x86)\VMware\VMware Workstation\x64\vmware-vmx.exe       VMware, Inc.
+12956 vmware-vmx             C:\Program Files (x86)\VMware\VMware Workstation\x64\vmware-vmx.exe       VMware, Inc.
+21612 vmware-vmx             C:\Program Files (x86)\VMware\VMware Workstation\x64\vmware-vmx.exe       VMware, Inc.
+22752 vmware-vmx             C:\Program Files (x86)\VMware\VMware Workstation\x64\vmware-vmx.exe       VMware, Inc.
+24264 vmware-vmx             C:\Program Files (x86)\VMware\VMware Workstation\x64\vmware-vmx.exe       VMware, Inc.
+
+
+
+3. VMnet10 Adapter Details:
+
+Name                           InterfaceDescription                        Status MacAddress       
+----                           --------------------                        ------ ----------       
+VMware Network Adapter VMnet10 VMware Virtual Ethernet Adapter for VMnet10 Up     00-50-56-C0-00-0A
+
+
+
+4. VMnet10 IP Configuration:
+
+InterfaceAlias                 IPAddress                    PrefixLength
+--------------                 ---------                    ------------
+VMware Network Adapter VMnet10 fe80::ea33:2596:9224:f88d%12           64
+VMware Network Adapter VMnet10 10.77.10.1                             24
+
+
+
+5. 10.77.x.x Active Routes:
+
+DestinationPrefix NextHop InterfaceAlias                 RouteMetric
+----------------- ------- --------------                 -----------
+10.77.10.255/32   0.0.0.0 VMware Network Adapter VMnet10         256
+10.77.10.1/32     0.0.0.0 VMware Network Adapter VMnet10         256
+10.77.10.0/24     0.0.0.0 VMware Network Adapter VMnet10         256
+
+
+
+6. VMware Virtual Machines Directory Lock Files (*.lck):
+
+FullName                                                                                                      
+--------                                                                                                      
+C:\Users\user\Documents\Virtual Machines\ClientB\564dcedb-7132-8906-0d6b-1de72e426548.vmem.lck                
+C:\Users\user\Documents\Virtual Machines\ClientB\ClientB-000001.vmdk.lck                                      
+C:\Users\user\Documents\Virtual Machines\ClientB\ClientB.vmdk.lck                                             
+C:\Users\user\Documents\Virtual Machines\ClientB\564dcedb-7132-8906-0d6b-1de72e426548.vmem.lck\M59022.lck     
+C:\Users\user\Documents\Virtual Machines\ClientB\ClientB-000001.vmdk.lck\M27333.lck                           
+C:\Users\user\Documents\Virtual Machines\ClientB\ClientB.vmdk.lck\M59078.lck                                  
+C:\Users\user\Documents\Virtual Machines\server\564de44c-0607-c9cb-86ea-dd49fc04793f.vmem.lck                 
+C:\Users\user\Documents\Virtual Machines\server\server-000005.vmdk.lck                                        
+C:\Users\user\Documents\Virtual Machines\server\server-000007.vmdk.lck                                        
+C:\Users\user\Documents\Virtual Machines\server\server.vmdk.lck                                               
+C:\Users\user\Documents\Virtual Machines\server\564de44c-0607-c9cb-86ea-dd49fc04793f.vmem.lck\M58544.lck      
+C:\Users\user\Documents\Virtual Machines\server\server-000005.vmdk.lck\M27636.lck                             
+C:\Users\user\Documents\Virtual Machines\server\server-000007.vmdk.lck\M37170.lck                             
+C:\Users\user\Documents\Virtual Machines\server\server.vmdk.lck\M15519.lck                                    
+C:\Users\user\Documents\Virtual Machines\soc-attacker\564d9bf4-cf77-b2a3-55b1-6e59a356f44e.vmem.lck           
+C:\Users\user\Documents\Virtual Machines\soc-attacker\soc-attacker-000001.vmdk.lck                            
+C:\Users\user\Documents\Virtual Machines\soc-attacker\soc-attacker-677e9a81.vmem.lck                          
+C:\Users\user\Documents\Virtual Machines\soc-attacker\soc-attacker.vmdk.lck                                   
+C:\Users\user\Documents\Virtual Machines\soc-attacker\soc-attacker.vmx.lck                                    
+C:\Users\user\Documents\Virtual Machines\soc-attacker\564d9bf4-cf77-b2a3-55b1-6e59a356f44e.vmem.lck\M58995.lck
+C:\Users\user\Documents\Virtual Machines\soc-attacker\soc-attacker-000001.vmdk.lck\M48589.lck                 
+C:\Users\user\Documents\Virtual Machines\soc-attacker\soc-attacker-677e9a81.vmem.lck\M52832.lck               
+C:\Users\user\Documents\Virtual Machines\soc-attacker\soc-attacker.vmdk.lck\M44349.lck                        
+C:\Users\user\Documents\Virtual Machines\soc-attacker\soc-attacker.vmx.lck\M13536.lck                         
+C:\Users\user\Documents\Virtual Machines\soc-gateway\564dc25e-eb49-533e-767c-ad90591fdf3c.vmem.lck            
+C:\Users\user\Documents\Virtual Machines\soc-gateway\soc-gateway-000001.vmdk.lck                              
+C:\Users\user\Documents\Virtual Machines\soc-gateway\soc-gateway.vmdk.lck                                     
+C:\Users\user\Documents\Virtual Machines\soc-gateway\soc-gateway.vmx.lck                                      
+C:\Users\user\Documents\Virtual Machines\soc-gateway\564dc25e-eb49-533e-767c-ad90591fdf3c.vmem.lck\M26188.lck 
+C:\Users\user\Documents\Virtual Machines\soc-gateway\soc-gateway-000001.vmdk.lck\M38704.lck                   
+C:\Users\user\Documents\Virtual Machines\soc-gateway\soc-gateway.vmdk.lck\M42235.lck                          
+C:\Users\user\Documents\Virtual Machines\soc-gateway\soc-gateway.vmx.lck\M32851.lck                           
+C:\Users\user\Documents\Virtual Machines\soc-sensor\564d8b4c-6059-d896-e276-7ceba9202aa3.vmem.lck             
+C:\Users\user\Documents\Virtual Machines\soc-sensor\soc-sensor-000001.vmdk.lck                                
+C:\Users\user\Documents\Virtual Machines\soc-sensor\soc-sensor-a06e322c.vmem.lck                              
+C:\Users\user\Documents\Virtual Machines\soc-sensor\soc-sensor.vmdk.lck                                       
+C:\Users\user\Documents\Virtual Machines\soc-sensor\soc-sensor.vmx.lck                                        
+C:\Users\user\Documents\Virtual Machines\soc-sensor\564d8b4c-6059-d896-e276-7ceba9202aa3.vmem.lck\M64541.lck  
+C:\Users\user\Documents\Virtual Machines\soc-sensor\soc-sensor-000001.vmdk.lck\M02658.lck                     
+C:\Users\user\Documents\Virtual Machines\soc-sensor\soc-sensor-a06e322c.vmem.lck\M28759.lck                   
+C:\Users\user\Documents\Virtual Machines\soc-sensor\soc-sensor.vmdk.lck\M22604.lck                            
+C:\Users\user\Documents\Virtual Machines\soc-sensor\soc-sensor.vmx.lck\M23538.lck                             
+C:\Users\user\Documents\Virtual Machines\soc-siem\564dc031-4491-66e6-4dfe-f3196a95d797.vmem.lck               
+C:\Users\user\Documents\Virtual Machines\soc-siem\soc-siem.vmdk.lck                                           
+C:\Users\user\Documents\Virtual Machines\soc-siem\soc-siem.vmx.lck                                            
+C:\Users\user\Documents\Virtual Machines\soc-siem\564dc031-4491-66e6-4dfe-f3196a95d797.vmem.lck\M61259.lck    
+C:\Users\user\Documents\Virtual Machines\soc-siem\soc-siem.vmdk.lck\M02911.lck                                
+C:\Users\user\Documents\Virtual Machines\soc-siem\soc-siem.vmx.lck\M53491.lck                                 
+C:\Users\user\Documents\Virtual Machines\soc-victim\564d9ea4-347f-2d0c-5670-cf5a1392fa65.vmem.lck             
+C:\Users\user\Documents\Virtual Machines\soc-victim\soc-victim-000001.vmdk.lck                                
+C:\Users\user\Documents\Virtual Machines\soc-victim\soc-victim.vmdk.lck                                       
+C:\Users\user\Documents\Virtual Machines\soc-victim\soc-victim.vmx.lck                                        
+C:\Users\user\Documents\Virtual Machines\soc-victim\564d9ea4-347f-2d0c-5670-cf5a1392fa65.vmem.lck\M60989.lck  
+C:\Users\user\Documents\Virtual Machines\soc-victim\soc-victim-000001.vmdk.lck\M40836.lck                     
+C:\Users\user\Documents\Virtual Machines\soc-victim\soc-victim.vmdk.lck\M64268.lck                            
+C:\Users\user\Documents\Virtual Machines\soc-victim\soc-victim.vmx.lck\M19765.lck                             
+
+
+
+7. Summary of Lock Files Count: 56
+================================================================================

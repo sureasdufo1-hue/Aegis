@@ -1,0 +1,8 @@
+network.host: "0.0.0.0"
+node.name: "soc-wazuh-indexer"
+cluster.name: "soc-wazuh-cluster"
+path.data: /var/lib/wazuh-indexer
+path.logs: /var/log/wazuh-indexer
+discovery.type: single-node
+compatibility.override_main_response_version: true
+plugins.security.disabled: true

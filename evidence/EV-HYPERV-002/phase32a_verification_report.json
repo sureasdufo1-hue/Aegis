@@ -1,0 +1,57 @@
+{
+  "phase": "Phase 32A",
+  "title": "Hyper-V Elevated Provisioning & Live Sensor E2E Validation",
+  "timestamp": "2026-08-27T12:23:30+09:00",
+  "host": {
+    "hostname": "DESKTOP-QIFELML",
+    "os": "Windows 11 Education Build 26100",
+    "is_admin": true,
+    "cpu_cores": 4,
+    "logical_processors": 8,
+    "total_ram_gb": 63.84,
+    "free_ram_gb": 23.90,
+    "free_disk_gb": 1239.54,
+    "hyperv_feature_state": "Disabled",
+    "vmms_service": "NotFound"
+  },
+  "regression_tests": {
+    "suite": "Phase 31 Regression (pytest tests/)",
+    "total": 22,
+    "passed": 22,
+    "failed": 0,
+    "duration_sec": 32.03,
+    "status": "PASS"
+  },
+  "blocker_analysis": {
+    "blocker_1_privilege": {
+      "status": "RESOLVED",
+      "detail": "PowerShell session is running under Administrator role (IsInRole = True)."
+    },
+    "blocker_2_vmnet10_conflict": {
+      "status": "BLOCKED_STOP_CONDITION_MET",
+      "detail": "VMnet10 (10.77.10.1/24) is actively in use by running VMware VM 'soc-gateway' (PID: 22752). Also soc-victim (PID: 12956), soc-sensor (PID: 5200), soc-attacker (PID: 21612), soc-siem (PID: 24264) are active in VMware Workstation. Disabling VMnet10 without graceful shutdown would break active workloads.",
+      "running_vmware_vms": [
+        { "name": "soc-gateway", "pid": 22752, "vmx": "soc-gateway.vmx", "net": "VMnet10" },
+        { "name": "soc-victim", "pid": 12956, "vmx": "soc-victim.vmx", "net": "PVN" },
+        { "name": "soc-sensor", "pid": 5200, "vmx": "soc-sensor.vmx", "net": "PVN" },
+        { "name": "soc-attacker", "pid": 21612, "vmx": "soc-attacker.vmx", "net": "PVN" },
+        { "name": "soc-siem", "pid": 24264, "vmx": "soc-siem.vmx", "net": "PVN" }
+      ]
+    },
+    "blocker_3_hyperv_feature": {
+      "status": "BLOCKED_FEATURE_DISABLED",
+      "detail": "Windows Feature 'Microsoft-Hyper-V-All' is currently Disabled. Enabling Hyper-V requires 'Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V-All' followed by a host restart."
+    }
+  },
+  "overall_status": "BLOCKED",
+  "gate_status": {
+    "GATE-HYPERV-01": "BLOCKED"
+  },
+  "evidence_files": [
+    "evidence/EV-HYPERV-002/metadata.md",
+    "evidence/EV-HYPERV-002/prechange_network_state.json",
+    "evidence/EV-HYPERV-002/prechange_hyperv_state.json",
+    "evidence/EV-HYPERV-002/vmnet10_dependency_check.txt",
+    "evidence/EV-HYPERV-002/phase32a_verification_report.json"
+  ]
+}
