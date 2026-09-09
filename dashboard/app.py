@@ -16,6 +16,7 @@ from analyzer.parsers.eve_parser import stream_eve_log
 from analyzer.parsers.snort_parser import stream_snort_log
 from analyzer.detection.correlation_engine import CorrelationEngine, Incident
 from analyzer.detection.threat_intel import ThreatIntelEngine
+from analyzer.alerting.dispatcher import NotificationDispatcher, NotificationConfig
 
 from analyzer.ai.orchestrator import AIOrchestrator
 from analyzer.ai.approvals.repository import ApprovalRepository
@@ -53,6 +54,7 @@ from analyzer.ai.providers.ollama_provider import OllamaProvider
 # Core AI Components
 approval_repo = ApprovalRepository()
 action_executor = ActionExecutor(mode=ExecutionMode.DRY_RUN)
+notification_dispatcher = NotificationDispatcher()
 
 llm_provider_env = os.getenv("LLM_PROVIDER", "mock").lower()
 if llm_provider_env in ("ollama", "live"):
@@ -163,6 +165,47 @@ def get_alerts(limit: int = 50, severity: str | None = None):
 def get_incidents():
     incidents = get_current_incidents()
     return [i.model_dump() for i in incidents]
+
+
+# -------------------------------------------------------------
+# SOAR Tier-1 Real-Time Alert Dispatcher API Endpoints
+# -------------------------------------------------------------
+
+@app.get("/api/notifications/config")
+def get_notification_config():
+    return notification_dispatcher.get_masked_config()
+
+
+@app.get("/api/notifications/history")
+def get_notification_history(limit: int = 50):
+    records = notification_dispatcher.history
+    return [r.model_dump() for r in records[-limit:]]
+
+
+class NotificationTestRequest(BaseModel):
+    channel: Optional[str] = Field(default=None, description="Optional channel filter: 'slack', 'discord', 'webhook'")
+
+
+@app.post("/api/notifications/test")
+async def send_test_notification_endpoint(req: Optional[NotificationTestRequest] = None):
+    channel = req.channel if req else None
+    result = await notification_dispatcher.send_test_notification(channel=channel)
+    return result
+
+
+class ManualDispatchRequest(BaseModel):
+    incident_id: str
+    force: bool = Field(default=True, description="Bypass cooldown throttling")
+
+
+@app.post("/api/notifications/dispatch")
+async def manual_dispatch_incident(req: ManualDispatchRequest):
+    incidents = get_current_incidents()
+    target_inc = next((i for i in incidents if i.incident_id == req.incident_id), None)
+    if not target_inc:
+        raise HTTPException(status_code=404, detail=f"Incident '{req.incident_id}' not found")
+    result = await notification_dispatcher.dispatch_incident(target_inc, force=req.force)
+    return result
 
 
 # -------------------------------------------------------------

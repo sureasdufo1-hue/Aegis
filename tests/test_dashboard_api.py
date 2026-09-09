@@ -41,3 +41,29 @@ def test_dashboard_api_health():
     assert data["status"] == "healthy"
     assert data["service"] == "soc-dashboard"
 
+
+def test_dashboard_api_notifications_config():
+    response = client.get("/api/notifications/config")
+    assert response.status_code == 200
+    data = response.json()
+    assert "cooldown_minutes" in data
+    assert "auto_dispatch" in data
+    assert "slack_configured" in data
+
+
+def test_dashboard_api_notifications_history():
+    response = client.get("/api/notifications/history")
+    assert response.status_code == 200
+    data = response.json()
+    assert isinstance(data, list)
+
+
+def test_dashboard_api_notifications_test_dispatch():
+    # Test simulation endpoint
+    response = client.post("/api/notifications/test", json={"channel": "slack"})
+    assert response.status_code == 200
+    data = response.json()
+    assert data["status"] in ("completed", "dry_run", "suppressed", "throttled")
+    assert "incident_id" in data
+
+

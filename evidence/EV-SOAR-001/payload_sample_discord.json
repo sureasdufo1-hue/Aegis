@@ -1,0 +1,56 @@
+{
+  "embeds": [
+    {
+      "title": "🚨 [AEGIS SOC] 침해사고 긴급 경보 - INC-ATO-1788997982",
+      "description": "**Confirmed Account Takeover: SSH Brute Force Followed by Successful Login**",
+      "url": "http://10.77.10.10:8501/",
+      "color": 14689316,
+      "fields": [
+        {
+          "name": "공격자 IP",
+          "value": "`10.77.20.20`",
+          "inline": true
+        },
+        {
+          "name": "피해 대상 자산",
+          "value": "`10.77.30.20`",
+          "inline": true
+        },
+        {
+          "name": "심각도 / 상태",
+          "value": "**CRITICAL** (CONFIRMED_COMPROMISE)",
+          "inline": true
+        },
+        {
+          "name": "MITRE ATT&CK",
+          "value": "`T1046, T1078, T1110.001`",
+          "inline": true
+        },
+        {
+          "name": "연관 탐지 건수",
+          "value": "3 건",
+          "inline": true
+        },
+        {
+          "name": "플레이북",
+          "value": "`playbooks/05_ssh_brute_force_investigation.md`",
+          "inline": true
+        },
+        {
+          "name": "킬체인 전개 단계",
+          "value": "`1. Reconnaissance ➔ 2. Initial Access / Exploitation`",
+          "inline": false
+        },
+        {
+          "name": "🛡️ 초동 격리 명령 (NFTables)",
+          "value": "```nft add element inet filter blocklist { 10.77.20.20 }```",
+          "inline": false
+        }
+      ],
+      "footer": {
+        "text": "Aegis SOC Lab • Dual IDS Evidence Pipeline"
+      },
+      "timestamp": "2026-09-10T08:53:00+09:00"
+    }
+  ]
+}

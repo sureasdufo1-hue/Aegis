@@ -1,0 +1,30 @@
+{
+  "source": "Aegis-SOC-CorrelationEngine",
+  "version": "1.0",
+  "event_type": "security_incident",
+  "incident": {
+    "incident_id": "INC-ATO-1788997982",
+    "src_ip": "10.77.20.20",
+    "target_ips": [
+      "10.77.30.20"
+    ],
+    "highest_severity": "CRITICAL",
+    "activity_status": "CONFIRMED_COMPROMISE",
+    "verdict": "Confirmed Account Takeover: SSH Brute Force Followed by Successful Login",
+    "attack_stages": [
+      "1. Reconnaissance",
+      "2. Initial Access / Exploitation"
+    ],
+    "total_alerts": 3,
+    "mitre_techniques": [
+      "T1046",
+      "T1078",
+      "T1110.001"
+    ],
+    "playbook": "playbooks/05_ssh_brute_force_investigation.md",
+    "recommended_action": "nft add element inet filter blocklist { 10.77.20.20 }",
+    "first_seen": "2026-09-10T08:53:00+09:00",
+    "last_seen": "2026-09-10T08:53:00+09:00"
+  },
+  "dispatch_timestamp": "2026-09-10T08:53:00.123456+00:00"
+}

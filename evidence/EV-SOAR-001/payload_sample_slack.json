@@ -1,0 +1,86 @@
+{
+  "text": "[AEGIS SOC Alert] INC-ATO-1788997982 - 10.77.20.20",
+  "blocks": [
+    {
+      "type": "header",
+      "text": {
+        "type": "plain_text",
+        "text": "🚨 [AEGIS SOC] 침해사고 긴급 경보 (CRITICAL)",
+        "emoji": true
+      }
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "🚨 *CRITICAL INCIDENT*\n*Confirmed Account Takeover: SSH Brute Force Followed by Successful Login*"
+      }
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "section",
+      "fields": [
+        {
+          "type": "mrkdwn",
+          "text": "*Incident ID:*\n`INC-ATO-1788997982`"
+        },
+        {
+          "type": "mrkdwn",
+          "text": "*Activity Status:*\n`CONFIRMED_COMPROMISE`"
+        },
+        {
+          "type": "mrkdwn",
+          "text": "*Attacker IP:*\n`10.77.20.20` (Threat Zone)"
+        },
+        {
+          "type": "mrkdwn",
+          "text": "*Victim Assets:*\n`10.77.30.20`"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "fields": [
+        {
+          "type": "mrkdwn",
+          "text": "*MITRE ATT&CK:*\n`T1046, T1078, T1110.001`"
+        },
+        {
+          "type": "mrkdwn",
+          "text": "*Total Alerts:*\n`3 events`"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "*Kill Chain Progression:*\n`1. Reconnaissance ➔ 2. Initial Access / Exploitation`"
+      }
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "*권고 초동 조치 (Gateway Firewall 차단):*\n```nft add element inet filter blocklist { 10.77.20.20 }```"
+      }
+    },
+    {
+      "type": "actions",
+      "elements": [
+        {
+          "type": "button",
+          "text": {
+            "type": "plain_text",
+            "text": "3D 관제 대시보드 바로가기",
+            "emoji": true
+          },
+          "url": "http://10.77.10.10:8501/",
+          "style": "danger"
+        }
+      ]
+    }
+  ]
+}
