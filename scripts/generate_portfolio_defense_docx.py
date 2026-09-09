@@ -2,8 +2,10 @@
 # -*- coding: utf-8 -*-
 """
 Generate Aegis Enterprise SOC Portfolio & Technical Interview Defense Guide (.docx)
-Matching the exact high-readability Korean style, typography, and layout of
-SOC_침해유형별_탐지대응룰북_및_종합관제보고서_한글가독성_전면개정본.docx.
+Strictly Monochrome / Grayscale Palette:
+  - Exclusively black and shades/tints of black (Pure Black, Charcoal, Light/Medium Gray, White)
+  - Distinctions made solely through grayscale shading and typography weight
+  - 100% Grayscale evidence images embedded
 
 Outputs:
   - docs/reports/AEGIS_SOC_기술포트폴리오_및_면접방어가이드_최종본.docx
@@ -13,6 +15,7 @@ Outputs:
 import os
 import shutil
 from pathlib import Path
+from PIL import Image
 import docx
 from docx.shared import Inches, Pt, RGBColor
 from docx.enum.text import WD_ALIGN_PARAGRAPH
@@ -22,13 +25,26 @@ from docx.oxml.ns import nsdecls, qn
 
 BASE_DIR = Path(__file__).parent.parent.resolve()
 DOWNLOADS_DIR = Path(r"C:\Users\user\Downloads")
+IMAGE_DIR_GRAY = BASE_DIR / "docs" / "ai" / "evidence_annotated_grayscale"
+IMAGE_DIR_COLOR = BASE_DIR / "docs" / "ai" / "evidence_annotated"
+
+def ensure_grayscale_images():
+    """Ensure all annotated evidence images exist in high-contrast grayscale."""
+    IMAGE_DIR_GRAY.mkdir(parents=True, exist_ok=True)
+    images = list(IMAGE_DIR_COLOR.glob("*.jpg")) + list(IMAGE_DIR_COLOR.glob("*.png"))
+    for img_path in images:
+        out_path = IMAGE_DIR_GRAY / img_path.name
+        if not out_path.exists() or out_path.stat().st_size == 0:
+            img = Image.open(img_path)
+            gray = img.convert('L')
+            gray.save(out_path, quality=95)
 
 # =========================================================================
-# Styling and Helper Functions
+# Strictly Monochrome / Grayscale Styling and Helper Functions
 # =========================================================================
 
 def set_cell_background(cell, fill_hex):
-    """Set background color of a table cell."""
+    """Set background color of a table cell (grayscale tint)."""
     tcPr = cell._tc.get_or_add_tcPr()
     for child in list(tcPr):
         if child.tag.endswith('shd'):
@@ -47,8 +63,8 @@ def set_cell_margins(cell, top=100, bottom=100, left=140, right=140):
         tcMar.append(node)
     tcPr.append(tcMar)
 
-def set_table_borders(table, color="CBD5E0", sz="4", val="single"):
-    """Apply clean thin borders to the whole table."""
+def set_table_borders(table, color="B0B0B0", sz="4", val="single"):
+    """Apply clean neutral gray borders to the whole table."""
     tblPr = table._tbl.tblPr
     borders = parse_xml(
         f'<w:tblBorders {nsdecls("w")}>'
@@ -62,8 +78,8 @@ def set_table_borders(table, color="CBD5E0", sz="4", val="single"):
     )
     tblPr.append(borders)
 
-def format_run(run, font_name="맑은 고딕", size_pt=10, bold=False, color_rgb=(45, 55, 72)):
-    """Apply font styling to a text run."""
+def format_run(run, font_name="맑은 고딕", size_pt=10, bold=False, color_rgb=(35, 35, 35)):
+    """Apply font styling to a text run using strictly black/gray RGB values."""
     run.font.name = font_name
     rPr = run._r.get_or_add_rPr()
     rFonts = rPr.find(qn('w:rFonts'))
@@ -82,66 +98,66 @@ def format_run(run, font_name="맑은 고딕", size_pt=10, bold=False, color_rgb
         run.font.color.rgb = RGBColor(*color_rgb)
 
 def add_heading_1(doc, text):
-    """Heading 1 with native Word style for TOC detection."""
+    """Heading 1: Pure Black, 16pt Bold."""
     p = doc.add_paragraph(style='Heading 1')
     p.paragraph_format.space_before = Pt(22)
     p.paragraph_format.space_after = Pt(8)
     p.paragraph_format.keep_with_next = True
     run = p.add_run(text)
-    format_run(run, font_name="맑은 고딕", size_pt=16, bold=True, color_rgb=(27, 54, 93))
+    format_run(run, font_name="맑은 고딕", size_pt=16, bold=True, color_rgb=(0, 0, 0))
     return p
 
 def add_heading_2(doc, text):
-    """Heading 2 with native Word style for TOC detection."""
+    """Heading 2: Deep Charcoal Black, 13pt Bold."""
     p = doc.add_paragraph(style='Heading 2')
     p.paragraph_format.space_before = Pt(15)
     p.paragraph_format.space_after = Pt(6)
     p.paragraph_format.keep_with_next = True
     run = p.add_run(text)
-    format_run(run, font_name="맑은 고딕", size_pt=13, bold=True, color_rgb=(43, 108, 176))
+    format_run(run, font_name="맑은 고딕", size_pt=13, bold=True, color_rgb=(20, 20, 20))
     return p
 
 def add_heading_3(doc, text):
-    """Heading 3 with native Word style for TOC detection."""
+    """Heading 3: Dark Charcoal, 11pt Bold."""
     p = doc.add_paragraph(style='Heading 3')
     p.paragraph_format.space_before = Pt(11)
     p.paragraph_format.space_after = Pt(4)
     p.paragraph_format.keep_with_next = True
     run = p.add_run(text)
-    format_run(run, font_name="맑은 고딕", size_pt=11, bold=True, color_rgb=(45, 55, 72))
+    format_run(run, font_name="맑은 고딕", size_pt=11, bold=True, color_rgb=(40, 40, 40))
     return p
 
 def add_body_p(doc, text, bold_prefix=None, space_after=4):
-    """Standard body paragraph with clean typography."""
+    """Standard body paragraph in neutral black/dark gray."""
     p = doc.add_paragraph()
     p.paragraph_format.space_before = Pt(0)
     p.paragraph_format.space_after = Pt(space_after)
     p.paragraph_format.line_spacing = 1.2
     if bold_prefix:
         r_pre = p.add_run(bold_prefix)
-        format_run(r_pre, font_name="맑은 고딕", size_pt=10, bold=True, color_rgb=(27, 54, 93))
+        format_run(r_pre, font_name="맑은 고딕", size_pt=10, bold=True, color_rgb=(0, 0, 0))
     r = p.add_run(text)
-    format_run(r, font_name="맑은 고딕", size_pt=10, bold=False, color_rgb=(45, 55, 72))
+    format_run(r, font_name="맑은 고딕", size_pt=10, bold=False, color_rgb=(35, 35, 35))
     return p
 
 def add_bullet_p(doc, text, bold_prefix=None, space_after=3):
-    """Bulleted list item."""
+    """Bulleted list item with pure black bullet."""
     p = doc.add_paragraph()
     p.paragraph_format.space_before = Pt(0)
     p.paragraph_format.space_after = Pt(space_after)
     p.paragraph_format.left_indent = Inches(0.2)
     p.paragraph_format.line_spacing = 1.15
     r_bullet = p.add_run("• ")
-    format_run(r_bullet, font_name="맑은 고딕", size_pt=10, bold=True, color_rgb=(43, 108, 176))
+    format_run(r_bullet, font_name="맑은 고딕", size_pt=10, bold=True, color_rgb=(0, 0, 0))
     if bold_prefix:
         r_pre = p.add_run(bold_prefix)
-        format_run(r_pre, font_name="맑은 고딕", size_pt=10, bold=True, color_rgb=(27, 54, 93))
+        format_run(r_pre, font_name="맑은 고딕", size_pt=10, bold=True, color_rgb=(0, 0, 0))
     r = p.add_run(text)
-    format_run(r, font_name="맑은 고딕", size_pt=10, bold=False, color_rgb=(45, 55, 72))
+    format_run(r, font_name="맑은 고딕", size_pt=10, bold=False, color_rgb=(35, 35, 35))
     return p
 
-def add_callout_box(doc, title_text, body_text, accent_color="1B365D", bg_color="F8F9FA"):
-    """Add a stylish callout box with a thick left border."""
+def add_callout_box(doc, title_text, body_text, accent_color="000000", bg_color="F5F5F5"):
+    """Monochrome callout box with thick black left border and light gray tint background."""
     table = doc.add_table(rows=1, cols=1)
     table.alignment = WD_TABLE_ALIGNMENT.CENTER
     cell = table.rows[0].cells[0]
@@ -151,10 +167,10 @@ def add_callout_box(doc, title_text, body_text, accent_color="1B365D", bg_color=
     tcPr = cell._tc.get_or_add_tcPr()
     borders = parse_xml(
         f'<w:tcBorders {nsdecls("w")}>'
-        f'  <w:top w:val="single" w:sz="4" w:color="E2E8F0"/>'
+        f'  <w:top w:val="single" w:sz="4" w:color="D0D0D0"/>'
         f'  <w:left w:val="single" w:sz="36" w:color="{accent_color}"/>'
-        f'  <w:bottom w:val="single" w:sz="4" w:color="E2E8F0"/>'
-        f'  <w:right w:val="single" w:sz="4" w:color="E2E8F0"/>'
+        f'  <w:bottom w:val="single" w:sz="4" w:color="D0D0D0"/>'
+        f'  <w:right w:val="single" w:sz="4" w:color="D0D0D0"/>'
         f'</w:tcBorders>'
     )
     tcPr.append(borders)
@@ -165,26 +181,26 @@ def add_callout_box(doc, title_text, body_text, accent_color="1B365D", bg_color=
     p.paragraph_format.line_spacing = 1.15
     if title_text:
         r_t = p.add_run(title_text + "\n")
-        format_run(r_t, font_name="맑은 고딕", size_pt=10, bold=True, color_rgb=(27, 54, 93))
+        format_run(r_t, font_name="맑은 고딕", size_pt=10, bold=True, color_rgb=(0, 0, 0))
     r_b = p.add_run(body_text)
-    format_run(r_b, font_name="맑은 고딕", size_pt=9.5, bold=False, color_rgb=(50, 50, 50))
+    format_run(r_b, font_name="맑은 고딕", size_pt=9.5, bold=False, color_rgb=(40, 40, 40))
     doc.add_paragraph().paragraph_format.space_after = Pt(4)
 
 def add_code_box(doc, code_text):
-    """Code and log box with dark left accent border."""
+    """Monochrome code box with dark charcoal left border."""
     table = doc.add_table(rows=1, cols=1)
     table.alignment = WD_TABLE_ALIGNMENT.CENTER
     cell = table.rows[0].cells[0]
-    set_cell_background(cell, "F4F6F8")
+    set_cell_background(cell, "EFEFEF")
     set_cell_margins(cell, top=90, bottom=90, left=140, right=140)
     
     tcPr = cell._tc.get_or_add_tcPr()
     borders = parse_xml(
         f'<w:tcBorders {nsdecls("w")}>'
-        f'  <w:top w:val="single" w:sz="4" w:color="D0D7DE"/>'
-        f'  <w:left w:val="single" w:sz="20" w:color="2B6CB0"/>'
-        f'  <w:bottom w:val="single" w:sz="4" w:color="D0D7DE"/>'
-        f'  <w:right w:val="single" w:sz="4" w:color="D0D7DE"/>'
+        f'  <w:top w:val="single" w:sz="4" w:color="D0D0D0"/>'
+        f'  <w:left w:val="single" w:sz="24" w:color="262626"/>'
+        f'  <w:bottom w:val="single" w:sz="4" w:color="D0D0D0"/>'
+        f'  <w:right w:val="single" w:sz="4" w:color="D0D0D0"/>'
         f'</w:tcBorders>'
     )
     tcPr.append(borders)
@@ -194,28 +210,28 @@ def add_code_box(doc, code_text):
     p.paragraph_format.space_after = Pt(2)
     p.paragraph_format.line_spacing = 1.05
     r = p.add_run(code_text.strip())
-    format_run(r, font_name="Consolas", size_pt=8.5, bold=False, color_rgb=(30, 41, 59))
+    format_run(r, font_name="Consolas", size_pt=8.5, bold=False, color_rgb=(20, 20, 20))
     doc.add_paragraph().paragraph_format.space_after = Pt(4)
 
 def add_custom_table(doc, headers, rows_data, dark_header=True):
-    """Add a structured table with Navy headers and alternating shading."""
+    """Add a structured monochrome table with Dark Charcoal headers and alternating gray shading."""
     table = doc.add_table(rows=len(rows_data) + 1, cols=len(headers))
     table.alignment = WD_TABLE_ALIGNMENT.CENTER
-    set_table_borders(table)
+    set_table_borders(table, color="B0B0B0")
     
-    # Header row
+    # Header row: Dark Charcoal background with White bold text
     for c_idx, h_text in enumerate(headers):
         cell = table.rows[0].cells[c_idx]
         cell.text = h_text
-        set_cell_background(cell, "1B365D" if dark_header else "E2E8F0")
+        set_cell_background(cell, "262626" if dark_header else "E0E0E0")
         set_cell_margins(cell, top=80, bottom=80, left=90, right=90)
         p = cell.paragraphs[0]
         p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        format_run(p.runs[0], font_name="맑은 고딕", size_pt=9, bold=True, color_rgb=(255, 255, 255) if dark_header else (27, 54, 93))
+        format_run(p.runs[0], font_name="맑은 고딕", size_pt=9, bold=True, color_rgb=(255, 255, 255) if dark_header else (0, 0, 0))
         
-    # Data rows
+    # Data rows: Alternating White and Light Gray shading (음영 구분)
     for r_idx, r_data in enumerate(rows_data, start=1):
-        bg = "F7FAFC" if r_idx % 2 == 0 else "FFFFFF"
+        bg = "F2F2F2" if r_idx % 2 == 0 else "FFFFFF"
         for c_idx, val in enumerate(r_data):
             cell = table.rows[r_idx].cells[c_idx]
             cell.text = str(val)
@@ -225,19 +241,23 @@ def add_custom_table(doc, headers, rows_data, dark_header=True):
             val_str = str(val)
             if val_str in ("PASS", "FAIL", "BLOCKED", "CRITICAL", "HIGH", "MEDIUM", "LOW", "P1", "P2", "유지", "개선") or len(val_str) <= 10:
                 p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-            is_bold = val_str in ("PASS", "CRITICAL", "HIGH", "P1") or "92.31%" in val_str or "0.00%" in val_str
-            color = (0, 120, 0) if val_str == "PASS" or "0.00%" in val_str and "SQLi" in str(r_data) else ((180, 0, 0) if val_str in ("FAIL", "CRITICAL", "P1") else (45, 55, 72))
+            is_bold = val_str in ("PASS", "CRITICAL", "HIGH", "P1", "FAIL") or "92.31%" in val_str or "0.00%" in val_str
+            # Strictly monochrome: bold black for key status, dark neutral gray for standard text
+            color = (0, 0, 0) if is_bold else (40, 40, 40)
             format_run(p.runs[0], font_name="맑은 고딕", size_pt=8.5, bold=is_bold, color_rgb=color)
             
     doc.add_paragraph().paragraph_format.space_after = Pt(6)
     return table
 
-def add_evidence_figure(doc, img_path, caption_title, desc_text, meta_data=None):
-    """High-res evidence screenshot with caption, description, and 4-column metadata table."""
-    img_path = Path(img_path)
+def add_evidence_figure(doc, img_name, caption_title, desc_text, meta_data=None):
+    """High-res grayscale evidence screenshot with monochrome caption and 4-column metadata table."""
+    img_path = IMAGE_DIR_GRAY / img_name
     if not img_path.exists():
-        print(f"Warning: Image not found: {img_path}")
-        return
+        # Fallback to color if gray not found
+        img_path = IMAGE_DIR_COLOR / img_name
+        if not img_path.exists():
+            print(f"Warning: Image not found: {img_name}")
+            return
         
     p_img = doc.add_paragraph()
     p_img.alignment = WD_ALIGN_PARAGRAPH.CENTER
@@ -251,7 +271,7 @@ def add_evidence_figure(doc, img_path, caption_title, desc_text, meta_data=None)
     p_cap.paragraph_format.space_before = Pt(2)
     p_cap.paragraph_format.space_after = Pt(4)
     r_cap = p_cap.add_run(caption_title)
-    format_run(r_cap, font_name="맑은 고딕", size_pt=9.5, bold=True, color_rgb=(27, 54, 93))
+    format_run(r_cap, font_name="맑은 고딕", size_pt=9.5, bold=True, color_rgb=(0, 0, 0))
     
     if desc_text:
         p_desc = doc.add_paragraph()
@@ -259,12 +279,12 @@ def add_evidence_figure(doc, img_path, caption_title, desc_text, meta_data=None)
         p_desc.paragraph_format.space_after = Pt(4)
         p_desc.paragraph_format.line_spacing = 1.15
         r_desc = p_desc.add_run(desc_text)
-        format_run(r_desc, font_name="맑은 고딕", size_pt=9, bold=False, color_rgb=(74, 85, 104))
+        format_run(r_desc, font_name="맑은 고딕", size_pt=9, bold=False, color_rgb=(60, 60, 60))
         
     if meta_data:
         tbl_meta = doc.add_table(rows=3, cols=4)
         tbl_meta.alignment = WD_TABLE_ALIGNMENT.CENTER
-        set_table_borders(tbl_meta)
+        set_table_borders(tbl_meta, color="B0B0B0")
         
         # Row 0: 증적 번호 | ID | 검증 결과 | RESULT
         r0 = tbl_meta.rows[0].cells
@@ -273,7 +293,7 @@ def add_evidence_figure(doc, img_path, caption_title, desc_text, meta_data=None)
         r0[2].text = "검증 결과"
         r0[3].text = meta_data.get("result", "정상 (PASS)")
         for idx in [0, 2]:
-            set_cell_background(r0[idx], "1B365D")
+            set_cell_background(r0[idx], "262626")
             set_cell_margins(r0[idx], top=60, bottom=60, left=80, right=80)
             p = r0[idx].paragraphs[0]
             p.alignment = WD_ALIGN_PARAGRAPH.CENTER
@@ -284,7 +304,7 @@ def add_evidence_figure(doc, img_path, caption_title, desc_text, meta_data=None)
             p = r0[idx].paragraphs[0]
             if idx == 1:
                 p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-            format_run(p.runs[0], font_name="맑은 고딕", size_pt=8.5, bold=(idx == 3), color_rgb=(0, 120, 0) if "PASS" in meta_data.get("result", "") or "정상" in meta_data.get("result", "") else (45, 55, 72))
+            format_run(p.runs[0], font_name="맑은 고딕", size_pt=8.5, bold=(idx == 3), color_rgb=(0, 0, 0) if idx == 3 else (40, 40, 40))
             
         # Row 1: 증적 명칭 | TITLE | 점검 대상 | TARGET
         r1 = tbl_meta.rows[1].cells
@@ -293,7 +313,7 @@ def add_evidence_figure(doc, img_path, caption_title, desc_text, meta_data=None)
         r1[2].text = "점검 대상"
         r1[3].text = meta_data.get("target", "-")
         for idx in [0, 2]:
-            set_cell_background(r1[idx], "1B365D")
+            set_cell_background(r1[idx], "262626")
             set_cell_margins(r1[idx], top=60, bottom=60, left=80, right=80)
             p = r1[idx].paragraphs[0]
             p.alignment = WD_ALIGN_PARAGRAPH.CENTER
@@ -302,12 +322,12 @@ def add_evidence_figure(doc, img_path, caption_title, desc_text, meta_data=None)
             set_cell_background(r1[idx], "FFFFFF")
             set_cell_margins(r1[idx], top=60, bottom=60, left=80, right=80)
             p = r1[idx].paragraphs[0]
-            format_run(p.runs[0], font_name="맑은 고딕", size_pt=8.5, bold=False, color_rgb=(45, 55, 72))
+            format_run(p.runs[0], font_name="맑은 고딕", size_pt=8.5, bold=False, color_rgb=(40, 40, 40))
             
         # Row 2 (merged): 핵심 검증 내용 | DETAILS
         r2 = tbl_meta.rows[2].cells
         r2[0].text = "핵심 검증 내용"
-        set_cell_background(r2[0], "1B365D")
+        set_cell_background(r2[0], "262626")
         set_cell_margins(r2[0], top=60, bottom=60, left=80, right=80)
         p0 = r2[0].paragraphs[0]
         p0.alignment = WD_ALIGN_PARAGRAPH.CENTER
@@ -319,7 +339,7 @@ def add_evidence_figure(doc, img_path, caption_title, desc_text, meta_data=None)
         set_cell_margins(merged_c, top=60, bottom=60, left=80, right=80)
         p_m = merged_c.paragraphs[0]
         p_m.paragraph_format.line_spacing = 1.15
-        format_run(p_m.runs[0], font_name="맑은 고딕", size_pt=8.5, bold=False, color_rgb=(45, 55, 72))
+        format_run(p_m.runs[0], font_name="맑은 고딕", size_pt=8.5, bold=False, color_rgb=(40, 40, 40))
         
     doc.add_paragraph().paragraph_format.space_after = Pt(8)
 
@@ -347,11 +367,12 @@ def enable_update_fields(doc):
     settings.append(updateFields)
 
 # =========================================================================
-# Main Report Builder
+# Main Report Builder (Strictly Monochrome)
 # =========================================================================
 
 def build_portfolio_defense_report(output_path):
-    print(f"Building Aegis SOC Portfolio & Defense Guide: {output_path}")
+    print(f"Building Strictly Monochrome Aegis SOC Report: {output_path}")
+    ensure_grayscale_images()
     doc = docx.Document()
     enable_update_fields(doc)
     
@@ -364,12 +385,12 @@ def build_portfolio_defense_report(output_path):
         section.page_width = Inches(8.27)
         section.page_height = Inches(11.69)
         
-        # Footer setup
+        # Footer setup (Monochrome)
         footer = section.footer
         p_f = footer.paragraphs[0]
         p_f.alignment = WD_ALIGN_PARAGRAPH.RIGHT
-        r_f = p_f.add_run("Aegis 차세대 보안관제 기술 포트폴리오 및 면접 방어 가이드 [최종본]")
-        format_run(r_f, font_name="맑은 고딕", size_pt=8, bold=False, color_rgb=(130, 130, 130))
+        r_f = p_f.add_run("Aegis 차세대 보안관제 기술 포트폴리오 및 면접 방어 가이드 [흑백 모노크롬 판]")
+        format_run(r_f, font_name="맑은 고딕", size_pt=8, bold=False, color_rgb=(120, 120, 120))
 
     # =========================================================================
     # 1. 표지 (Cover Page - Page 1)
@@ -380,38 +401,38 @@ def build_portfolio_defense_report(output_path):
     p_tag = doc.add_paragraph()
     p_tag.alignment = WD_ALIGN_PARAGRAPH.CENTER
     r_tag = p_tag.add_run("AEGIS SOC DETECTION & MONITORING LAB | ENTERPRISE TECHNICAL BLUEPRINT")
-    format_run(r_tag, font_name="Consolas", size_pt=10, bold=True, color_rgb=(43, 108, 176))
+    format_run(r_tag, font_name="Consolas", size_pt=10, bold=True, color_rgb=(60, 60, 60))
     
     p_title = doc.add_paragraph()
     p_title.alignment = WD_ALIGN_PARAGRAPH.CENTER
     p_title.paragraph_format.space_before = Pt(14)
     p_title.paragraph_format.space_after = Pt(10)
     r_title = p_title.add_run("Aegis 차세대 보안관제 기술 포트폴리오 및\n기술 면접·아키텍처 심층 방어 가이드 (20선)")
-    format_run(r_title, font_name="맑은 고딕", size_pt=24, bold=True, color_rgb=(27, 54, 93))
+    format_run(r_title, font_name="맑은 고딕", size_pt=24, bold=True, color_rgb=(0, 0, 0))
     
     p_sub = doc.add_paragraph()
     p_sub.alignment = WD_ALIGN_PARAGRAPH.CENTER
     p_sub.paragraph_format.space_after = Pt(32)
     r_sub = p_sub.add_run("Suricata 8·Snort 3 듀얼 침입탐지, Wazuh 4.x SIEM 디코딩 해결, 정량 오탐 튜닝(FPR 10.0%, SQLi 0%) 및 AI 보안 가드레일 실증 체계")
-    format_run(r_sub, font_name="맑은 고딕", size_pt=11, bold=False, color_rgb=(74, 85, 104))
+    format_run(r_sub, font_name="맑은 고딕", size_pt=11, bold=False, color_rgb=(70, 70, 70))
     
-    # Metadata Table (Table 01: 문서 메타데이터)
+    # Metadata Table (Table 01: 문서 메타데이터 - Dark Charcoal / White)
     tbl_cov = doc.add_table(rows=5, cols=4)
     tbl_cov.alignment = WD_TABLE_ALIGNMENT.CENTER
-    set_table_borders(tbl_cov)
+    set_table_borders(tbl_cov, color="B0B0B0")
     
     meta_rows = [
-        ("문서 번호", "AEGIS-SOC-REP-2026-FINAL", "보안 등급", "대외비 (SOC 기술 포트폴리오)"),
+        ("문서 번호", "AEGIS-SOC-REP-2026-FINAL-BW", "보안 등급", "대외비 (SOC 기술 포트폴리오)"),
         ("작성 조직", "Aegis Detection Engineering Team", "기준 일자", "2026년 09월 09일"),
         ("참조 표준", "NIST SP 800-61 Rev.3 / MITRE ATT&CK v19.2", "테스트 현황", "Pytest 68/68 전건 통과 (100%)"),
-        ("원격 저장소", "github.com/sureasdufo1-hue/Aegis.git", "문서 버전", "v2.5 (공식 종합 포트폴리오)"),
+        ("원격 저장소", "github.com/sureasdufo1-hue/Aegis.git", "문서 서식", "흑백 모노크롬 (Black & Grayscale Only)"),
         ("통제 책임", "SOC 관제센터장 / 수석 탐지엔지니어", "승인 상태", "최종 실측 및 릴리즈 승인 완료")
     ]
     for r_idx, r_vals in enumerate(meta_rows):
         cells = tbl_cov.rows[r_idx].cells
         for c_idx in [0, 2]:
             cells[c_idx].text = r_vals[c_idx]
-            set_cell_background(cells[c_idx], "1B365D")
+            set_cell_background(cells[c_idx], "262626")
             set_cell_margins(cells[c_idx], top=70, bottom=70, left=90, right=90)
             p = cells[c_idx].paragraphs[0]
             p.alignment = WD_ALIGN_PARAGRAPH.CENTER
@@ -421,7 +442,7 @@ def build_portfolio_defense_report(output_path):
             set_cell_background(cells[c_idx], "FFFFFF")
             set_cell_margins(cells[c_idx], top=70, bottom=70, left=90, right=90)
             p = cells[c_idx].paragraphs[0]
-            format_run(p.runs[0], font_name="맑은 고딕", size_pt=8.5, bold=False, color_rgb=(45, 55, 72))
+            format_run(p.runs[0], font_name="맑은 고딕", size_pt=8.5, bold=False, color_rgb=(35, 35, 35))
             
     doc.add_page_break()
 
@@ -438,7 +459,8 @@ def build_portfolio_defense_report(output_path):
     add_body_p(doc, 
         "본 문서는 실제 보안관제센터(SOC) 리드, 시니어 탐지 엔지니어, 침해사고 분석 책임자 면접관의 고난도 기술 질문에 대응할 수 있도록, "
         "시스템 아키텍처 설계 근거와 트레이드오프, 실제 발생했던 SIEM 디코더 버그 및 오탐 해결 과정, 객관적 계측 벤치마크 데이터, "
-        "그리고 20대 핵심 기술 면접 질의응답을 총망라하여 구성되었습니다.")
+        "그리고 20대 핵심 기술 면접 질의응답을 총망라하여 구성되었습니다. 모든 표와 다이어그램, 텍스트는 흑백 인쇄 및 단색 열람 환경에서도 "
+        "명확한 시각적 위계가 유지되도록 검정색과 무채색 음영(Grayscale Shading)만으로 엄격히 디자인되었습니다.")
 
     add_heading_2(doc, "정량적 탐지 성과 벤치마크 (Evaluation Benchmark)")
     add_body_p(doc, 
@@ -462,32 +484,32 @@ def build_portfolio_defense_report(output_path):
     add_callout_box(doc, "1. 듀얼 침입탐지(Suricata 8 + Snort 3) 비대칭 역할 분담", 
         "Suricata 8.0.6은 AF_PACKET 멀티스레드 클러스터를 적용하여 10Gbps급 실시간 고속 패킷 수집 및 EVE JSON 텔레메트리 스트리밍을 전담하고, "
         "Snort 3.12.2.0은 C++ 멀티스레드 아키텍처와 정밀 Lua 룰을 활용하여 의심 PCAP에 대한 오프라인 정밀 교차 검증을 수행함으로써 엔진 간 상호 보완성을 극대화했습니다.",
-        accent_color="1B365D")
+        accent_color="000000", bg_color="F5F5F5")
 
     add_callout_box(doc, "2. Wazuh 4.14.7 부모 룰 상속 단절 버그 원천 해결",
         "Wazuh 기본 내장 룰 86601이 EVE JSON 이벤트를 선점하여 하위 커스텀 룰의 상속 체인이 단절되던 코어 결함을 추적하고, "
         "<if_sid>86601,100100</if_sid> 복합 태그 기법을 독자 설계하여 호스트-네트워크 다계층 이벤트 체이닝을 완벽히 복구했습니다.",
-        accent_color="2B6CB0")
+        accent_color="262626", bg_color="F5F5F5")
 
     add_callout_box(doc, "3. L4 네트워크-호스트 PAM 교차 상관분석 (Account Takeover 탐지)",
         "네트워크 L4의 고빈도 TCP SYN 시도(Rule 100103)와 리눅스 감사 로그(PAM/Auth)의 인증 실패(Rule 5710, 5716) 및 인증 성공(Rule 5715)을 결합하여, "
         "단순 접속 실패와 실제 시스템 계정 탈취(Rule 100111, Level 14 Critical)를 정확히 판별하는 다계층 탐지 체계를 수립했습니다.",
-        accent_color="1B365D")
+        accent_color="000000", bg_color="F5F5F5")
 
     add_callout_box(doc, "4. 30분 슬라이딩 윈도우 기반 4단계 킬체인 상관분석 엔진",
         "공격자 IP 단위로 30분 타임 윈도우를 추적하여 '정찰 ➔ 초기 침투 ➔ 횡적 이동 ➔ C2 유출'의 4단계 킬체인 전이를 분석하고, "
         "단순 공격 시도는 SUSPICIOUS_ATTEMPT로 분류하고 실제 악성 행위가 결합될 때만 CONFIRMED_COMPROMISE로 승격하여 경보 피로를 방지했습니다.",
-        accent_color="2B6CB0")
+        accent_color="262626", bg_color="F5F5F5")
 
     add_callout_box(doc, "5. RAG 기반 AI SOC Copilot 및 4중 보안 가드레일",
         "로컬 LLM(Qwen 2.5/3.5)을 통합하여 3초 이내에 사고 분석 보고서를 작성하도록 하되, AI의 환각과 자의적 차단을 방지하기 위해 "
         "1) 사내 플레이북 RAG 강제, 2) 게이트웨이 등 핵심 자산 보호 화이트리스트, 3) 인간 승인(HITL) 큐 필수화, 4) 결정론적 모델 파라미터 락을 구축했습니다.",
-        accent_color="1B365D")
+        accent_color="000000", bg_color="F5F5F5")
 
     add_callout_box(doc, "6. TLS 암호화 트래픽 가시성 확보 아키텍처 (ARCH-TLS-001)",
         "HTTPS 암호화 트래픽 환경에서 Nginx SSL Termination 후단 미러링 아키텍처를 설계하여 L7 평문 페이로드를 검사하고, "
         "비복호화 구간에서는 TLS SNI 및 X.509 인증서 Subject를 기반으로 C2 접속을 즉각 차단하는 이중 가시성 체계를 수립했습니다.",
-        accent_color="2B6CB0")
+        accent_color="262626", bg_color="F5F5F5")
 
     doc.add_page_break()
 
@@ -533,7 +555,7 @@ def build_portfolio_defense_report(output_path):
         "희생자 서버에서 관리망으로는 오직 Wazuh Agent 통신용 포트(1514/TCP, 1515/TCP)만이 엄격한 화이트리스트로 허용되어 관리망의 침해 확산을 방지합니다.")
 
     add_evidence_figure(doc, 
-        BASE_DIR / "docs/ai/evidence_annotated/evidence_p1_01_network_governance.jpg",
+        "evidence_p1_01_network_governance.jpg",
         "[그림 1-1] 3-Zone 망분리 가상 인프라 토폴로지 및 네트워크 거버넌스 구성",
         "Hyper-V 기반 3개 격리 스위치와 게이트웨이의 Default-Deny 통제 정책을 도식화한 인프라 구성도입니다.",
         {
@@ -555,7 +577,7 @@ def build_portfolio_defense_report(output_path):
         "센서 콘솔에서 tcpdump 명령을 통해 해당 패킷이 무손실 수신되는 것을 직접 확인한 후에만 GATE-NET-01 게이트를 승인하였습니다.")
 
     add_evidence_figure(doc,
-        BASE_DIR / "docs/ai/evidence_annotated/evidence_p1_02_recon_scan.jpg",
+        "evidence_p1_02_recon_scan.jpg",
         "[그림 1-2] 포트 미러링 수신 패킷 tcpdump 실시간 가시성 검증 및 Nmap 정찰 탐지",
         "Hyper-V vSwitch 포트 미러링을 통해 센서의 무IP 인터페이스로 유입되는 실시간 스캔 패킷을 tcpdump 및 Suricata로 검증한 화면입니다.",
         {
@@ -623,7 +645,7 @@ def build_portfolio_defense_report(output_path):
         ")")
 
     add_evidence_figure(doc,
-        BASE_DIR / "docs/ai/evidence_annotated/evidence_p1_04_web_attack.jpg",
+        "evidence_p1_04_web_attack.jpg",
         "[그림 2-1] SQL Injection 웹 공격 실시간 탐지 및 주석 증적 화면",
         "웹 애플리케이션에 유입된 UNION SELECT 인젝션 공격이 Suricata 8.0.6 룰에 매칭되어 경보가 발생하는 실시간 화면입니다.",
         {
@@ -636,7 +658,7 @@ def build_portfolio_defense_report(output_path):
     )
 
     add_evidence_figure(doc,
-        BASE_DIR / "docs/ai/evidence_annotated/evidence_p1_05_malware_c2.jpg",
+        "evidence_p1_05_malware_c2.jpg",
         "[그림 2-2] 악성코드 C2 및 역방향 쉘(Reverse Shell) 접속 탐지 증적",
         "침해된 희생자 서버에서 외부 공격자 서버로 연결되는 리버스 쉘 세션(/bin/sh)을 실시간으로 포착한 증적입니다.",
         {
@@ -649,7 +671,7 @@ def build_portfolio_defense_report(output_path):
     )
 
     add_evidence_figure(doc,
-        BASE_DIR / "docs/ai/evidence_annotated/evidence_p1_08_rule_tuning.jpg",
+        "evidence_p1_08_rule_tuning.jpg",
         "[그림 2-3] 탐지 룰 튜닝(rev:1 ➔ rev:2) 전후 오탐 제거 비교 실증",
         "정상 상품 검색 시 발생하던 불필요한 알람이 튜닝 후 완벽히 소멸되고 공격 트래픽만 정확히 포착되는 화면입니다.",
         {
@@ -683,7 +705,7 @@ def build_portfolio_defense_report(output_path):
         "만약 직후에 인증 성공(Rule 5715)이 결합되면 시스템 탈취(Rule 100111, Level 14 Critical)로 즉각 긴급 알람을 발령합니다.")
 
     add_evidence_figure(doc,
-        BASE_DIR / "docs/ai/evidence_annotated/evidence_p1_03_auth_bruteforce.jpg",
+        "evidence_p1_03_auth_bruteforce.jpg",
         "[그림 3-1] SSH 무차별 대입 및 네트워크-호스트 다계층 교차 상관분석 증적",
         "네트워크 L4 이상 접속과 호스트 OS PAM 인증 실패가 단일 세션 키로 결합되어 고위험 경보로 승격되는 증적 화면입니다.",
         {
@@ -702,7 +724,7 @@ def build_portfolio_defense_report(output_path):
         "이를 해결하기 위해 9000020 룰을 'SOC-TELEMETRY'로 재정의하고, 상관분석 엔진(correlation_engine.py)에서 해당 태그 이벤트를 킬체인 시퀀스에서 원천 제외하도록 필터를 구축했습니다.")
 
     add_evidence_figure(doc,
-        BASE_DIR / "docs/ai/evidence_annotated/evidence_p1_07_killchain_rulebook.jpg",
+        "evidence_p1_07_killchain_rulebook.jpg",
         "[그림 3-2] 다단계 킬체인 룰북 및 위협 상태 전이 매트릭스 화면",
         "정찰부터 C2 유출까지 이어지는 다단계 위협 상태 머신의 규칙 및 가중치 스코어링 테이블입니다.",
         {
@@ -715,7 +737,7 @@ def build_portfolio_defense_report(output_path):
     )
 
     add_evidence_figure(doc,
-        BASE_DIR / "docs/ai/evidence_annotated/evidence_p2_01_multistage_incident.jpg",
+        "evidence_p2_01_multistage_incident.jpg",
         "[그림 3-3] 다단계 침해사고(INC-20260824-001) 실시간 상관분석 카드",
         "단일 IP에서 30분 내 발생한 정찰 ➔ 웹 침투 ➔ C2 접속이 하나의 통합 인시던트로 묶여 대시보드에 표출된 모습입니다.",
         {
@@ -747,7 +769,7 @@ def build_portfolio_defense_report(output_path):
     add_bullet_p(doc, "Temperature 0.1, Top-P 0.9로 고정하여 동일 증적에 대해 항상 결정론적이고 일관된 결과 도출", bold_prefix="4) 모델 파라미터 락: ")
 
     add_evidence_figure(doc,
-        BASE_DIR / "docs/ai/evidence_annotated/evidence_01_main_console_3d_hub.jpg",
+        "evidence_01_main_console_3d_hub.jpg",
         "[그림 4-1] 3D 관제 허브 메인 대시보드 및 실시간 인프라 토폴로지 뷰",
         "실시간 유입 패킷 통계, 킬체인 공격 진행 현황, 각 노드별 상태를 3D 인터랙티브 그래픽으로 표출하는 통합 관제 화면입니다.",
         {
@@ -760,7 +782,7 @@ def build_portfolio_defense_report(output_path):
     )
 
     add_evidence_figure(doc,
-        BASE_DIR / "docs/ai/evidence_annotated/evidence_02_ai_provider_selector.jpg",
+        "evidence_02_ai_provider_selector.jpg",
         "[그림 4-2] AI 분석 엔진 선택 및 로컬 LLM 런타임 헬스체크 패널",
         "Ollama 로컬 데몬(Qwen 모델) 및 외부 API 제공자의 연결 상태와 응답 지연 시간을 실시간 점검하는 관리 패널입니다.",
         {
@@ -773,7 +795,7 @@ def build_portfolio_defense_report(output_path):
     )
 
     add_evidence_figure(doc,
-        BASE_DIR / "docs/ai/evidence_annotated/evidence_03_investigation_modal.jpg",
+        "evidence_03_investigation_modal.jpg",
         "[그림 4-3] 심층 침해사고 조사 및 RAG 기반 AI 분석 보고서 모달",
         "선택된 침해사고에 대해 EVE JSON 증적과 결합된 AI 분석관의 소견서 및 단계별 대응 권고사항을 표시한 화면입니다.",
         {
@@ -786,7 +808,7 @@ def build_portfolio_defense_report(output_path):
     )
 
     add_evidence_figure(doc,
-        BASE_DIR / "docs/ai/evidence_annotated/evidence_05_hitl_approval_queue.jpg",
+        "evidence_05_hitl_approval_queue.jpg",
         "[그림 4-4] HITL 인간 승인 차단 대기열 및 방화벽 능동 대응 콘솔",
         "AI가 추천한 공격자 IP 차단 요청을 관제 책임자가 최종 검토하고 원클릭으로 승인/반려하는 안전 통제 화면입니다.",
         {
@@ -799,7 +821,7 @@ def build_portfolio_defense_report(output_path):
     )
 
     add_evidence_figure(doc,
-        BASE_DIR / "docs/ai/evidence_annotated/evidence_p2_03_gateway_guardrail.jpg",
+        "evidence_p2_03_gateway_guardrail.jpg",
         "[그림 4-5] 게이트웨이 코어 자산 보호 가드레일 자동 차단 방어 증적",
         "핵심 인프라 IP가 차단 대상에 포함될 경우 백엔드 가드레일이 즉각 발동하여 차단을 거부하고 경고를 띄운 화면입니다.",
         {
@@ -812,7 +834,7 @@ def build_portfolio_defense_report(output_path):
     )
 
     add_evidence_figure(doc,
-        BASE_DIR / "docs/ai/evidence_annotated/evidence_07_pytest_suite_cli.jpg",
+        "evidence_07_pytest_suite_cli.jpg",
         "[그림 4-6] Pytest 68개 전수 자동화 회귀 시험 통과 CLI 터미널 증적",
         "네트워크, 룰 구문, Wazuh 디코더, 상관분석, 가드레일 등 전체 68개 테스트 케이스가 무결점으로 통과된 화면입니다.",
         {
@@ -986,7 +1008,7 @@ def build_portfolio_defense_report(output_path):
         add_heading_2(doc, q_text[:70] + ("..." if len(q_text) > 70 else ""))
         add_callout_box(doc, q_text, 
             f"【핵심 모범 답변】\n{a_text}\n\n【관련 코드 및 증적 근거】\n• {ref_text}",
-            accent_color="1B365D", bg_color="F8F9FA")
+            accent_color="000000", bg_color="F5F5F5")
 
     doc.add_page_break()
 
@@ -1034,7 +1056,7 @@ def build_portfolio_defense_report(output_path):
 
     # Save to target path
     doc.save(str(output_path))
-    print(f"Successfully generated: {output_path} ({output_path.stat().st_size:,} bytes)")
+    print(f"Successfully generated strictly monochrome report: {output_path} ({output_path.stat().st_size:,} bytes)")
 
 def main():
     repo_output = BASE_DIR / "docs" / "reports" / "AEGIS_SOC_기술포트폴리오_및_면접방어가이드_최종본.docx"
