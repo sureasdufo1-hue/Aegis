@@ -1,0 +1,75 @@
+name: Aegis SOC Detection-as-Code CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  rule-validation:
+    name: Detection Rules Integrity & Syntax Linter
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Validate Detection Rules (Suricata / Snort / Wazuh)
+        run: |
+          python scripts/validate_rules.py
+
+  test-suite:
+    name: Test Suite & Regression Verification (Python ${{ matrix.python-version }})
+    needs: rule-validation
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: "pip"
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Full Pytest Test Suite
+        run: |
+          pytest tests/ -v --durations=10
+
+  security-scan:
+    name: Pre-Commit Security & Secret Leak Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Check for Uncommitted Secret Formats
+        run: |
+          echo "Scanning for accidental secret file commits..."
+          if find . -maxdepth 3 -name ".env" -o -name "*.key" -o -name "*.pem" -o -name "*.pfx" | grep -v ".git" | grep -v ".venv"; then
+            echo "::error::Found forbidden secret files committed to the workspace!"
+            exit 1
+          else
+            echo "✓ Zero secret files found in repository tree."
+          fi

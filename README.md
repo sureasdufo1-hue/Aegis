@@ -1,13 +1,16 @@
 # 🛡️ Aegis SOC Detection & Monitoring Lab
 ### Enterprise Dual-IDS (Suricata 8 & Snort 3), Wazuh 4.x SIEM, Hyper-V 3-Zone Isolation & AI-Assisted Incident Triage
 
+[![CI Pipeline](https://github.com/sureasdufo1-hue/Aegis/actions/workflows/ci.yml/badge.svg)](https://github.com/sureasdufo1-hue/Aegis/actions/workflows/ci.yml)
+[![Detection-as-Code](https://img.shields.io/badge/Detection--as--Code-Linter_PASS-blue.svg)](scripts/validate_rules.py)
+[![SOAR Dispatcher](https://img.shields.io/badge/SOAR-Slack%2FDiscord%2FWebhook-purple.svg)](docs/04-deployment/TRACK2_SOAR_DISPATCHER_PLAN.md)
 [![Suricata](https://img.shields.io/badge/Suricata-8.0.6-red.svg?logo=suricata)](https://suricata.io/)
 [![Snort](https://img.shields.io/badge/Snort-3.12.2-blue.svg?logo=cisco)](https://www.snort.org/)
 [![Wazuh](https://img.shields.io/badge/Wazuh-4.14.7-0052cc.svg?logo=wazuh)](https://wazuh.com/)
 [![Hyper-V](https://img.shields.io/badge/Hyper--V-Port_Mirroring-0078d4.svg?logo=windows)](https://learn.microsoft.com/virtualization/hyper-v-on-windows/)
 [![Ubuntu](https://img.shields.io/badge/Ubuntu-22.04_LTS-E95420.svg?logo=ubuntu)](https://ubuntu.com/)
 [![MITRE ATT&CK](https://img.shields.io/badge/MITRE_ATT%26CK-v19.2-orange.svg)](https://attack.mitre.org/)
-[![Tests](https://img.shields.io/badge/Pytest-68%2F68_PASS-brightgreen.svg?logo=pytest)](tests/)
+[![Tests](https://img.shields.io/badge/Pytest-80%2F80_PASS-brightgreen.svg?logo=pytest)](tests/)
 [![Python](https://img.shields.io/badge/Python-3.13-yellow.svg?logo=python)](https://python.org/)
 
 ---
@@ -234,12 +237,22 @@ python scripts/evaluate_detection_metrics.py
 python scripts/verify_detection_tuning.py
 ```
 
-### 4. 전체 회귀 테스트 실행 (Pytest 68/68 PASS)
+### 4. 룰 무결성 린터 및 전체 회귀 테스트 (Pytest 80/80 PASS)
 ```bash
+# 1) Detection-as-Code (DaC) 룰 문법 및 무결성 린터 실행
+python scripts/validate_rules.py
+
+# 2) 80개 단위/통합 테스트 스위트 회귀 검증
 pytest -v
 ```
 
-### 5. 실시간 SOC 웹 관제 콘솔 및 AI Copilot 기동
+### 5. SOAR 실시간 침해사고 알림 디스패처 시뮬레이션
+```bash
+# 모의 침해사고 생성 및 Slack / Discord / Webhook 실시간 알림 시뮬레이션
+python scripts/simulate_soar_dispatch.py --scenario account_takeover --dry-run
+```
+
+### 6. 실시간 SOC 웹 관제 콘솔 및 AI Copilot 기동
 ```bash
 # FastAPI 기반 웹 대시보드 기동 (기본 포트: 8501)
 python -m uvicorn dashboard.app:app --host 0.0.0.0 --port 8501 --reload

@@ -3,7 +3,7 @@
 <!-- Reference: SOC Detection & Monitoring Lab LLD v1.0 (Phase 19)        -->
 <!-- ===================================================================== -->
 
-<group name="suricata,ids,">
+<group name="suricata,ids,soc_correlation,">
   <!-- Parent rule for all Suricata EVE alerts (hooks into default 86601) -->
   <rule id="100100" level="3">
     <if_sid>86601</if_sid>
@@ -50,12 +50,10 @@
     </mitre>
     <description>SOC-CRITICAL: Active Malware C2 Communication / Reverse Shell Established [$(alert.signature)]</description>
   </rule>
-</group>
 
-<!-- ===================================================================== -->
-<!-- Cross-Correlation Rules: Network Anomaly + Endpoint Host Telemetry    -->
-<!-- ===================================================================== -->
-<group name="soc_correlation,">
+  <!-- ===================================================================== -->
+  <!-- Cross-Correlation Rules: Network Anomaly + Endpoint Host Telemetry    -->
+  <!-- ===================================================================== -->
   <!-- High-Confidence SSH Brute Force: Network Connection Anomaly + Host Auth Failures -->
   <rule id="100110" level="11" timeframe="120">
     <if_matched_sid>100103</if_matched_sid>
