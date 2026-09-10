@@ -8,6 +8,10 @@
 *.pem
 *.p12
 *.pfx
+*.crt
+infrastructure/docker/ssl/*.crt
+infrastructure/docker/ssl/*.key
+!infrastructure/docker/ssl/.gitkeep
 secrets/
 credentials/
 runtime/

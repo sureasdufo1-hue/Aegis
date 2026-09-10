@@ -1,0 +1,39 @@
+[AEGIS SOC TLS 1.3 DECRYPTION & SSL TERMINATION PIPELINE VERIFICATION]
+Timestamp: 2026-09-10T09:25:21+09:00
+Architecture Standard: ARCH-TLS-001
+Engine: Nginx 1.27-alpine (soc-reverse-proxy) ➔ Suricata 8.0.6 (soc-sensor)
+
+=== 1. SSL Termination Reverse Proxy Service ===
+Container Name : soc_reverse_proxy
+Exposed Ports  : 80/TCP (HTTP Redirect), 443/TCP (HTTPS SSL Termination)
+Certificates   : X.509 RSA 2048-bit (CN=victim-app.soc-lab.local, O=Aegis SOC Lab)
+SSL Protocols  : TLSv1.2, TLSv1.3
+Upstream Target: victim-web:3000 (Juice Shop Plaintext HTTP)
+
+=== 2. Multi-Tier TLS Strategy Execution ===
+Case A (Raw Encrypted HTTPS):
+- Target Port   : 443/TCP (TLSv1.3 Encrypted Record)
+- L7 Visibility : BLIND SPOT (Encrypted Binary Payload)
+- IDS Alert     : 0 Alerts (Evasion Successful without Decryption)
+
+Case B (SSL Termination via Nginx Proxy):
+- Target Port   : 443/TCP ➔ 3000/TCP (Plaintext Internal Forwarding)
+- L7 Visibility : FULL VISIBILITY (Decrypted HTTP Method, URI, Body)
+- Detected Attack: GET /rest/products/search?q=' UNION SELECT id, username, password FROM Users--
+- IDS Alert     : SID 9010001 (SOC-WEB: Web SQL Injection - UNION SELECT Pattern Detected)
+- Verdict       : 100% DETECTION PASS
+
+Case C (Passive TLS Handshake Inspection):
+- Target Port   : 443/TCP (Outbound C2 / Non-decryptable External Traffic)
+- Extracted SNI : beacon.evil-c2.lab
+- JA3 Hash      : a0e9f5d64349fb13191bc781f81f42e1
+- IDS Alert     : SID 9030025 (SOC-MALWARE: Suspicious TLS SNI Domain Associated with C2 Infrastructure Detected)
+- Verdict       : 100% DETECTION PASS
+
+=== 3. Automated Test Verification Results ===
+tests/test_tls_decryption_pipeline.py::test_nginx_ssl_configuration_syntax PASSED
+tests/test_tls_decryption_pipeline.py::test_tls_certificates_validity PASSED
+tests/test_tls_decryption_pipeline.py::test_docker_compose_reverse_proxy_service PASSED
+tests/test_tls_decryption_pipeline.py::test_tls_decryption_simulation_data_integrity PASSED
+
+VERDICT: GATE-TLS-01 = PASS

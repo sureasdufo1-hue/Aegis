@@ -1,0 +1,86 @@
+{
+  "case_a": {
+    "timestamp": "2026-09-10T00:25:21.481471+00:00",
+    "flow_id": 880001100022331,
+    "event_type": "tls",
+    "src_ip": "10.77.20.20",
+    "src_port": 54320,
+    "dest_ip": "10.77.30.20",
+    "dest_port": 443,
+    "proto": "TCP",
+    "tls": {
+      "version": "TLSv1.3",
+      "sni": "victim-app.soc-lab.local",
+      "subject": "CN=victim-app.soc-lab.local,O=Aegis SOC Lab,C=KR",
+      "issuer": "CN=victim-app.soc-lab.local,O=Aegis SOC Lab,C=KR",
+      "ja3": {
+        "hash": "b32309a26951912be7dba376398abc3b",
+        "string": "771,4865-4866-4867-49195,0-23-65281-10-11-35-16-5-13-18-51-45-43-27-17513,29-23-24,0"
+      }
+    },
+    "l7_visibility": "ENCRYPTED (Binary Application Data)",
+    "alerts_triggered": []
+  },
+  "case_b": {
+    "timestamp": "2026-09-10T00:25:21.481471+00:00",
+    "flow_id": 880001100022332,
+    "event_type": "alert",
+    "src_ip": "10.77.20.20",
+    "src_port": 54320,
+    "dest_ip": "10.77.30.20",
+    "dest_port": 3000,
+    "proto": "TCP",
+    "alert": {
+      "action": "allowed",
+      "gid": 1,
+      "signature_id": 9010001,
+      "rev": 2,
+      "signature": "SOC-WEB: Web SQL Injection - UNION SELECT Pattern Detected",
+      "category": "Web Application Attack",
+      "severity": 1
+    },
+    "http": {
+      "hostname": "victim-app.soc-lab.local",
+      "url": "/rest/products/search?q=' UNION SELECT id, username, password FROM Users--",
+      "http_user_agent": "Mozilla/5.0 (Kali Linux) SQLMap/1.8.2#stable",
+      "http_content_type": "application/json",
+      "http_method": "GET",
+      "protocol": "HTTP/1.1",
+      "status": 200,
+      "length": 1420
+    },
+    "proxy_metadata": {
+      "ssl_terminated_by": "soc-reverse-proxy (Nginx 1.27)",
+      "decrypted_from_tls_version": "TLSv1.3",
+      "original_dst_port": 443,
+      "internal_dst_port": 3000
+    }
+  },
+  "case_c": {
+    "timestamp": "2026-09-10T00:25:21.481471+00:00",
+    "flow_id": 880001100022333,
+    "event_type": "alert",
+    "src_ip": "10.77.30.20",
+    "src_port": 49102,
+    "dest_ip": "198.51.100.44",
+    "dest_port": 443,
+    "proto": "TCP",
+    "alert": {
+      "action": "allowed",
+      "gid": 1,
+      "signature_id": 9030025,
+      "rev": 1,
+      "signature": "SOC-MALWARE: Suspicious TLS SNI Domain Associated with C2 Infrastructure Detected (.evil-c2.lab)",
+      "category": "Command and Control",
+      "severity": 1
+    },
+    "tls": {
+      "version": "TLSv1.3",
+      "sni": "beacon.evil-c2.lab",
+      "subject": "CN=evil-c2.lab",
+      "ja3": {
+        "hash": "a0e9f5d64349fb13191bc781f81f42e1"
+      }
+    }
+  }
+}
