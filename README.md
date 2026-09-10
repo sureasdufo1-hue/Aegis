@@ -2,6 +2,7 @@
 ### Enterprise Dual-IDS (Suricata 8 & Snort 3), Wazuh 4.x SIEM, Hyper-V 3-Zone Isolation & AI-Assisted Incident Triage
 
 [![CI Pipeline](https://github.com/sureasdufo1-hue/Aegis/actions/workflows/ci.yml/badge.svg)](https://github.com/sureasdufo1-hue/Aegis/actions/workflows/ci.yml)
+[![Live Showcase](https://img.shields.io/badge/Live_Showcase-GitHub_Pages-brightgreen.svg?logo=github)](https://sureasdufo1-hue.github.io/Aegis/)
 [![Detection-as-Code](https://img.shields.io/badge/Detection--as--Code-Linter_PASS-blue.svg)](scripts/validate_rules.py)
 [![SOAR Dispatcher](https://img.shields.io/badge/SOAR-Slack%2FDiscord%2FWebhook-purple.svg)](docs/04-deployment/TRACK2_SOAR_DISPATCHER_PLAN.md)
 [![TLS Decryption](https://img.shields.io/badge/TLS%20Decryption-Nginx%20SSL%20Termination-success.svg)](docs/02-architecture/TLS_DECRYPTION_AND_REVERSE_PROXY_ARCHITECTURE.md)
@@ -11,7 +12,7 @@
 [![Hyper-V](https://img.shields.io/badge/Hyper--V-Port_Mirroring-0078d4.svg?logo=windows)](https://learn.microsoft.com/virtualization/hyper-v-on-windows/)
 [![Ubuntu](https://img.shields.io/badge/Ubuntu-22.04_LTS-E95420.svg?logo=ubuntu)](https://ubuntu.com/)
 [![MITRE ATT&CK](https://img.shields.io/badge/MITRE_ATT%26CK-v19.2-orange.svg)](https://attack.mitre.org/)
-[![Tests](https://img.shields.io/badge/Pytest-84%2F84_PASS-brightgreen.svg?logo=pytest)](tests/)
+[![Tests](https://img.shields.io/badge/Pytest-87%2F87_PASS-brightgreen.svg?logo=pytest)](tests/)
 [![Python](https://img.shields.io/badge/Python-3.13-yellow.svg?logo=python)](https://python.org/)
 
 ---
@@ -238,12 +239,12 @@ python scripts/evaluate_detection_metrics.py
 python scripts/verify_detection_tuning.py
 ```
 
-### 4. 룰 무결성 린터 및 전체 회귀 테스트 (Pytest 84/84 PASS)
+### 4. 룰 무결성 린터 및 전체 회귀 테스트 (Pytest 87/87 PASS)
 ```bash
 # 1) Detection-as-Code (DaC) 룰 문법 및 무결성 린터 실행
 python scripts/validate_rules.py
 
-# 2) 84개 단위/통합 테스트 스위트 회귀 검증
+# 2) 87개 단위/통합 테스트 스위트 회귀 검증
 pytest -v
 ```
 
@@ -272,6 +273,7 @@ python -m uvicorn dashboard.app:app --host 0.0.0.0 --port 8501 --reload
 
 | 구분 | 핵심 기술 문서 | 주요 내용 및 목적 |
 |---|---|---|
+| **라이브 쇼케이스** | [**Aegis Interactive Web Showcase**](https://sureasdufo1-hue.github.io/Aegis/) | **GitHub Pages 기반 포트폴리오 웹사이트 (15단계 파이프라인, 실시간 검색 면접가이드)** |
 | **면접 방어** | [**기술 면접 방어 가이드 23선**](docs/PORTFOLIO_DEFENSE_GUIDE.md) | **기술 면접관/SOC 리드 대응용 핵심 아키텍처 및 트러블슈팅 질의응답** |
 | **공식 보고서** | [**SOC 종합관제보고서 (Word)**](docs/reports/SOC_침해유형별_탐지대응룰북_및_종합관제보고서_한글가독성_전면개정본.docx) | 18개 주석 증적 스크린샷과 7대 룰북이 수록된 공식 운영 보고서 |
 | **01. 요구사항** | [`docs/01-requirements/README.md`](docs/01-requirements/README.md) | 망분리, 듀얼 IDS, SIEM 요구사항 정의서 (FR / NFR) |

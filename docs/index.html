@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="ko" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aegis SOC Detection & Monitoring Lab | 차세대 보안관제 포트폴리오</title>
+  <meta name="description" content="Suricata 8, Snort 3, Wazuh SIEM, Detection-as-Code CI/CD, SOAR 실시간 알림, TLS 1.3 복호화 리버스 프록시를 결합한 실증형 엔터프라이즈 SOC 랩">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              dark: '#0a0f1d',
+              card: '#111827',
+              border: '#1f2937',
+              accent: '#3b82f6',
+              emerald: '#10b981',
+              crimson: '#ef4444',
+              amber: '#f59e0b',
+              purple: '#8b5cf6',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <!-- Google Fonts: Inter & Pretendard -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background-color: #0a0f1d; color: #f3f4f6; }
+    code, pre { font-family: 'Fira Code', monospace; }
+    .glass-card { background: rgba(17, 24, 39, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
+    .glow-blue { box-shadow: 0 0 25px -5px rgba(59, 130, 246, 0.3); }
+    .glow-emerald { box-shadow: 0 0 25px -5px rgba(16, 185, 129, 0.3); }
+    .glow-red { box-shadow: 0 0 25px -5px rgba(239, 68, 68, 0.3); }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #0a0f1d; }
+    ::-webkit-scrollbar-thumb { background: #1f2937; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #374151; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-blue-600 selection:text-white">
+
+  <!-- ==================== HEADER & NAVBAR ==================== -->
+  <header class="sticky top-0 z-50 glass-card border-b border-gray-800/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <span class="text-2xl">🛡️</span>
+        <div>
+          <span class="font-extrabold text-xl tracking-tight bg-gradient-to-r from-blue-400 via-indigo-300 to-emerald-400 bg-clip-text text-transparent">Aegis SOC Lab</span>
+          <span class="hidden sm:inline-block ml-2 text-xs px-2 py-0.5 rounded bg-blue-900/60 text-blue-300 border border-blue-700/50">v1.2 Release</span>
+        </div>
+      </div>
+      <nav class="hidden md:flex items-center space-x-6 text-sm font-medium text-gray-300">
+        <a href="#overview" class="hover:text-blue-400 transition-colors">개요</a>
+        <a href="#architecture" class="hover:text-blue-400 transition-colors">아키텍처</a>
+        <a href="#benchmark" class="hover:text-blue-400 transition-colors">정량 성과</a>
+        <a href="#pipeline" class="hover:text-blue-400 transition-colors">15단계 증적</a>
+        <a href="#defense" class="hover:text-blue-400 transition-colors">면접 방어 23선</a>
+      </nav>
+      <div class="flex items-center space-x-3">
+        <a href="https://github.com/sureasdufo1-hue/Aegis" target="_blank" rel="noopener noreferrer" 
+           class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-200 text-xs font-semibold border border-gray-700 transition-all shadow-sm">
+          <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          <span>GitHub</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== HERO SECTION ==================== -->
+  <section id="overview" class="relative overflow-hidden py-20 lg:py-28 border-b border-gray-800/80">
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-900/20 via-transparent to-transparent pointer-events-none"></div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+      <div class="text-center max-w-4xl mx-auto space-y-6">
+        
+        <!-- Status Badges -->
+        <div class="flex flex-wrap items-center justify-center gap-2">
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-950/80 text-emerald-400 border border-emerald-700/60">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 mr-2 animate-pulse"></span>
+            CI: PASS (84/84 Tests)
+          </span>
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-blue-950/80 text-blue-400 border border-blue-700/60">
+            Detection-as-Code Linter: PASS
+          </span>
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-purple-950/80 text-purple-400 border border-purple-700/60">
+            SOAR Dispatcher Active
+          </span>
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-rose-950/80 text-rose-400 border border-rose-700/60">
+            TLS 1.3 Decryption Pipeline
+          </span>
+        </div>
+
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-tight">
+          엔터프라이즈 실증형 <br class="hidden sm:inline">
+          <span class="bg-gradient-to-r from-blue-400 via-indigo-300 to-emerald-400 bg-clip-text text-transparent">듀얼 IDS & Wazuh SIEM</span> 관제 랩
+        </h1>
+
+        <p class="text-lg sm:text-xl text-gray-300 font-normal leading-relaxed">
+          "패킷이 보이지 않으면 IDS를 올리지 않는다"는 철저한 인프라 원칙 위에,  
+          <strong class="text-white font-semibold">Suricata 8.0.6</strong> 실시간 탐지와 <strong class="text-white font-semibold">Snort 3.12.2</strong> 교차 검증,  
+          그리고 <strong class="text-white font-semibold">Wazuh 4.14.7 SIEM</strong>과 <strong class="text-white font-semibold">15단계 객관적 증적 파이프라인</strong>으로 증명된 보안관제 포트폴리오입니다.
+        </p>
+
+        <!-- CTA Buttons -->
+        <div class="pt-4 flex flex-wrap items-center justify-center gap-4">
+          <a href="#benchmark" class="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm transition-all glow-blue shadow-lg">
+            📊 정량 벤치마크 (Precision 92.3%)
+          </a>
+          <a href="#defense" class="px-6 py-3 rounded-xl glass-card hover:bg-gray-800 text-gray-200 font-semibold text-sm transition-all border border-gray-700">
+            🛡️ 기술 면접 방어 가이드 23선
+          </a>
+          <a href="https://github.com/sureasdufo1-hue/Aegis" target="_blank" class="px-6 py-3 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-300 font-semibold text-sm transition-all border border-gray-700">
+            💻 저장소 코드 보기
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 6 CORE PILLARS ==================== -->
+  <section class="py-16 border-b border-gray-800/80 bg-gray-950/40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto mb-12">
+        <h2 class="text-xs uppercase tracking-widest text-blue-400 font-bold">Key Architectural Innovations</h2>
+        <p class="text-2xl sm:text-3xl font-bold text-white mt-2">Aegis SOC Lab의 6대 핵심 기술 혁신 축</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Card 1 -->
+        <div class="glass-card p-6 rounded-2xl relative overflow-hidden group hover:border-blue-500/50 transition-all">
+          <div class="w-10 h-10 rounded-xl bg-blue-900/50 text-blue-400 flex items-center justify-center text-xl font-bold mb-4">01</div>
+          <h3 class="text-lg font-bold text-white mb-2">3-Zone 격리 & 스텔스 센서</h3>
+          <p class="text-sm text-gray-400 leading-relaxed">
+            Hyper-V vSwitch 기반의 ATTACK, VICTIM, MGMT 망분리. 센서 모니터링 NIC는 L3 IP를 제거하여 공격 표면을 원천 차단한 스텔스 모드로 운영.
+          </p>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="glass-card p-6 rounded-2xl relative overflow-hidden group hover:border-emerald-500/50 transition-all">
+          <div class="w-10 h-10 rounded-xl bg-emerald-900/50 text-emerald-400 flex items-center justify-center text-xl font-bold mb-4">02</div>
+          <h3 class="text-lg font-bold text-white mb-2">Suricata & Snort 듀얼 IDS</h3>
+          <p class="text-sm text-gray-400 leading-relaxed">
+            Suricata 8.0.6(AF_PACKET 기반 인라인/패시브 실시간 탐지)과 Snort 3.12.2(오프라인 PCAP 교차검증) 듀얼 엔진으로 단일 벤더 의존성 극복.
+          </p>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="glass-card p-6 rounded-2xl relative overflow-hidden group hover:border-amber-500/50 transition-all">
+          <div class="w-10 h-10 rounded-xl bg-amber-900/50 text-amber-400 flex items-center justify-center text-xl font-bold mb-4">03</div>
+          <h3 class="text-lg font-bold text-white mb-2">Wazuh 86601 버그 해결 & SIEM</h3>
+          <p class="text-sm text-gray-400 leading-relaxed">
+            Suricata EVE JSON 인덱싱 시 발생하는 기본 룰 86601 누락 결함을 커스텀 상위 디코더(100100 계열)로 해결하여 전 파이프라인 수집 실증.
+          </p>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="glass-card p-6 rounded-2xl relative overflow-hidden group hover:border-purple-500/50 transition-all">
+          <div class="w-10 h-10 rounded-xl bg-purple-900/50 text-purple-400 flex items-center justify-center text-xl font-bold mb-4">04</div>
+          <h3 class="text-lg font-bold text-white mb-2">정량적 룰 튜닝 & 오탐 격리</h3>
+          <p class="text-sm text-gray-400 leading-relaxed">
+            단어 경계(\b) 및 정규식 최적화를 통해 정상 트래픽 오탐률을 30%에서 10%로 급감시키고, SQLi 정상 검색어 오탐을 0.0%로 완전 박멸.
+          </p>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="glass-card p-6 rounded-2xl relative overflow-hidden group hover:border-crimson-500/50 transition-all">
+          <div class="w-10 h-10 rounded-xl bg-rose-900/50 text-rose-400 flex items-center justify-center text-xl font-bold mb-4">05</div>
+          <h3 class="text-lg font-bold text-white mb-2">Detection-as-Code & SOAR</h3>
+          <p class="text-sm text-gray-400 leading-relaxed">
+            GitHub Actions CI 파이프라인 및 룰 린터(Errors: 0) 자동화. Critical 사고 시 10분 쿨다운과 함께 Slack/Discord/Webhook으로 방화벽 차단 명령 실시간 전파.
+          </p>
+        </div>
+
+        <!-- Card 6 -->
+        <div class="glass-card p-6 rounded-2xl relative overflow-hidden group hover:border-cyan-500/50 transition-all">
+          <div class="w-10 h-10 rounded-xl bg-cyan-900/50 text-cyan-400 flex items-center justify-center text-xl font-bold mb-4">06</div>
+          <h3 class="text-lg font-bold text-white mb-2">TLS 1.3 복호화 리버스 프록시</h3>
+          <p class="text-sm text-gray-400 leading-relaxed">
+            Nginx SSL Termination을 통해 암호화된 HTTPS 인바운드를 평문 L7으로 변환 후 미러링(SID 9010001 탐지) 및 패시브 SNI/JA3 C2 도메인 탐지 체계 구축.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== QUANTITATIVE BENCHMARK ==================== -->
+  <section id="benchmark" class="py-16 border-b border-gray-800/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto mb-12">
+        <h2 class="text-xs uppercase tracking-widest text-emerald-400 font-bold">Empirical Evaluation Metrics</h2>
+        <p class="text-2xl sm:text-3xl font-bold text-white mt-2">정량적 탐지 성과 벤치마크 (Before vs After)</p>
+        <p class="text-sm text-gray-400 mt-2">`evidence/EV-TUNE-001/evaluation_benchmark.json` 실측 데이터 기반</p>
+      </div>
+
+      <!-- Metrics Cards -->
+      <div class="grid grid-cols-2 lg:grid-cols-6 gap-4 mb-10">
+        <div class="glass-card p-4 rounded-xl text-center">
+          <div class="text-xs text-gray-400 font-medium">정밀도 (Precision)</div>
+          <div class="text-2xl sm:text-3xl font-extrabold text-emerald-400 mt-1">92.31%</div>
+          <div class="text-xs text-emerald-500 font-semibold mt-1">+12.31%p 개선</div>
+        </div>
+        <div class="glass-card p-4 rounded-xl text-center">
+          <div class="text-xs text-gray-400 font-medium">재현율 (Recall)</div>
+          <div class="text-2xl sm:text-3xl font-extrabold text-blue-400 mt-1">85.71%</div>
+          <div class="text-xs text-gray-400 font-semibold mt-1">탐지력 100% 보존</div>
+        </div>
+        <div class="glass-card p-4 rounded-xl text-center">
+          <div class="text-xs text-gray-400 font-medium">F1-Score</div>
+          <div class="text-2xl sm:text-3xl font-extrabold text-purple-400 mt-1">88.89%</div>
+          <div class="text-xs text-purple-400 font-semibold mt-1">+6.13%p 개선</div>
+        </div>
+        <div class="glass-card p-4 rounded-xl text-center">
+          <div class="text-xs text-gray-400 font-medium">전체 오탐률 (FPR)</div>
+          <div class="text-2xl sm:text-3xl font-extrabold text-rose-400 mt-1">10.00%</div>
+          <div class="text-xs text-rose-400 font-semibold mt-1">-20.00%p 급감</div>
+        </div>
+        <div class="glass-card p-4 rounded-xl text-center">
+          <div class="text-xs text-gray-400 font-medium">종합 정확도 (ACC)</div>
+          <div class="text-2xl sm:text-3xl font-extrabold text-amber-400 mt-1">87.50%</div>
+          <div class="text-xs text-amber-400 font-semibold mt-1">+8.33%p 개선</div>
+        </div>
+        <div class="glass-card p-4 rounded-xl text-center">
+          <div class="text-xs text-gray-400 font-medium">SQLi 오탐률</div>
+          <div class="text-2xl sm:text-3xl font-extrabold text-emerald-400 mt-1">0.00%</div>
+          <div class="text-xs text-emerald-400 font-semibold mt-1">완전 박멸 (-66.7%p)</div>
+        </div>
+      </div>
+
+      <!-- Detailed Comparison Table -->
+      <div class="glass-card rounded-2xl overflow-hidden shadow-xl border border-gray-800">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm">
+            <thead class="bg-gray-900/80 text-gray-300 text-xs uppercase border-b border-gray-800">
+              <tr>
+                <th class="px-6 py-4 font-semibold">평가 지표 (Evaluation Metric)</th>
+                <th class="px-6 py-4 font-semibold text-center">베이스라인 (rev:1)</th>
+                <th class="px-6 py-4 font-semibold text-center text-emerald-400">튜닝 후 (rev:2)</th>
+                <th class="px-6 py-4 font-semibold text-center">개선 성과 (Delta)</th>
+                <th class="px-6 py-4 font-semibold">비고 및 달성 의미</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-800/60 text-gray-300">
+              <tr class="hover:bg-gray-800/30">
+                <td class="px-6 py-4 font-medium text-white">정밀도 (Precision)</td>
+                <td class="px-6 py-4 text-center font-mono">80.00%</td>
+                <td class="px-6 py-4 text-center font-mono font-bold text-emerald-400 bg-emerald-950/20">92.31%</td>
+                <td class="px-6 py-4 text-center font-mono text-emerald-400 font-bold">+12.31%p</td>
+                <td class="px-6 py-4 text-gray-400">알람 신뢰도 대폭 향상, 관제 분석관의 경보 피로도 실질적 경감</td>
+              </tr>
+              <tr class="hover:bg-gray-800/30">
+                <td class="px-6 py-4 font-medium text-white">재현율 (Recall)</td>
+                <td class="px-6 py-4 text-center font-mono">85.71%</td>
+                <td class="px-6 py-4 text-center font-mono font-bold text-blue-400 bg-blue-950/20">85.71%</td>
+                <td class="px-6 py-4 text-center font-mono text-gray-400">0.00%p (유지)</td>
+                <td class="px-6 py-4 text-gray-400">오탐 제거 과정에서 실제 공격 탐지력 100% 온전 보존 확인</td>
+              </tr>
+              <tr class="hover:bg-gray-800/30">
+                <td class="px-6 py-4 font-medium text-white">F1-Score</td>
+                <td class="px-6 py-4 text-center font-mono">82.76%</td>
+                <td class="px-6 py-4 text-center font-mono font-bold text-purple-400 bg-purple-950/20">88.89%</td>
+                <td class="px-6 py-4 text-center font-mono text-purple-400 font-bold">+6.13%p</td>
+                <td class="px-6 py-4 text-gray-400">탐지 정확도와 커버리지의 종합 균형(Harmonic Mean) 최적화 달성</td>
+              </tr>
+              <tr class="hover:bg-gray-800/30">
+                <td class="px-6 py-4 font-medium text-white">오탐률 (False Positive Rate)</td>
+                <td class="px-6 py-4 text-center font-mono text-rose-400">30.00%</td>
+                <td class="px-6 py-4 text-center font-mono font-bold text-emerald-400 bg-emerald-950/20">10.00%</td>
+                <td class="px-6 py-4 text-center font-mono text-rose-400 font-bold">-20.00%p</td>
+                <td class="px-6 py-4 text-gray-400">전체 정상 트래픽 대비 오탐 발생률을 기존 대비 3분의 1로 급감</td>
+              </tr>
+              <tr class="hover:bg-gray-800/30">
+                <td class="px-6 py-4 font-medium text-white">SQLi 전용 오탐률</td>
+                <td class="px-6 py-4 text-center font-mono text-rose-400">66.67%</td>
+                <td class="px-6 py-4 text-center font-mono font-bold text-emerald-400 bg-emerald-950/20">0.00%</td>
+                <td class="px-6 py-4 text-center font-mono text-emerald-400 font-bold">-66.67%p</td>
+                <td class="px-6 py-4 text-gray-400">단어 경계(\b) 튜닝으로 "union" 포함 정상 텍스트 오탐 완전 박멸</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 15-STEP EVIDENCE PIPELINE ==================== -->
+  <section id="pipeline" class="py-16 border-b border-gray-800/80 bg-gray-950/40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto mb-12">
+        <h2 class="text-xs uppercase tracking-widest text-blue-400 font-bold">End-to-End Proof of Pipeline</h2>
+        <p class="text-2xl sm:text-3xl font-bold text-white mt-2">15단계 무결성 증적 파이프라인</p>
+        <p class="text-sm text-gray-400 mt-2">공격 발생부터 패킷 미러링, SIEM 수집, SOAR 전파 및 방화벽 격리까지</p>
+      </div>
+
+      <div class="relative border-l border-gray-700 ml-4 md:ml-32 space-y-8 pb-4">
+        <!-- Step 1-3 -->
+        <div class="relative pl-8 group">
+          <span class="absolute -left-3 top-1 w-6 h-6 rounded-full bg-blue-600 border-4 border-gray-900 flex items-center justify-center text-xs font-bold text-white">1</span>
+          <div class="glass-card p-5 rounded-xl border border-gray-800 hover:border-blue-500/40 transition-all">
+            <span class="text-xs font-mono text-blue-400 uppercase tracking-wider font-semibold">Phase 01-08: Network & Capture Layer</span>
+            <h4 class="text-base font-bold text-white mt-1">공격 유입 ➔ Gateway 방화벽 통제 ➔ Hyper-V 포트 미러링</h4>
+            <p class="text-xs text-gray-400 mt-1">공격자(10.77.20.20)가 희생자(10.77.30.20)로 유입한 패킷이 무IP 스텔스 센서(eth1)로 손실 없이 전송됨을 tcpdump로 입증 (GATE-NET-01 PASS).</p>
+            <div class="mt-2 text-xs font-mono text-gray-500">증적: EV-NET-INFRA-001, EV-MIRROR-CONFIG-001</div>
+          </div>
+        </div>
+
+        <!-- Step 4-6 -->
+        <div class="relative pl-8 group">
+          <span class="absolute -left-3 top-1 w-6 h-6 rounded-full bg-emerald-600 border-4 border-gray-900 flex items-center justify-center text-xs font-bold text-white">2</span>
+          <div class="glass-card p-5 rounded-xl border border-gray-800 hover:border-emerald-500/40 transition-all">
+            <span class="text-xs font-mono text-emerald-400 uppercase tracking-wider font-semibold">Phase 09-14: Dual IDS Detection & PCAP</span>
+            <h4 class="text-base font-bold text-white mt-1">Suricata 8.0.6 실시간 발화 ➔ eve.json ➔ Snort 3.12.2 오프라인 교차검증</h4>
+            <p class="text-xs text-gray-400 mt-1">AF_PACKET 고속 캡처로 9000계열 커스텀 룰 발화 및 eve.json 실시간 로깅. 동일 PCAP을 Snort 3으로 오프라인 재생하여 100% 일치성 확인.</p>
+            <div class="mt-2 text-xs font-mono text-gray-500">증적: EV-SURI-001, EV-PCAP-001, EV-SNORT-001</div>
+          </div>
+        </div>
+
+        <!-- Step 7-9 -->
+        <div class="relative pl-8 group">
+          <span class="absolute -left-3 top-1 w-6 h-6 rounded-full bg-purple-600 border-4 border-gray-900 flex items-center justify-center text-xs font-bold text-white">3</span>
+          <div class="glass-card p-5 rounded-xl border border-gray-800 hover:border-purple-500/40 transition-all">
+            <span class="text-xs font-mono text-purple-400 uppercase tracking-wider font-semibold">Phase 15-20: Wazuh SIEM & Ingestion Pipeline</span>
+            <h4 class="text-base font-bold text-white mt-1">Wazuh Agent ➔ Manager (1514/TCP) ➔ 86601 디코더 패치 ➔ Indexer 색인</h4>
+            <p class="text-xs text-gray-400 mt-1">Suricata eve.json을 Wazuh Agent가 수집하여 전송. Wazuh 86601 버그를 패치한 커스텀 디코더로 OpenSearch(9200)에 완벽 색인 및 대시보드 시각화.</p>
+            <div class="mt-2 text-xs font-mono text-gray-500">증적: EV-WAZUH-001, EV-E2E-002</div>
+          </div>
+        </div>
+
+        <!-- Step 10-12 -->
+        <div class="relative pl-8 group">
+          <span class="absolute -left-3 top-1 w-6 h-6 rounded-full bg-amber-600 border-4 border-gray-900 flex items-center justify-center text-xs font-bold text-white">4</span>
+          <div class="glass-card p-5 rounded-xl border border-gray-800 hover:border-amber-500/40 transition-all">
+            <span class="text-xs font-mono text-amber-400 uppercase tracking-wider font-semibold">Phase 21-27: Correlation & Tuning & HITL</span>
+            <h4 class="text-base font-bold text-white mt-1">멀티스테이지 킬체인 상관분석 ➔ 룰 튜닝 ➔ RAG AI 가드레일 승인 큐</h4>
+            <p class="text-xs text-gray-400 mt-1">정찰➔익스플로잇➔계정탈취를 단일 사고로 묶는 Correlation Engine v1.0. 단어 경계 튜닝 및 Protected Assets를 보호하는 Human-in-the-loop 격리 제어.</p>
+            <div class="mt-2 text-xs font-mono text-gray-500">증적: EV-ANALYSIS-001, EV-TUNE-001, EV-E2E-001</div>
+          </div>
+        </div>
+
+        <!-- Step 13-15 -->
+        <div class="relative pl-8 group">
+          <span class="absolute -left-3 top-1 w-6 h-6 rounded-full bg-rose-600 border-4 border-gray-900 flex items-center justify-center text-xs font-bold text-white">5</span>
+          <div class="glass-card p-5 rounded-xl border border-gray-800 hover:border-rose-500/40 transition-all">
+            <span class="text-xs font-mono text-rose-400 uppercase tracking-wider font-semibold">Track 1-3: DaC CI/CD ➔ SOAR Dispatcher ➔ TLS 1.3 Decryption</span>
+            <h4 class="text-base font-bold text-white mt-1">Detection-as-Code 자동 린트 ➔ Slack/Discord 실시간 전파 ➔ Nginx SSL 종단</h4>
+            <p class="text-xs text-gray-400 mt-1">GitHub Actions 룰 무결성 검증, 10분 쿨다운 SOAR 경보 푸시, Nginx SSL Termination 기반의 L7 복호화 평문 미러링 실증 파이프라인 완비.</p>
+            <div class="mt-2 text-xs font-mono text-gray-500">증적: EV-SOAR-001, EV-TLS-001, .github/workflows/ci.yml</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== DEFENSE GUIDE 23 FAQ ==================== -->
+  <section id="defense" class="py-16 border-b border-gray-800/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto mb-10">
+        <h2 class="text-xs uppercase tracking-widest text-blue-400 font-bold">Interview Technical Defense Guide</h2>
+        <p class="text-2xl sm:text-3xl font-bold text-white mt-2">기술 면접 방어 가이드 23선 (인터랙티브 검색)</p>
+        <p class="text-sm text-gray-400 mt-2">SOC 리드 및 보안 아키텍트 면접관의 고난도 질문에 대응하는 실측 근거 기반 답변집</p>
+
+        <!-- Search Input -->
+        <div class="mt-6 max-w-md mx-auto relative">
+          <input type="text" id="faqSearch" placeholder="키워드 검색 (예: 포트 미러링, Wazuh 버그, TLS, 쿨다운, RAG)..." 
+                 class="w-full px-4 py-3 rounded-xl bg-gray-900/90 border border-gray-700 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all shadow-inner">
+          <span class="absolute right-3.5 top-3.5 text-gray-500">🔍</span>
+        </div>
+      </div>
+
+      <!-- FAQ Accordion List -->
+      <div id="faqList" class="max-w-4xl mx-auto space-y-3">
+
+        <!-- Q1 -->
+        <div class="faq-item glass-card rounded-xl border border-gray-800 overflow-hidden">
+          <button class="faq-btn w-full px-6 py-4 text-left flex items-center justify-between text-sm font-semibold text-gray-200 hover:text-blue-400 transition-colors">
+            <span>Q1. Hyper-V 기반 3개 격리망(ZONE-ATTACK, VICTIM, MGMT)을 설계한 보안 아키텍처적 이유는?</span>
+            <span class="faq-icon text-gray-500 text-lg">+</span>
+          </button>
+          <div class="faq-content hidden px-6 pb-5 text-xs sm:text-sm text-gray-400 leading-relaxed border-t border-gray-800/60 pt-3">
+            엔터프라이즈 환경에서는 외부 위협 구역과 내부 서버, 관리망이 엄격히 망분리되어야 합니다. 본 랩은 단일 호스트 내에서 3개의 가상 스위치를 구성하고, 공격망에서 관리망으로의 통신을 게이트웨이 nftables의 <code>DEFAULT DROP</code> 정책으로 원천 차단하여 물리 망분리에 준하는 격리를 구현했습니다.
+          </div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="faq-item glass-card rounded-xl border border-gray-800 overflow-hidden">
+          <button class="faq-btn w-full px-6 py-4 text-left flex items-center justify-between text-sm font-semibold text-gray-200 hover:text-blue-400 transition-colors">
+            <span>Q2. 센서 VM의 모니터링 NIC(nic-monitor)에 L3 IP 주소를 부여하지 않은 이유는?</span>
+            <span class="faq-icon text-gray-500 text-lg">+</span>
+          </button>
+          <div class="faq-content hidden px-6 pb-5 text-xs sm:text-sm text-gray-400 leading-relaxed border-t border-gray-800/60 pt-3">
+            <strong>공격 표면의 원천 제거:</strong> 센서 인터페이스에 IP가 있으면 공격자가 역스캔으로 IDS 존재를 식별하거나 타깃 DoS/RCE 공격을 가할 수 있습니다. L3 IP가 없으면 커널이 ARP나 ICMP를 일절 전송하지 않아 공격자가 탐지 장비의 존재를 전혀 눈치챌 수 없는 <strong>스텔스 센서(Stealth Sensor)</strong>가 완성됩니다.
+          </div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="faq-item glass-card rounded-xl border border-gray-800 overflow-hidden">
+          <button class="faq-btn w-full px-6 py-4 text-left flex items-center justify-between text-sm font-semibold text-gray-200 hover:text-blue-400 transition-colors">
+            <span>Q3. "PACKET VISIBILITY BEFORE IDS" 원칙과 실무 검증 절차는?</span>
+            <span class="faq-icon text-gray-500 text-lg">+</span>
+          </button>
+          <div class="faq-content hidden px-6 pb-5 text-xs sm:text-sm text-gray-400 leading-relaxed border-t border-gray-800/60 pt-3">
+            패킷이 미러링되지 않는 상태에서 상위 IDS나 SIEM을 구축하는 것은 무의미합니다. 본 랩은 Attacker에서 Victim으로 제어된 ICMP 핑을 발송하고, 센서의 모니터링 NIC에서 <code>tcpdump</code>로 양방향 패킷이 무손실 수신되는 것을 직접 확인한 뒤에야 <code>GATE-NET-01 PASS</code>를 승인하고 Suricata 설치를 시작했습니다.
+          </div>
+        </div>
+
+        <!-- Q4 -->
+        <div class="faq-item glass-card rounded-xl border border-gray-800 overflow-hidden">
+          <button class="faq-btn w-full px-6 py-4 text-left flex items-center justify-between text-sm font-semibold text-gray-200 hover:text-blue-400 transition-colors">
+            <span>Q4. HTTPS 등 암호화 트래픽 환경에서 IDS의 비가시성을 어떻게 극복하나요?</span>
+            <span class="faq-icon text-gray-500 text-lg">+</span>
+          </button>
+          <div class="faq-content hidden px-6 pb-5 text-xs sm:text-sm text-gray-400 leading-relaxed border-t border-gray-800/60 pt-3">
+            <strong>2단계 전략:</strong> 1) 인바운드 웹 공격은 Nginx SSL Termination 리버스 프록시 후단 평문 미러링을 통해 L7 HTTP 페이로드(SQLi, XSS)를 100% 검사(ARCH-TLS-001). 2) 외부 C2 역접속 등 복호화가 불가능한 트래픽은 핸드셰이크 단계의 SNI 도메인(<code>tls.sni</code>) 및 인증서 Subject(<code>tls.cert_subject</code>) 메타데이터로 탐지합니다.
+          </div>
+        </div>
+
+        <!-- Q11 -->
+        <div class="faq-item glass-card rounded-xl border border-gray-800 overflow-hidden">
+          <button class="faq-btn w-full px-6 py-4 text-left flex items-center justify-between text-sm font-semibold text-gray-200 hover:text-blue-400 transition-colors">
+            <span>Q11. Wazuh 4.x에서 Suricata EVE 86601 디코더 상속 버그는 무엇이며 어떻게 해결했나요?</span>
+            <span class="faq-icon text-gray-500 text-lg">+</span>
+          </button>
+          <div class="faq-content hidden px-6 pb-5 text-xs sm:text-sm text-gray-400 leading-relaxed border-t border-gray-800/60 pt-3">
+            Wazuh 기본 Suricata 룰 86601은 <code>no_full_log</code> 옵션으로 인해 하위 커스텀 룰 작성 시 <code>alert.signature_id</code> 필드가 상속되지 않아 이벤트가 증발하는 치명적 결함이 있습니다. 본 랩은 부모 룰 100100을 신설하여 86601을 명시적 상속하고 필드 추출 정규식을 오버라이드하여 전 파이프라인 색인을 복원했습니다.
+          </div>
+        </div>
+
+        <!-- Q19 -->
+        <div class="faq-item glass-card rounded-xl border border-gray-800 overflow-hidden">
+          <button class="faq-btn w-full px-6 py-4 text-left flex items-center justify-between text-sm font-semibold text-gray-200 hover:text-blue-400 transition-colors">
+            <span>Q19. AI SOC Copilot 도입 시 환각 및 오차단을 막는 4중 보안 가드레일은?</span>
+            <span class="faq-icon text-gray-500 text-lg">+</span>
+          </button>
+          <div class="faq-content hidden px-6 pb-5 text-xs sm:text-sm text-gray-400 leading-relaxed border-t border-gray-800/60 pt-3">
+            1) 사내 표준 룰북만 검색하는 <strong>RAG 제한</strong>, 2) 게이트웨이/DNS/SIEM IP를 강제 보호하는 <strong>Protected Assets 필터</strong>, 3) AI의 단독 실행을 금지하고 관제 요원의 수동 승인을 거치는 <strong>HITL(Human-in-the-Loop) 승인 큐</strong>, 4) 결정론적 <strong>Temperature 0.1 고정</strong>으로 AI의 자의적 오차단을 100% 방지합니다.
+          </div>
+        </div>
+
+        <!-- Q21 (Track 1) -->
+        <div class="faq-item glass-card rounded-xl border border-gray-800 overflow-hidden">
+          <button class="faq-btn w-full px-6 py-4 text-left flex items-center justify-between text-sm font-semibold text-gray-200 hover:text-blue-400 transition-colors">
+            <span>Q21. Detection-as-Code(DaC) CI/CD 파이프라인과 룰 무결성 린터는 어떻게 구현되었나요?</span>
+            <span class="faq-icon text-gray-500 text-lg">+</span>
+          </button>
+          <div class="faq-content hidden px-6 pb-5 text-xs sm:text-sm text-gray-400 leading-relaxed border-t border-gray-800/60 pt-3">
+            GitHub Actions 워크플로우(<code>.github/workflows/ci.yml</code>)와 자체 린터(<code>scripts/validate_rules.py</code>)를 구축했습니다. Suricata 47개, Snort 28개, Wazuh 7개 총 82개 룰에 대해 SID 할당 범위(9000~9099 / 9100~9199), 중복 SID, 필수 태그(msg, sid, rev, description)를 커밋 시 자동 검증하여 운영 무결성을 보장합니다.
+          </div>
+        </div>
+
+        <!-- Q22 (Track 2) -->
+        <div class="faq-item glass-card rounded-xl border border-gray-800 overflow-hidden">
+          <button class="faq-btn w-full px-6 py-4 text-left flex items-center justify-between text-sm font-semibold text-gray-200 hover:text-blue-400 transition-colors">
+            <span>Q22. 1급 침해사고 시 모바일/메신저 SOAR 실시간 전파와 경보 피로도(Alert Fatigue) 방지책은?</span>
+            <span class="faq-icon text-gray-500 text-lg">+</span>
+          </button>
+          <div class="faq-content hidden px-6 pb-5 text-xs sm:text-sm text-gray-400 leading-relaxed border-t border-gray-800/60 pt-3">
+            Level 14 Critical(계정 탈취, C2 비콘) 발생 시 Slack Block Kit, Discord Embed, Webhook으로 즉시 전파됩니다. 메시지에는 초동 조치용 방화벽 격리 명령어(<code>nft add element ...</code>)가 동봉됩니다. 또한 동일 IP에 대해 <strong>10분 슬라이딩 윈도우 쿨다운</strong>과 단순 Ping 등 <strong>비위협 진단 트래픽 억제 필터</strong>를 적용하여 관제 요원의 경보 피로도를 방지합니다.
+          </div>
+        </div>
+
+        <!-- Q23 (Track 3) -->
+        <div class="faq-item glass-card rounded-xl border border-gray-800 overflow-hidden">
+          <button class="faq-btn w-full px-6 py-4 text-left flex items-center justify-between text-sm font-semibold text-gray-200 hover:text-blue-400 transition-colors">
+            <span>Q23. HTTPS 환경에서 Nginx SSL Termination 리버스 프록시와 패시브 TLS 실동작 구조는?</span>
+            <span class="faq-icon text-gray-500 text-lg">+</span>
+          </button>
+          <div class="faq-content hidden px-6 pb-5 text-xs sm:text-sm text-gray-400 leading-relaxed border-t border-gray-800/60 pt-3">
+            <code>soc-reverse-proxy</code>(Nginx 1.27) 컨테이너가 443(HTTPS)을 수신하여 TLS 1.3을 복호화하고 백엔드 웹서버로 평문 HTTP를 전달합니다. Suricata는 후단 미러링을 통해 평문 L7 패킷을 검사하여 SQL Injection(SID 9010001)을 100% 정상 발화합니다. 외부 C2 트래픽은 패시브 핸드셰이크 검사(SID 9030025, 9030026)를 병행하여 다계층 가시성을 실증했습니다.
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="py-12 glass-card border-t border-gray-800/80 mt-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-xs text-gray-500 space-y-3">
+      <div class="flex items-center justify-center space-x-4 text-gray-400">
+        <a href="https://github.com/sureasdufo1-hue/Aegis" target="_blank" class="hover:text-blue-400 transition-colors">GitHub Repository</a>
+        <span>•</span>
+        <a href="https://github.com/sureasdufo1-hue/Aegis/blob/main/docs/PORTFOLIO_DEFENSE_GUIDE.md" target="_blank" class="hover:text-blue-400 transition-colors">면접 방어 가이드 원문</a>
+        <span>•</span>
+        <a href="https://github.com/sureasdufo1-hue/Aegis/blob/main/README.md" target="_blank" class="hover:text-blue-400 transition-colors">README Documentation</a>
+      </div>
+      <p>Aegis SOC Detection & Monitoring Lab • Enterprise Security Engineering Portfolio</p>
+      <p class="text-gray-600">Built with Suricata 8.0.6, Snort 3.12.2, Wazuh 4.14.7, Hyper-V, FastAPI, Docker & Python 3.13</p>
+    </div>
+  </footer>
+
+  <!-- ==================== INTERACTIVE JAVASCRIPT ==================== -->
+  <script>
+    // FAQ Accordion Toggle
+    document.querySelectorAll('.faq-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const content = btn.nextElementSibling;
+        const icon = btn.querySelector('.faq-icon');
+        const isOpen = !content.classList.contains('hidden');
+        
+        // Toggle current item
+        if (isOpen) {
+          content.classList.add('hidden');
+          icon.textContent = '+';
+        } else {
+          content.classList.remove('hidden');
+          icon.textContent = '−';
+        }
+      });
+    });
+
+    // Real-Time FAQ Search Filter
+    const searchInput = document.getElementById('faqSearch');
+    const faqItems = document.querySelectorAll('.faq-item');
+
+    searchInput.addEventListener('input', (e) => {
+      const query = e.target.value.toLowerCase().trim();
+      faqItems.forEach(item => {
+        const text = item.textContent.toLowerCase();
+        if (text.includes(query)) {
+          item.style.display = 'block';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    });
+  </script>
+</body>
+</html>
