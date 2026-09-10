@@ -35,8 +35,8 @@ def test_github_pages_core_sections_presence():
     # 15-Step Pipeline
     assert "15단계 무결성 증적 파이프라인" in html
 
-    # Defense Guide 23 FAQ & Search
-    assert "기술 면접 방어 가이드 23선" in html
+    # Technical Q&A 23 FAQ & Search
+    assert "실무 기술 Q&A 23선" in html
     assert "id=\"faqSearch\"" in html
     assert "id=\"faqList\"" in html
     assert "Q1." in html

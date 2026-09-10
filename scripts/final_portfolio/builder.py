@@ -81,7 +81,7 @@ def build_master_portfolio_document():
     p_sub.paragraph_format.space_after = Pt(32)
     r_sub = p_sub.add_run(
         "듀얼 IDS(Suricata 8·Snort 3), SIEM 디코딩 해결, 7대 침해대응 룰북, 4중 AI 가드레일, "
-        "DaC CI/CD, SOAR 알림, TLS 1.3 복호화 및 실무 면접 방어 가이드 (23선)"
+        "DaC CI/CD, SOAR 알림, TLS 1.3 복호화 및 실무 기술 Q&A 가이드 (23선)"
     )
     format_run(r_sub, font_name="맑은 고딕", size_pt=11, bold=False, color_rgb=(70, 70, 70))
 

@@ -1,5 +1,5 @@
 # 🛡️ Aegis 차세대 엔터프라이즈 보안관제 실무 기술 포트폴리오 및 마스터 종합보고서
-> **부제**: 듀얼 IDS(Suricata 8·Snort 3), SIEM 디코딩 해결, 7대 침해대응 룰북, 4중 AI 가드레일, DaC CI/CD, SOAR 알림, TLS 1.3 복호화 및 실무 면접 방어 가이드 (23선)
+> **부제**: 듀얼 IDS(Suricata 8·Snort 3), SIEM 디코딩 해결, 7대 침해대응 룰북, 4중 AI 가드레일, DaC CI/CD, SOAR 알림, TLS 1.3 복호화 및 실무 기술 Q&A 가이드 (23선)
 
 ---
 
