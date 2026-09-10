@@ -52,6 +52,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Generate Synthetic PCAPs and Test Certificates
+        run: |
+          python scripts/generate_pcap_samples.py
+          python scripts/generate_tls_certs.py
+
       - name: Run Full Pytest Test Suite
         run: |
           pytest tests/ -v --durations=10
