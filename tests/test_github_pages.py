@@ -45,6 +45,23 @@ def test_github_pages_core_sections_presence():
     assert "Q23." in html
 
 
+def test_github_pages_navigation_anchors_and_ids():
+    index_path = REPO_ROOT / "docs" / "index.html"
+    html = index_path.read_text(encoding="utf-8")
+
+    # Required section anchor IDs
+    required_ids = ["overview", "architecture", "benchmark", "pipeline", "defense"]
+    for section_id in required_ids:
+        assert f'id="{section_id}"' in html, f"Target element with id='{section_id}' must exist"
+        assert f'href="#{section_id}"' in html, f"Nav link href='#{section_id}' must exist"
+
+    # Smooth scrolling enabled
+    assert "scroll-smooth" in html
+    assert "ZONE-ATTACK" in html
+    assert "ZONE-VICTIM" in html
+    assert "ZONE-MGMT" in html
+
+
 def test_github_pages_workflow_syntax():
     workflow_path = REPO_ROOT / ".github" / "workflows" / "pages.yml"
     assert workflow_path.exists(), ".github/workflows/pages.yml must exist"
