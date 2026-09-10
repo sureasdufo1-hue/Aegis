@@ -1,10 +1,13 @@
 import json
-from datetime import datetime, timezone, timedelta
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
-from typing import Any
 
 from analyzer.ai.schemas.actions import (
-    ActionApprovalRecord, ApprovalStatus, ProposedAction, PolicyValidationResult, ExecutionMode
+    ActionApprovalRecord,
+    ApprovalStatus,
+    ExecutionMode,
+    PolicyValidationResult,
+    ProposedAction,
 )
 
 
@@ -45,7 +48,7 @@ class ApprovalRepository:
         ttl_minutes: int = 60,
     ) -> ActionApprovalRecord:
         approval_id = f"APR-{incident_id[-8:]}-{len(self._records)+1:03d}"
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         record = ActionApprovalRecord(
             approval_id=approval_id,
             incident_id=incident_id,
@@ -63,7 +66,7 @@ class ApprovalRepository:
     def get(self, approval_id: str) -> ActionApprovalRecord | None:
         rec = self._records.get(approval_id)
         if rec and rec.status == ApprovalStatus.PENDING and rec.expires_at:
-            if datetime.now(timezone.utc) > rec.expires_at:
+            if datetime.now(UTC) > rec.expires_at:
                 rec.status = ApprovalStatus.EXPIRED
                 self._save()
         return rec
@@ -94,7 +97,7 @@ class ApprovalRepository:
 
         rec.status = decision
         rec.reviewed_by = reviewer
-        rec.reviewed_at = datetime.now(timezone.utc)
+        rec.reviewed_at = datetime.now(UTC)
         rec.review_notes = notes or ("Approved by analyst" if decision == ApprovalStatus.APPROVED else "Rejected by analyst")
         self._save()
         return True, rec

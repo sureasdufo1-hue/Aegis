@@ -8,11 +8,11 @@ Generates 7 annotated screenshots matching reference style:
 Target output directory: docs/ai/evidence_annotated/
 """
 
-import os
-import sys
 import math
+import os
 import subprocess
 from pathlib import Path
+
 from PIL import Image, ImageDraw, ImageFont
 
 BASE_DIR = Path(__file__).parent.parent.resolve()

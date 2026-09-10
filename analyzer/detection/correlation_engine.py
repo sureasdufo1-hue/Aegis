@@ -1,6 +1,6 @@
 from collections import defaultdict
 from datetime import datetime, timedelta
-from typing import Any
+
 from pydantic import BaseModel, Field
 
 from analyzer.models import NormalizedAlert, Severity
@@ -80,10 +80,10 @@ class CorrelationEngine:
         
         # Classify stages, filtering out non-attack diagnostic events
         classified_stages = [self.classify_stage(a) for a in alerts]
-        actionable_stages = list(sorted(set(
+        actionable_stages = sorted(set(
             s for s in classified_stages 
             if s not in ["Diagnostic / Telemetry", "Generic Security Activity"]
-        )))
+        ))
         
         # Escalation criteria:
         # 1. At least 2 distinct actionable attack stages, OR

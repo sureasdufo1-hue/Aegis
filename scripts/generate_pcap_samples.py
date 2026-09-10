@@ -14,9 +14,8 @@ import hashlib
 import json
 import sys
 from pathlib import Path
-from scapy.all import (
-    IP, TCP, UDP, ICMP, DNS, DNSQR, Raw, wrpcap, Ether
-)
+
+from scapy.all import DNS, DNSQR, ICMP, IP, TCP, UDP, Ether, Raw, wrpcap
 
 if sys.platform == "win32" and hasattr(sys.stdout, "reconfigure"):
     try:

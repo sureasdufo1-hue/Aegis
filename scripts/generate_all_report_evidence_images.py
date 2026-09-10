@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Generate All Annotated Evidence Screenshots matching the authentic Ubuntu TTY / Linux VM Console:
 Reference: orca-paste-1788867121684-abcb8b20-d029-4d3e-8872-9317164a8bce.png
@@ -13,9 +12,10 @@ Reference: orca-paste-1788867121684-abcb8b20-d029-4d3e-8872-9317164a8bce.png
 Target directory: docs/ai/evidence_annotated/
 """
 
-import os
 import math
+import os
 from pathlib import Path
+
 from PIL import Image, ImageDraw, ImageFont
 
 BASE_DIR = Path(__file__).parent.parent.resolve()

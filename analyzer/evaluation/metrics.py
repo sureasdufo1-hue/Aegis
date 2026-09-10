@@ -4,6 +4,7 @@ Reference: LLD v1.0, AGENTS.md Section 17 & 21
 """
 
 from typing import Any
+
 from pydantic import BaseModel, Field
 
 

@@ -1,6 +1,5 @@
 import logging
 import time
-from typing import Any
 
 from analyzer.ai.actions.firewall_adapter import FirewallRuleAdapter
 from analyzer.ai.approvals.repository import ApprovalRepository
@@ -8,17 +7,19 @@ from analyzer.ai.policy.validator import PolicyValidator
 from analyzer.ai.providers.base import BaseLLMProvider
 from analyzer.ai.providers.mock_provider import MockLLMProvider
 from analyzer.ai.rag.retriever import KnowledgeRetriever
-from analyzer.ai.schemas.actions import (
-    ActionApprovalRecord, ActionType, Direction, ProposedAction
-)
+from analyzer.ai.schemas.actions import ActionApprovalRecord, ActionType, Direction, ProposedAction
 from analyzer.ai.schemas.analysis import AIIncidentAnalysis
 from analyzer.ai.schemas.evidence import (
-    AlertMetadata, EvidenceSource, NetworkCoordinates, SecurityEvidence, TrustLevel
+    AlertMetadata,
+    EvidenceSource,
+    NetworkCoordinates,
+    SecurityEvidence,
+    TrustLevel,
 )
+from analyzer.ai.tools.pcap_tool import PcapInspectionTool
 from analyzer.ai.tools.registry import ToolRegistry
 from analyzer.ai.tools.siem_tool import SiemQueryTool
 from analyzer.ai.tools.threat_intel_tool import ThreatIntelLookupTool
-from analyzer.ai.tools.pcap_tool import PcapInspectionTool
 from analyzer.detection.correlation_engine import Incident
 
 logger = logging.getLogger("soc.ai.orchestrator")

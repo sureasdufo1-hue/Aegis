@@ -1,7 +1,8 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
+
 from analyzer.ai.orchestrator import AIOrchestrator
 from analyzer.detection.correlation_engine import Incident
-from analyzer.models import NormalizedAlert, EngineType, EventType, Severity
+from analyzer.models import EngineType, EventType, NormalizedAlert, Severity
 
 
 def test_ai_orchestrator_investigate_incident():
@@ -10,7 +11,7 @@ def test_ai_orchestrator_investigate_incident():
     alerts = [
         NormalizedAlert(
             id="alert-1",
-            timestamp=datetime(2026, 9, 7, 10, 0, 0, tzinfo=timezone.utc),
+            timestamp=datetime(2026, 9, 7, 10, 0, 0, tzinfo=UTC),
             engine=EngineType.SURICATA,
             event_type=EventType.ALERT,
             signature="SOC-SCAN: Nmap Stealth NULL Scan Detected (Zero Flags)",
@@ -26,7 +27,7 @@ def test_ai_orchestrator_investigate_incident():
         ),
         NormalizedAlert(
             id="alert-2",
-            timestamp=datetime(2026, 9, 7, 10, 5, 0, tzinfo=timezone.utc),
+            timestamp=datetime(2026, 9, 7, 10, 5, 0, tzinfo=UTC),
             engine=EngineType.SURICATA,
             event_type=EventType.ALERT,
             signature="SOC-ATTACK: Web SQL Injection - UNION SELECT Pattern Detected",
@@ -43,7 +44,7 @@ def test_ai_orchestrator_investigate_incident():
         ),
         NormalizedAlert(
             id="alert-3",
-            timestamp=datetime(2026, 9, 7, 10, 10, 0, tzinfo=timezone.utc),
+            timestamp=datetime(2026, 9, 7, 10, 10, 0, tzinfo=UTC),
             engine=EngineType.SURICATA,
             event_type=EventType.ALERT,
             signature="SOC-MALWARE: Interactive Reverse Shell Session Established (/bin/sh prompt detected)",

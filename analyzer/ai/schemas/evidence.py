@@ -1,6 +1,7 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from enum import StrEnum
 from typing import Any
+
 from pydantic import BaseModel, Field
 
 from analyzer.models import Severity
@@ -41,7 +42,7 @@ class SecurityEvidence(BaseModel):
     Converts raw IDS/SIEM/PCAP records into bounded, grounded facts for AI investigation.
     """
     evidence_id: str = Field(description="Unique deterministic evidence ID, e.g. EV-SURI-xxx")
-    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(UTC))
     source: EvidenceSource
     network: NetworkCoordinates
     alert: AlertMetadata

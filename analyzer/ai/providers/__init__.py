@@ -4,7 +4,7 @@ from analyzer.ai.providers.ollama_provider import OllamaProvider
 
 __all__ = [
     "BaseLLMProvider",
-    "ProviderResponse",
     "MockLLMProvider",
     "OllamaProvider",
+    "ProviderResponse",
 ]

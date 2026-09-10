@@ -1,4 +1,4 @@
-from analyzer.ai.rag.knowledge_store import KnowledgeStore, KnowledgeChunk
+from analyzer.ai.rag.knowledge_store import KnowledgeStore
 from analyzer.ai.schemas.analysis import KnowledgeCitation
 
 

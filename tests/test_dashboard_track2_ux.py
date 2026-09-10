@@ -1,5 +1,5 @@
-import pytest
 from fastapi.testclient import TestClient
+
 from dashboard.app import app
 
 client = TestClient(app)

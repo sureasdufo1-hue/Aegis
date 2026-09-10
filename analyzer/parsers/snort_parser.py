@@ -1,8 +1,9 @@
 import json
 import uuid
-from datetime import datetime, timezone
+from collections.abc import Generator
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Generator
+from typing import Any
 
 from analyzer.models import EngineType, EventType, NormalizedAlert, Severity
 
@@ -24,9 +25,9 @@ def parse_snort_record(record: dict[str, Any]) -> NormalizedAlert | None:
     # Timestamp parsing
     ts_raw = record.get("timestamp")
     try:
-        ts = datetime.fromisoformat(ts_raw.replace("Z", "+00:00")) if ts_raw else datetime.now(timezone.utc)
+        ts = datetime.fromisoformat(ts_raw.replace("Z", "+00:00")) if ts_raw else datetime.now(UTC)
     except Exception:
-        ts = datetime.now(timezone.utc)
+        ts = datetime.now(UTC)
 
     msg = record.get("msg", "Unknown Snort Alert")
     sid = record.get("sid", 0)

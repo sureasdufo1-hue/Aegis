@@ -1,8 +1,6 @@
 from fastapi.testclient import TestClient
+
 from dashboard.app import app, interpreter
-from analyzer.ai.localization import (
-    COMMON_UI_KO, SEVERITY_MAP, ATTACK_STAGE_MAP, POLICY_VERDICT_MAP
-)
 
 client = TestClient(app)
 

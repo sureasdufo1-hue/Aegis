@@ -9,11 +9,11 @@ from __future__ import annotations
 
 import datetime
 from pathlib import Path
+
 from cryptography import x509
-from cryptography.x509.oid import NameOID
-from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
-from cryptography.hazmat.primitives import serialization
+from cryptography.x509.oid import NameOID
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 SSL_DIR = REPO_ROOT / "infrastructure" / "docker" / "ssl"
@@ -44,8 +44,8 @@ def generate_certificates(output_dir: Path) -> tuple[Path, Path]:
         .issuer_name(issuer)
         .public_key(key.public_key())
         .serial_number(x509.random_serial_number())
-        .not_valid_before(datetime.datetime.now(datetime.timezone.utc))
-        .not_valid_after(datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(days=365))
+        .not_valid_before(datetime.datetime.now(datetime.UTC))
+        .not_valid_after(datetime.datetime.now(datetime.UTC) + datetime.timedelta(days=365))
         .add_extension(
             x509.SubjectAlternativeName([
                 x509.DNSName("victim-app.soc-lab.local"),

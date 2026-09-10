@@ -1,13 +1,19 @@
 import json
 import re
 import time
-import urllib.request
 import urllib.error
-from datetime import datetime, timezone
+import urllib.request
+from datetime import UTC, datetime
 from typing import Any
 
+from analyzer.ai.schemas.evidence import (
+    AlertMetadata,
+    EvidenceSource,
+    NetworkCoordinates,
+    SecurityEvidence,
+    TrustLevel,
+)
 from analyzer.ai.tools.base import BaseInvestigationTool, ToolResult
-from analyzer.ai.schemas.evidence import SecurityEvidence, EvidenceSource, NetworkCoordinates, AlertMetadata, TrustLevel
 from analyzer.models import Severity
 
 IPV4_PATTERN = re.compile(r"^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$")
@@ -97,7 +103,7 @@ class SiemQueryTool(BaseInvestigationTool):
 
                     ev = SecurityEvidence(
                         evidence_id=f"EV-SIEM-{doc_id[:8]}",
-                        timestamp=datetime.now(timezone.utc),
+                        timestamp=datetime.now(UTC),
                         source=EvidenceSource(
                             system="wazuh-indexer",
                             index_or_path=hit.get("_index", "wazuh-alerts-*"),

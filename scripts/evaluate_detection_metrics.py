@@ -9,20 +9,21 @@ Evaluates:
 - Computes TP, FP, TN, FN, Precision, Recall, FPR, FNR, Accuracy
 """
 
-import re
 import json
+import re
 import sys
-from pathlib import Path
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any
 
 # Add project root to sys.path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from analyzer.evaluation.metrics import ConfusionMatrix
-from analyzer.models import NormalizedAlert, EngineType, EventType, Severity
+from datetime import UTC, datetime, timedelta
+
 from analyzer.detection.correlation_engine import CorrelationEngine
-from datetime import datetime, timedelta, timezone
+from analyzer.evaluation.metrics import ConfusionMatrix
+from analyzer.models import EngineType, NormalizedAlert, Severity
 
 if sys.platform == "win32" and hasattr(sys.stdout, "reconfigure"):
     try:
@@ -193,7 +194,7 @@ def evaluate_dataset(rev: int) -> dict[str, ConfusionMatrix]:
 
 def evaluate_correlation_accuracy() -> dict[str, Any]:
     engine = CorrelationEngine(window_minutes=30)
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
 
     # Scenario 1: Benign ping routine
     ping_alert = NormalizedAlert(
@@ -285,7 +286,7 @@ def main():
 
     # Save benchmark record
     benchmark_data = {
-        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "timestamp": datetime.now(UTC).isoformat(),
         "baseline_rev1": m1,
         "tuned_rev2": m2,
         "sqli_audit": {"rev1": sqli_1, "rev2": sqli_2},

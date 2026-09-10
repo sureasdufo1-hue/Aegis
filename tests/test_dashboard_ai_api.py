@@ -1,8 +1,14 @@
 from fastapi.testclient import TestClient
-from dashboard.app import app, approval_repo, action_executor
+
 from analyzer.ai.schemas.actions import (
-    ProposedAction, ActionType, Direction, PolicyValidationResult, PolicyVerdict, ApprovalStatus
+    ActionType,
+    ApprovalStatus,
+    Direction,
+    PolicyValidationResult,
+    PolicyVerdict,
+    ProposedAction,
 )
+from dashboard.app import app, approval_repo
 
 client = TestClient(app)
 

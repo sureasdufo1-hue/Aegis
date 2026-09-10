@@ -1,11 +1,12 @@
-from datetime import datetime, timedelta, timezone
-from analyzer.models import EngineType, EventType, NormalizedAlert, Severity
+from datetime import UTC, datetime, timedelta
+
 from analyzer.detection.correlation_engine import CorrelationEngine
+from analyzer.models import EngineType, EventType, NormalizedAlert, Severity
 
 
 def test_multi_stage_correlation():
     engine = CorrelationEngine(window_minutes=30)
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
 
     # Stage 1: Port Scan
     alert1 = NormalizedAlert(
@@ -48,7 +49,7 @@ def test_multi_stage_correlation():
 def test_normal_diagnostic_ping_does_not_trigger_incident():
     """Verify that routine ICMP ping telemetry does not escalate into an incident."""
     engine = CorrelationEngine(window_minutes=30)
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
 
     ping_alert = NormalizedAlert(
         id="alert-ping",
@@ -84,7 +85,7 @@ def test_normal_diagnostic_ping_does_not_trigger_incident():
 def test_confirmed_compromise_with_reverse_shell():
     """Verify that C2 / Reverse shell triggers CONFIRMED_COMPROMISE status and Critical playbook."""
     engine = CorrelationEngine(window_minutes=30)
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
 
     # Initial Web Exploit
     web_alert = NormalizedAlert(
@@ -125,7 +126,7 @@ def test_confirmed_compromise_with_reverse_shell():
 def test_sliding_window_expiration():
     """Verify that attacks occurring outside the 30-minute window expire and do not correlate."""
     engine = CorrelationEngine(window_minutes=30)
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
 
     # Old recon scan 35 minutes ago
     old_scan = NormalizedAlert(
@@ -160,7 +161,7 @@ def test_sliding_window_expiration():
 def test_ssh_brute_force_account_takeover_correlation():
     """Verify that network connection anomaly + host authentication success triggers CONFIRMED_COMPROMISE."""
     engine = CorrelationEngine(window_minutes=30)
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
 
     # 1. Network IDS detects SSH connection threshold anomaly
     conn_alert = NormalizedAlert(

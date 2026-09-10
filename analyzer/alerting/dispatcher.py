@@ -3,15 +3,15 @@ from __future__ import annotations
 import logging
 import os
 import uuid
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from enum import Enum
-from typing import Any, Optional
+from typing import Any
 
 import httpx
 from pydantic import BaseModel, Field
 
-from analyzer.models import Severity
 from analyzer.detection.correlation_engine import Incident
+from analyzer.models import Severity
 
 logger = logging.getLogger("soc.alerting.dispatcher")
 
@@ -32,19 +32,19 @@ class DispatchStatus(str, Enum):
 
 class NotificationRecord(BaseModel):
     record_id: str = Field(default_factory=lambda: f"NOTIF-{uuid.uuid4().hex[:8].upper()}")
-    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(UTC))
     incident_id: str
     src_ip: str
     channel: NotificationChannel
     status: DispatchStatus
     details: str
-    error_message: Optional[str] = None
+    error_message: str | None = None
 
 
 class NotificationConfig(BaseModel):
-    slack_webhook_url: Optional[str] = None
-    discord_webhook_url: Optional[str] = None
-    generic_webhook_url: Optional[str] = None
+    slack_webhook_url: str | None = None
+    discord_webhook_url: str | None = None
+    generic_webhook_url: str | None = None
     cooldown_minutes: int = 10
     dashboard_base_url: str = "http://10.77.10.10:8501"
     auto_dispatch: bool = True
@@ -72,8 +72,8 @@ class NotificationDispatcher:
 
     def __init__(
         self,
-        config: Optional[NotificationConfig] = None,
-        http_client: Optional[httpx.AsyncClient] = None,
+        config: NotificationConfig | None = None,
+        http_client: httpx.AsyncClient | None = None,
     ) -> None:
         self.config = config or NotificationConfig.from_env()
         self._custom_client = http_client
@@ -84,7 +84,7 @@ class NotificationDispatcher:
     def history(self) -> list[NotificationRecord]:
         return list(self._history)
 
-    def _mask_url(self, url: Optional[str]) -> Optional[str]:
+    def _mask_url(self, url: str | None) -> str | None:
         if not url:
             return None
         if len(url) <= 20:
@@ -107,7 +107,7 @@ class NotificationDispatcher:
 
     def is_throttled(self, src_ip: str) -> bool:
         """Checks if alerts from src_ip should be throttled based on cooldown window."""
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         last_sent = self._cooldown_tracker.get(src_ip)
         if not last_sent:
             return False
@@ -116,9 +116,9 @@ class NotificationDispatcher:
 
     def record_dispatch(self, src_ip: str) -> None:
         """Records timestamp for the IP to enforce cooldown."""
-        self._cooldown_tracker[src_ip] = datetime.now(timezone.utc)
+        self._cooldown_tracker[src_ip] = datetime.now(UTC)
 
-    def reset_cooldown(self, src_ip: Optional[str] = None) -> None:
+    def reset_cooldown(self, src_ip: str | None = None) -> None:
         if src_ip:
             self._cooldown_tracker.pop(src_ip, None)
         else:
@@ -253,14 +253,14 @@ class NotificationDispatcher:
                 "first_seen": incident.start_time.isoformat(),
                 "last_seen": incident.last_seen.isoformat(),
             },
-            "dispatch_timestamp": datetime.now(timezone.utc).isoformat(),
+            "dispatch_timestamp": datetime.now(UTC).isoformat(),
         }
 
     # ------------------------------------------------------------------
     # Dispatch Execution Core
     # ------------------------------------------------------------------
 
-    async def _send_http_post(self, url: str, payload: dict[str, Any]) -> tuple[bool, Optional[str]]:
+    async def _send_http_post(self, url: str, payload: dict[str, Any]) -> tuple[bool, str | None]:
         try:
             if self._custom_client:
                 resp = await self._custom_client.post(url, json=payload, timeout=5.0)
@@ -396,11 +396,11 @@ class NotificationDispatcher:
 
         return results
 
-    async def send_test_notification(self, channel: Optional[str] = None) -> dict[str, Any]:
+    async def send_test_notification(self, channel: str | None = None) -> dict[str, Any]:
         """Generates a synthetic high-severity incident and dispatches a test alert."""
         from analyzer.models import EngineType, NormalizedAlert
 
-        now_utc = datetime.now(timezone.utc)
+        now_utc = datetime.now(UTC)
         test_alert = NormalizedAlert(
             id=f"ALERT-TEST-{int(now_utc.timestamp())}",
             timestamp=now_utc,

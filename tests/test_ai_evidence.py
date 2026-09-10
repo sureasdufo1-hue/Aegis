@@ -1,6 +1,11 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
+
 from analyzer.ai.schemas.evidence import (
-    SecurityEvidence, EvidenceSource, NetworkCoordinates, AlertMetadata, TrustLevel
+    AlertMetadata,
+    EvidenceSource,
+    NetworkCoordinates,
+    SecurityEvidence,
+    TrustLevel,
 )
 from analyzer.models import Severity
 
@@ -8,7 +13,7 @@ from analyzer.models import Severity
 def test_security_evidence_creation_and_prompt_formatting():
     ev = SecurityEvidence(
         evidence_id="EV-TEST-001",
-        timestamp=datetime(2026, 9, 7, 12, 0, 0, tzinfo=timezone.utc),
+        timestamp=datetime(2026, 9, 7, 12, 0, 0, tzinfo=UTC),
         source=EvidenceSource(
             system="wazuh-indexer",
             index_or_path="wazuh-alerts-*",

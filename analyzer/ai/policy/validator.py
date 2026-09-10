@@ -1,10 +1,12 @@
 import ipaddress
-import re
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from analyzer.ai.policy.protected_assets import is_protected_asset
 from analyzer.ai.schemas.actions import (
-    ProposedAction, PolicyValidationResult, PolicyVerdict, ActionType
+    ActionType,
+    PolicyValidationResult,
+    PolicyVerdict,
+    ProposedAction,
 )
 
 DANGEROUS_SHELL_CHARACTERS = [";", "&&", "||", "|", "`", "$", "(", ")", "\n", "\r", "<", ">"]
@@ -31,7 +33,7 @@ class PolicyValidator:
                     verdict=PolicyVerdict.DENIED_SYNTAX_ERROR,
                     target=target,
                     violations=violations,
-                    validated_at=datetime.now(timezone.utc),
+                    validated_at=datetime.now(UTC),
                 )
 
         # 2. IP / Target Format Validation
@@ -47,7 +49,7 @@ class PolicyValidator:
                 verdict=PolicyVerdict.DENIED_INVALID_TARGET,
                 target=target,
                 violations=violations,
-                validated_at=datetime.now(timezone.utc),
+                validated_at=datetime.now(UTC),
             )
 
         # 3. Protected Asset Whitelist Check (P0 Safety Invariant)
@@ -61,7 +63,7 @@ class PolicyValidator:
                     target=target,
                     violations=violations,
                     protected_asset_details=prot_detail,
-                    validated_at=datetime.now(timezone.utc),
+                    validated_at=datetime.now(UTC),
                 )
 
         # 4. Action Type Validation
@@ -72,7 +74,7 @@ class PolicyValidator:
                 verdict=PolicyVerdict.DENIED_FAIL_CLOSED,
                 target=target,
                 violations=violations,
-                validated_at=datetime.now(timezone.utc),
+                validated_at=datetime.now(UTC),
             )
 
         # Passed all policy checks
@@ -81,5 +83,5 @@ class PolicyValidator:
             verdict=PolicyVerdict.ALLOWED,
             target=target,
             violations=[],
-            validated_at=datetime.now(timezone.utc),
+            validated_at=datetime.now(UTC),
         )

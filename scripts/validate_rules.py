@@ -218,13 +218,13 @@ class RuleValidator:
         snort_count = self.parse_snort_rules()
         wazuh_count = self.parse_wazuh_rules()
 
-        print(f"==================================================")
-        print(f" Aegis Detection-as-Code (DaC) Rule Integrity Report")
-        print(f"==================================================")
+        print("==================================================")
+        print(" Aegis Detection-as-Code (DaC) Rule Integrity Report")
+        print("==================================================")
         print(f"• Suricata Detection Rules Parsed : {suri_count}")
         print(f"• Snort Secondary Rules Parsed    : {snort_count}")
         print(f"• Wazuh SIEM XML Rules Parsed     : {wazuh_count}")
-        print(f"--------------------------------------------------")
+        print("--------------------------------------------------")
 
         errors = [f for f in self.findings if f.severity == "ERROR"]
         warnings = [f for f in self.findings if f.severity == "WARNING"]
@@ -245,14 +245,14 @@ class RuleValidator:
             for i in infos:
                 print(f"  ℹ️ [{i.rule_type}] {i.file}:{i.line}: {i.message}")
 
-        print(f"\n--------------------------------------------------")
+        print("\n--------------------------------------------------")
         if not errors:
             print(f"✓ RESULT: ALL DETECTION RULES PASSED VALIDATION! (Errors: 0, Warnings: {len(warnings)})")
-            print(f"==================================================")
+            print("==================================================")
             return True
         else:
             print(f"✗ RESULT: RULE INTEGRITY VALIDATION FAILED! (Errors: {len(errors)})")
-            print(f"==================================================")
+            print("==================================================")
             return False
 
 

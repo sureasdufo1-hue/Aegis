@@ -1,14 +1,12 @@
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
-import json
-import pytest
+
 from fastapi.testclient import TestClient
 
+from analyzer.detection.correlation_engine import CorrelationEngine
 from analyzer.models import EngineType, EventType, NormalizedAlert, Severity
-from analyzer.detection.correlation_engine import CorrelationEngine, Incident
 from analyzer.parsers.eve_parser import parse_eve_record, stream_eve_log
 from dashboard.app import app
-
 
 client = TestClient(app)
 
@@ -69,7 +67,7 @@ def test_invalid_json_handling(tmp_path: Path):
 
 def test_duplicate_event_handling():
     engine = CorrelationEngine(window_minutes=30)
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
 
     alert = NormalizedAlert(
         id="alert-dup-1",
@@ -91,7 +89,7 @@ def test_duplicate_event_handling():
 
 def test_out_of_order_stage_events():
     engine = CorrelationEngine(window_minutes=60)
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
 
     # Initial Access arrives first
     alert_exploit = NormalizedAlert(
@@ -145,7 +143,7 @@ def test_out_of_order_stage_events():
 
 def test_correlation_time_window_expiry():
     engine = CorrelationEngine(window_minutes=15)
-    t0 = datetime(2026, 8, 26, 6, 0, 0, tzinfo=timezone.utc)
+    t0 = datetime(2026, 8, 26, 6, 0, 0, tzinfo=UTC)
 
     # Event 1: Recon at 06:00
     alert1 = NormalizedAlert(
@@ -181,7 +179,7 @@ def test_incident_idempotency():
     engine1 = CorrelationEngine(window_minutes=60)
     engine2 = CorrelationEngine(window_minutes=60)
 
-    t0 = datetime(2026, 8, 26, 7, 0, 0, tzinfo=timezone.utc)
+    t0 = datetime(2026, 8, 26, 7, 0, 0, tzinfo=UTC)
     alerts = [
         NormalizedAlert(
             id="alert-recon",

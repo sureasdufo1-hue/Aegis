@@ -2,7 +2,7 @@ import json
 import os
 import sys
 import time
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
@@ -24,7 +24,7 @@ def run_real_model_e2e():
     alerts = [
         NormalizedAlert(
             id="alert-1",
-            timestamp=datetime(2026, 9, 7, 10, 0, 0, tzinfo=timezone.utc),
+            timestamp=datetime(2026, 9, 7, 10, 0, 0, tzinfo=UTC),
             engine=EngineType.SURICATA,
             event_type=EventType.ALERT,
             signature="SOC-SCAN: Nmap Stealth NULL Scan Detected (Zero Flags)",
@@ -40,7 +40,7 @@ def run_real_model_e2e():
         ),
         NormalizedAlert(
             id="alert-2",
-            timestamp=datetime(2026, 9, 7, 10, 5, 0, tzinfo=timezone.utc),
+            timestamp=datetime(2026, 9, 7, 10, 5, 0, tzinfo=UTC),
             engine=EngineType.SURICATA,
             event_type=EventType.ALERT,
             signature="SOC-ATTACK: Web SQL Injection - UNION SELECT Pattern Detected",

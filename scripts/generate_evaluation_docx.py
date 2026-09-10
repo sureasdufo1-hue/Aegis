@@ -5,14 +5,14 @@ matching the reference document style, tables, and colors.
 Target output: docs/ai/SOC_AI_LLM_종합평가_및_운영롤백런북_최종본.docx
 """
 
-import os
 from pathlib import Path
+
 import docx
-from docx.shared import Inches, Pt, RGBColor
+from docx.enum.table import WD_TABLE_ALIGNMENT
 from docx.enum.text import WD_ALIGN_PARAGRAPH
-from docx.enum.table import WD_TABLE_ALIGNMENT, WD_ALIGN_VERTICAL
 from docx.oxml import OxmlElement, parse_xml
 from docx.oxml.ns import nsdecls, qn
+from docx.shared import Inches, Pt, RGBColor
 
 BASE_DIR = Path(__file__).parent.parent.resolve()
 

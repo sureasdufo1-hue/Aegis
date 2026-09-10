@@ -1,4 +1,4 @@
-# 🛡️ Aegis SOC Portfolio Technical Defense Guide (기술 면접 방어 가이드 20선)
+# 🛡️ Aegis SOC Portfolio Technical Defense Guide (기술 면접 방어 가이드 23선)
 
 > **문서 목적:** 본 문서는 보안관제센터(SOC) 리드, 시니어 탐지 엔지니어, 클라우드/인프라 보안 아키텍트 면접관의 고난도 기술 질문에 대응하기 위해, Aegis SOC Lab의 설계 근거, 트레이드오프, 버그 추적 과정, 실측 정량 데이터 및 코드 구현 증적을 체계적으로 정리한 기술 방어 매뉴얼입니다.
 
@@ -10,6 +10,7 @@
 - [제2부: 듀얼 IDS 엔진 및 고정밀 탐지 엔지니어링 (Q6 ~ Q10)](#제2부-듀얼-ids-엔진-및-고정밀-탐지-엔지니어링-q6--q10)
 - [제3부: Wazuh SIEM 디코딩, 정규화 및 교차 상관분석 (Q11 ~ Q15)](#제3부-wazuh-siem-디코딩-정규화-및-교차-상관분석-q11--q15)
 - [제4부: SOC 거버넌스, AI 가드레일 및 무결성 증적 (Q16 ~ Q20)](#제4부-soc-거버넌스-ai-가드레일-및-무결성-증적-q16--q20)
+- [제5부: Detection-as-Code, SOAR 알림 디스패처 및 TLS 1.3 복호화 실장 (Q21 ~ Q23)](#제5부-detection-as-code-soar-알림-디스패처-및-tls-13-복호화-실장-q21--q23)
 
 ---
 
@@ -277,6 +278,52 @@
   - 지정된 시간 동안 추가 공격이 없으면 커널 레벨에서 차단 룰이 자동으로 소멸(Self-Healing)되어 운영자의 수동 개입 없이도 가용성을 자동으로 복구합니다.
 - **관련 코드:**
   - `analyzer/active_response/firewall_blocker.py`
+
+---
+
+## 제5부: Detection-as-Code, SOAR 알림 디스패처 및 TLS 1.3 복호화 실장 (Q21 ~ Q23)
+
+### Q21. 탐지 룰셋(Suricata/Snort/Wazuh) 배포 시 문법 오류 및 중복을 방지하기 위한 Detection-as-Code(DaC) CI/CD 체계는 어떻게 구축되어 있나요?
+- **설계 배경 및 DevSecOps 원칙:**
+  - 텍스트 파일로 관리되는 침입탐지 룰을 검증 없이 운영 환경에 배포하면 엔진 데몬이 Crash되거나 잘못된 SID 할당으로 기존 룰이 덮어쓰여지는 대형 장애가 발생합니다.
+  - Aegis Lab은 탐지 룰을 코드로 취급(Detection-as-Code)하여 GitHub Actions CI 파이프라인(`.github/workflows/ci.yml`)과 자체 개발 룰 린터(`scripts/validate_rules.py`)를 통해 사전 검증을 자동화했습니다.
+- **검증 메커니즘:**
+  1. **Suricata 룰 검증 (47개 룰):** 필수 옵션(`msg:`, `sid:`, `rev:`), SID 할당 대역(9000000~9099999) 및 중복 SID 검출.
+  2. **Snort 룰 검증 (28개 룰):** Secondary 대역(9100000~9199999) 준수 검사.
+  3. **Wazuh XML 검증 (7개 룰):** XML 구문 적합성, rule id 유일성, `<description>` 필수 태그 누락 검사.
+- **관련 코드 및 산출물:**
+  - CI 워크플로우: `.github/workflows/ci.yml`
+  - 룰 무결성 린터: `scripts/validate_rules.py` (0 Errors PASS)
+
+---
+
+### Q22. 1급 침해사고(Level 14 Critical) 발생 시 모바일/메신저 실시간 전파 체계(SOAR Dispatcher)와 경보 피로도(Alert Fatigue) 방지책은 무엇인가요?
+- **설계 배경 및 실무 필요성:**
+  - 관제 요원이 24시간 대시보드 화면만 주시할 수 없으므로, 다단계 킬체인 복합 공격이나 계정 탈취(`CONFIRMED_COMPROMISE`) 발생 시 온콜(On-call) 요원에게 즉각적인 모바일/메신저 알림이 전파되어야 합니다.
+- **다채널 전파 및 조치 중심 페이로드:**
+  - **Slack Block Kit / Discord Embed / Generic Webhook** 동시 지원.
+  - 단순 알람이 아닌, 침해 단계, MITRE ATT&CK 기법, 대시보드 바로가기 링크와 함께 **초동 격리 방화벽 명령어(`nft add element inet filter blocklist { <IP> }`)**를 동봉하여 신속한 의사결정 지원.
+- **경보 피로도(Alert Fatigue) 방지 2중 필터링:**
+  1. **10분 슬라이딩 윈도우 쿨다운:** 동일 공격자 IP에서 짧은 시간 내 수백 건의 경보가 발생하더라도 첫 번째 경보만 전파하고 이후 경보는 `THROTTLED`로 자동 억제.
+  2. **진단 트래픽(Diagnostic Telemetry) 억제:** 단순 Ping(ICMP Echo) 등 비위협 트래픽은 외부 발송을 원천 차단(`SUPPRESSED`).
+- **관련 코드 및 증적:**
+  - 모듈: `analyzer/alerting/dispatcher.py`
+  - 대시보드 연동: `dashboard/app.py` (`/api/notifications/*`)
+  - 증적: `evidence/EV-SOAR-001/`
+
+---
+
+### Q23. HTTPS 암호화 트래픽 환경에서 Nginx SSL Termination 리버스 프록시와 패시브 TLS(SNI/JA3) 탐지 파이프라인의 실동작 구조는 무엇인가요?
+- **실무 암호화 가시성 딜레마 극복:**
+  - 웹 트래픽의 95% 이상이 TLS로 암호화되어 일반 패시브 IDS는 L7 웹 공격(SQLi, XSS, Log4j)을 볼 수 없는 사각지대(Blind Spot)가 발생합니다.
+  - 본 랩은 이를 **이론적 설명에 그치지 않고 실제 Docker 컨테이너 프로토타입(`soc-reverse-proxy: nginx:1.27-alpine`)과 인증서 자동화(`scripts/generate_tls_certs.py`)로 완벽히 실증**했습니다 (`ARCH-TLS-001`).
+- **이원화된 실증 파이프라인:**
+  1. **인바운드 SSL Termination (Case B):** Nginx가 외부 443(HTTPS)을 수신하여 TLS 1.2/1.3을 복호화하고 백엔드 웹서버(`victim-web:3000`)로 평문 HTTP를 전달. 백엔드 구간 미러링을 통해 Suricata가 `SID 9010001`(SQL Injection UNION SELECT)을 100% 정상 발화.
+  2. **아웃바운드 패시브 핸드셰이크 검사 (Case C):** 복호화 키가 없는 외부 C2 접속 트래픽은 핸드셰이크 단계의 평문 메타데이터인 SNI 도메인(`tls.sni`)과 인증서 Subject(`tls.cert_subject`)를 검사하여 `SID 9030025`, `9030026`으로 실시간 탐지.
+- **관련 코드 및 증적:**
+  - Nginx 설정: `infrastructure/docker/nginx/nginx.conf`
+  - Compose 연동: `docker-compose.yml`
+  - 시뮬레이터 및 증적: `scripts/simulate_tls_decryption_pipeline.py`, `evidence/EV-TLS-001/`
 
 ---
 

@@ -1,8 +1,8 @@
 from analyzer.ai.policy.validator import PolicyValidator
-from analyzer.ai.schemas.actions import ProposedAction, ActionType, Direction, PolicyVerdict
+from analyzer.ai.schemas.actions import ActionType, Direction, PolicyVerdict, ProposedAction
+from analyzer.ai.tools.pcap_tool import PcapInspectionTool
 from analyzer.ai.tools.registry import ToolRegistry
 from analyzer.ai.tools.siem_tool import SiemQueryTool
-from analyzer.ai.tools.pcap_tool import PcapInspectionTool
 
 
 def test_security_indirect_prompt_injection_in_action_target():

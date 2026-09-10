@@ -6,11 +6,14 @@ Maintains an in-memory SHA-256 cache to guarantee instant response and zero redu
 """
 
 import hashlib
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Any
 
 from analyzer.ai.localization.korean_dict import (
-    SIGNATURE_MAP, ATTACK_STAGE_MAP, SEVERITY_MAP, MITRE_TECHNIQUE_MAP
+    ATTACK_STAGE_MAP,
+    MITRE_TECHNIQUE_MAP,
+    SEVERITY_MAP,
+    SIGNATURE_MAP,
 )
 
 
@@ -92,7 +95,7 @@ class SecurityEventInterpreter:
             "recommended_checks": checks,
             "severity_ko": sev_info["ko"],
             "severity_desc": sev_info["desc"],
-            "generated_at": datetime.now(timezone.utc).isoformat(),
+            "generated_at": datetime.now(UTC).isoformat(),
         }
 
         self.cache.set(cache_key, result)
@@ -143,7 +146,7 @@ class SecurityEventInterpreter:
                 "상관분석 입증 완료: 다단계 공격 흐름이 확인되었으며, 후속 단계(C2/리버스 셸) 포함 시 침해 확정 가능성 높음."
             ),
             "recommended_checks": checks,
-            "generated_at": datetime.now(timezone.utc).isoformat(),
+            "generated_at": datetime.now(UTC).isoformat(),
         }
 
         self.cache.set(cache_key, result)

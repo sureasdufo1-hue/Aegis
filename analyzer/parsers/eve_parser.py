@@ -1,8 +1,9 @@
 import json
 import uuid
-from datetime import datetime, timezone
-from typing import Any, Generator
+from collections.abc import Generator
+from datetime import UTC, datetime
 from pathlib import Path
+from typing import Any
 
 from analyzer.models import EngineType, EventType, NormalizedAlert, Severity
 
@@ -39,9 +40,9 @@ def parse_eve_record(record: dict[str, Any]) -> NormalizedAlert | None:
     # Timestamp
     ts_raw = record.get("timestamp")
     try:
-        ts = datetime.fromisoformat(ts_raw.replace("Z", "+00:00")) if ts_raw else datetime.now(timezone.utc)
+        ts = datetime.fromisoformat(ts_raw.replace("Z", "+00:00")) if ts_raw else datetime.now(UTC)
     except Exception:
-        ts = datetime.now(timezone.utc)
+        ts = datetime.now(UTC)
 
     # Network 5-tuple
     src_ip = record.get("src_ip", "0.0.0.0")

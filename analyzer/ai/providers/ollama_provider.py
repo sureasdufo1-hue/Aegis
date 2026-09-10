@@ -4,18 +4,12 @@ import os
 import time
 import urllib.error
 import urllib.request
-from typing import Any
 
 from analyzer.ai.providers.base import BaseLLMProvider, ProviderResponse
 from analyzer.ai.providers.mock_provider import MockLLMProvider
 from analyzer.ai.schemas.analysis import (
     AIIncidentAnalysis,
-    AnalysisStatus,
-    AttackTechniqueMapping,
-    KnowledgeCitation,
-    RiskAssessment,
 )
-from analyzer.models import Severity
 
 logger = logging.getLogger("soc.ai.providers.ollama")
 
@@ -144,8 +138,7 @@ class OllamaProvider(BaseLLMProvider):
                     response_text = response_text[7:]
                 elif response_text.startswith("```"):
                     response_text = response_text[3:]
-                if response_text.endswith("```"):
-                    response_text = response_text[:-3]
+                response_text = response_text.removesuffix("```")
                 response_text = response_text.strip()
                 parsed_json = json.loads(response_text)
                 # Enforce incident_id

@@ -1,6 +1,7 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from enum import StrEnum
 from typing import Any
+
 from pydantic import BaseModel, Field
 
 from analyzer.models import Severity
@@ -59,4 +60,4 @@ class AIIncidentAnalysis(BaseModel):
     recommended_actions: list[str] = Field(default_factory=list, description="Proposed containment and response actions")
     
     model_info: dict[str, Any] = Field(default_factory=dict, description="Metadata about the LLM provider, latency, and tokens")
-    generated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    generated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))

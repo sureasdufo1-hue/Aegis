@@ -1,6 +1,7 @@
 import hashlib
 import re
 from pathlib import Path
+
 from pydantic import BaseModel, Field
 
 
@@ -61,7 +62,7 @@ class KnowledgeStore:
                     )
                     self.chunks.append(chunk)
 
-            except Exception as e:
+            except Exception:
                 # Log non-fatal error reading document
                 pass
 

@@ -1,6 +1,5 @@
 import ipaddress
 
-
 # Critical Infrastructure Whitelist - NEVER ALLOW BLOCKING
 PROTECTED_IPS = {
     # Gateways

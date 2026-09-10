@@ -1,9 +1,6 @@
-from datetime import datetime, timezone
-from typing import Any
+from datetime import UTC, datetime
 
-from analyzer.ai.schemas.actions import (
-    ActionApprovalRecord, ApprovalStatus, ExecutionMode, ActionType
-)
+from analyzer.ai.schemas.actions import ActionApprovalRecord, ApprovalStatus, ExecutionMode
 
 
 class ActionExecutor:
@@ -25,7 +22,7 @@ class ActionExecutor:
             return False, "Action execution rejected: Policy validation failed."
 
         action = record.proposed_action
-        timestamp = datetime.now(timezone.utc).isoformat()
+        timestamp = datetime.now(UTC).isoformat()
 
         if self.mode in [ExecutionMode.DRY_RUN, ExecutionMode.MOCK]:
             output = (
@@ -38,7 +35,7 @@ class ActionExecutor:
                 f"Status: PASS (Simulated Dry Run Success - Zero host modification)"
             )
             record.status = ApprovalStatus.EXECUTED
-            record.executed_at = datetime.now(timezone.utc)
+            record.executed_at = datetime.now(UTC)
             record.execution_output = output
             return True, output
 
@@ -53,7 +50,7 @@ class ActionExecutor:
                 f"Assigned To: NetSec Tier 2 Operations"
             )
             record.status = ApprovalStatus.EXECUTED
-            record.executed_at = datetime.now(timezone.utc)
+            record.executed_at = datetime.now(UTC)
             record.execution_output = output
             return True, output
 

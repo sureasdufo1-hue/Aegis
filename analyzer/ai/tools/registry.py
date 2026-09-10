@@ -1,5 +1,6 @@
 import time
 from typing import Any
+
 from analyzer.ai.tools.base import BaseInvestigationTool, ToolResult
 
 

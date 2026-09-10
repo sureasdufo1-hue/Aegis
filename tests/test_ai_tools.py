@@ -1,7 +1,6 @@
-from pathlib import Path
+from analyzer.ai.tools.pcap_tool import PcapInspectionTool
 from analyzer.ai.tools.registry import ToolRegistry
 from analyzer.ai.tools.siem_tool import SiemQueryTool
-from analyzer.ai.tools.pcap_tool import PcapInspectionTool
 from analyzer.ai.tools.threat_intel_tool import ThreatIntelLookupTool
 
 

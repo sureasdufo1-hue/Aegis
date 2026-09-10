@@ -272,7 +272,7 @@ python -m uvicorn dashboard.app:app --host 0.0.0.0 --port 8501 --reload
 
 | 구분 | 핵심 기술 문서 | 주요 내용 및 목적 |
 |---|---|---|
-| **면접 방어** | [**기술 면접 방어 가이드 20선**](docs/PORTFOLIO_DEFENSE_GUIDE.md) | **기술 면접관/SOC 리드 대응용 핵심 아키텍처 및 트러블슈팅 질의응답** |
+| **면접 방어** | [**기술 면접 방어 가이드 23선**](docs/PORTFOLIO_DEFENSE_GUIDE.md) | **기술 면접관/SOC 리드 대응용 핵심 아키텍처 및 트러블슈팅 질의응답** |
 | **공식 보고서** | [**SOC 종합관제보고서 (Word)**](docs/reports/SOC_침해유형별_탐지대응룰북_및_종합관제보고서_한글가독성_전면개정본.docx) | 18개 주석 증적 스크린샷과 7대 룰북이 수록된 공식 운영 보고서 |
 | **01. 요구사항** | [`docs/01-requirements/README.md`](docs/01-requirements/README.md) | 망분리, 듀얼 IDS, SIEM 요구사항 정의서 (FR / NFR) |
 | **02. 아키텍처** | [`docs/02-architecture/README.md`](docs/02-architecture/README.md) | HLD, 시스템 토폴로지 및 [TLS 복호화 아키텍처](docs/02-architecture/TLS_DECRYPTION_AND_REVERSE_PROXY_ARCHITECTURE.md) |

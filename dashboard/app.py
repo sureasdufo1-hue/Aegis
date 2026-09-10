@@ -1,35 +1,38 @@
-import json
 import os
 from collections import Counter
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
-from fastapi import FastAPI, Request, HTTPException
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
+from analyzer.ai.actions.executor import ActionExecutor
+from analyzer.ai.approvals.repository import ApprovalRepository
+from analyzer.ai.localization import (
+    ACTION_TYPE_MAP,
+    APPROVAL_STATUS_MAP,
+    ATTACK_STAGE_MAP,
+    COMMON_UI_KO,
+    ENGINE_MAP,
+    EXECUTION_MODE_MAP,
+    MITRE_TECHNIQUE_MAP,
+    POLICY_VERDICT_MAP,
+    SEVERITY_MAP,
+    SIGNATURE_MAP,
+    SecurityEventInterpreter,
+)
+from analyzer.ai.orchestrator import AIOrchestrator
+from analyzer.ai.policy.protected_assets import PROTECTED_IPS, PROTECTED_NETWORKS
+from analyzer.ai.schemas.actions import ApprovalStatus, ExecutionMode
+from analyzer.alerting.dispatcher import NotificationDispatcher
+from analyzer.detection.correlation_engine import CorrelationEngine, Incident
 from analyzer.models import NormalizedAlert, Severity
 from analyzer.parsers.eve_parser import stream_eve_log
 from analyzer.parsers.snort_parser import stream_snort_log
-from analyzer.detection.correlation_engine import CorrelationEngine, Incident
-from analyzer.detection.threat_intel import ThreatIntelEngine
-from analyzer.alerting.dispatcher import NotificationDispatcher, NotificationConfig
-
-from analyzer.ai.orchestrator import AIOrchestrator
-from analyzer.ai.approvals.repository import ApprovalRepository
-from analyzer.ai.actions.executor import ActionExecutor
-from analyzer.ai.policy.protected_assets import PROTECTED_IPS, PROTECTED_NETWORKS
-from analyzer.ai.schemas.actions import ApprovalStatus, ExecutionMode
-
-from analyzer.ai.localization import (
-    COMMON_UI_KO, SEVERITY_MAP, ENGINE_MAP, ATTACK_STAGE_MAP,
-    SIGNATURE_MAP, MITRE_TECHNIQUE_MAP, POLICY_VERDICT_MAP,
-    APPROVAL_STATUS_MAP, ACTION_TYPE_MAP, EXECUTION_MODE_MAP,
-    SecurityEventInterpreter
-)
 
 app = FastAPI(title="SOC Lab - Suricata, Snort & AI Copilot Monitoring Center")
 
@@ -183,11 +186,11 @@ def get_notification_history(limit: int = 50):
 
 
 class NotificationTestRequest(BaseModel):
-    channel: Optional[str] = Field(default=None, description="Optional channel filter: 'slack', 'discord', 'webhook'")
+    channel: str | None = Field(default=None, description="Optional channel filter: 'slack', 'discord', 'webhook'")
 
 
 @app.post("/api/notifications/test")
-async def send_test_notification_endpoint(req: Optional[NotificationTestRequest] = None):
+async def send_test_notification_endpoint(req: NotificationTestRequest | None = None):
     channel = req.channel if req else None
     result = await notification_dispatcher.send_test_notification(channel=channel)
     return result
@@ -278,9 +281,9 @@ def get_ai_health():
 
 class ProviderSelectRequest(BaseModel):
     provider: str = Field(default="ollama", description="'ollama', 'real' or 'mock'")
-    provider_type: Optional[str] = Field(default=None, description="Alias for provider")
+    provider_type: str | None = Field(default=None, description="Alias for provider")
     model: str = Field(default="qwen3.5:9b", description="Model name, e.g. qwen3.5:9b or qwen3.5:4b")
-    model_name: Optional[str] = Field(default=None, description="Alias for model")
+    model_name: str | None = Field(default=None, description="Alias for model")
     timeout_seconds: float = Field(default=180.0)
 
 

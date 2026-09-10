@@ -1,20 +1,20 @@
-from datetime import datetime, timezone
-import pytest
-import httpx
+from datetime import UTC, datetime
 
-from analyzer.models import EngineType, NormalizedAlert, Severity
-from analyzer.detection.correlation_engine import Incident
+import httpx
+import pytest
+
 from analyzer.alerting.dispatcher import (
-    NotificationChannel,
+    DispatchStatus,
     NotificationConfig,
     NotificationDispatcher,
-    DispatchStatus,
 )
+from analyzer.detection.correlation_engine import Incident
+from analyzer.models import EngineType, NormalizedAlert, Severity
 
 
 @pytest.fixture
 def sample_incident() -> Incident:
-    now_utc = datetime.now(timezone.utc)
+    now_utc = datetime.now(UTC)
     alert1 = NormalizedAlert(
         id="ALERT-TEST-001",
         timestamp=now_utc,
@@ -177,7 +177,7 @@ async def test_cooldown_deduplication(sample_incident: Incident):
 async def test_diagnostic_suppression():
     alert_ping = NormalizedAlert(
         id="ALERT-PING-001",
-        timestamp=datetime.now(timezone.utc),
+        timestamp=datetime.now(UTC),
         engine=EngineType.SURICATA,
         sid=9000020,
         rev=1,
@@ -194,8 +194,8 @@ async def test_diagnostic_suppression():
         target_ips=["10.77.30.20"],
         attack_stages=["Diagnostic / Telemetry"],
         alerts=[alert_ping],
-        start_time=datetime.now(timezone.utc),
-        last_seen=datetime.now(timezone.utc),
+        start_time=datetime.now(UTC),
+        last_seen=datetime.now(UTC),
         highest_severity=Severity.INFO,
         verdict="Non-malicious diagnostic telemetry",
         activity_status="DIAGNOSTIC",

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Generate Aegis Enterprise SOC Portfolio & Technical Interview Defense Guide (.docx)
 Revised with:
@@ -19,15 +18,15 @@ Outputs:
   - C:\\Users\\user\\Downloads\\AEGIS_SOC_기술포트폴리오_및_면접방어가이드_최종본.docx
 """
 
-import os
 import shutil
 from pathlib import Path
+
 import docx
-from docx.shared import Inches, Pt, RGBColor
-from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.enum.table import WD_TABLE_ALIGNMENT
+from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.oxml import OxmlElement, parse_xml
 from docx.oxml.ns import nsdecls, qn
+from docx.shared import Inches, Pt, RGBColor
 
 BASE_DIR = Path(__file__).parent.parent.resolve()
 DOWNLOADS_DIR = Path(r"C:\Users\user\Downloads")

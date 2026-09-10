@@ -1,6 +1,6 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from enum import StrEnum
-from typing import Any
+
 from pydantic import BaseModel, Field
 
 
@@ -39,7 +39,7 @@ class PolicyValidationResult(BaseModel):
     target: str
     violations: list[str] = Field(default_factory=list)
     protected_asset_details: str | None = None
-    validated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    validated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
 
 class ProposedAction(BaseModel):
@@ -75,7 +75,7 @@ class ActionApprovalRecord(BaseModel):
     execution_mode: ExecutionMode = ExecutionMode.DRY_RUN
     
     # Audit trail
-    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
     expires_at: datetime | None = None
     reviewed_by: str | None = None
     reviewed_at: datetime | None = None

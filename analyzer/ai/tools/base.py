@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Any
-from pydantic import BaseModel, Field
+
+from pydantic import BaseModel
 
 
 class ToolResult(BaseModel):
@@ -29,7 +30,6 @@ class BaseInvestigationTool(ABC):
     @abstractmethod
     def parameter_schema(self) -> dict[str, Any]:
         """JSON schema describing acceptable arguments."""
-        pass
 
     @abstractmethod
     def execute(self, **kwargs) -> ToolResult:

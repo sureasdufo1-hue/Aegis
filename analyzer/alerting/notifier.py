@@ -1,7 +1,6 @@
-import json
 import logging
 import sys
-from typing import Any
+
 import httpx
 
 if sys.platform == "win32" and hasattr(sys.stdout, "reconfigure"):
@@ -15,8 +14,8 @@ from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
 
-from analyzer.models import NormalizedAlert, Severity
 from analyzer.detection.correlation_engine import Incident
+from analyzer.models import NormalizedAlert, Severity
 
 logger = logging.getLogger("soc.notifier")
 console = Console()

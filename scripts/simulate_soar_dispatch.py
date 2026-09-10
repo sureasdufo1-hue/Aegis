@@ -9,9 +9,8 @@ from __future__ import annotations
 
 import argparse
 import asyncio
-import os
 import sys
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 # Ensure repo root is on sys.path
@@ -30,15 +29,15 @@ from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
 
-from analyzer.models import EngineType, NormalizedAlert, Severity
-from analyzer.detection.correlation_engine import Incident
 from analyzer.alerting.dispatcher import NotificationConfig, NotificationDispatcher
+from analyzer.detection.correlation_engine import Incident
+from analyzer.models import EngineType, NormalizedAlert, Severity
 
 console = Console()
 
 
 def create_scenario_incident(scenario: str) -> Incident:
-    now_utc = datetime.now(timezone.utc)
+    now_utc = datetime.now(UTC)
 
     if scenario == "account_takeover":
         alert_recon = NormalizedAlert(

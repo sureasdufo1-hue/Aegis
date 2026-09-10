@@ -1,9 +1,14 @@
 import re
 import time
-from datetime import datetime, timezone
+from datetime import UTC, datetime
+
 from analyzer.ai.providers.base import BaseLLMProvider, ProviderResponse
 from analyzer.ai.schemas.analysis import (
-    AIIncidentAnalysis, AnalysisStatus, RiskAssessment, AttackTechniqueMapping, KnowledgeCitation
+    AIIncidentAnalysis,
+    AnalysisStatus,
+    AttackTechniqueMapping,
+    KnowledgeCitation,
+    RiskAssessment,
 )
 from analyzer.models import Severity
 
@@ -65,7 +70,7 @@ class MockLLMProvider(BaseLLMProvider):
             ))
 
         if is_sqli:
-            observed_facts.append(f"Web SQL Injection attack pattern (UNION SELECT) detected targeting port 3000 (SID 9010001).")
+            observed_facts.append("Web SQL Injection attack pattern (UNION SELECT) detected targeting port 3000 (SID 9010001).")
             attack_mappings.append(AttackTechniqueMapping(
                 technique_id="T1190",
                 technique_name="Exploit Public-Facing Application",
@@ -75,7 +80,7 @@ class MockLLMProvider(BaseLLMProvider):
             ))
 
         if is_c2:
-            observed_facts.append(f"Interactive reverse shell command execution (/bin/sh) established on port 4444 (SID 9030010).")
+            observed_facts.append("Interactive reverse shell command execution (/bin/sh) established on port 4444 (SID 9030010).")
             attack_mappings.append(AttackTechniqueMapping(
                 technique_id="T1059.004",
                 technique_name="Command and Scripting Interpreter: Unix Shell",
@@ -153,7 +158,7 @@ class MockLLMProvider(BaseLLMProvider):
                 "model": self.model_name,
                 "temperature": 0.0,
             },
-            generated_at=datetime.now(timezone.utc),
+            generated_at=datetime.now(UTC),
         )
 
         latency = (time.perf_counter() - start_time) * 1000

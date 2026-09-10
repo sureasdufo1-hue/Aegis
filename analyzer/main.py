@@ -1,6 +1,5 @@
 import argparse
 import sys
-import time
 from pathlib import Path
 
 # Enable UTF-8 output on Windows consoles
@@ -13,12 +12,12 @@ if sys.platform == "win32" and hasattr(sys.stdout, "reconfigure"):
 
 from rich.console import Console
 
+from analyzer.alerting.notifier import print_alert_rich, print_incident_rich
+from analyzer.detection.correlation_engine import CorrelationEngine
+from analyzer.detection.threat_intel import ThreatIntelEngine
 from analyzer.models import NormalizedAlert
 from analyzer.parsers.eve_parser import stream_eve_log
 from analyzer.parsers.snort_parser import stream_snort_log
-from analyzer.detection.correlation_engine import CorrelationEngine
-from analyzer.detection.threat_intel import ThreatIntelEngine
-from analyzer.alerting.notifier import print_alert_rich, print_incident_rich
 
 console = Console()
 

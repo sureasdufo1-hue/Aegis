@@ -35,7 +35,7 @@ console = Console()
 
 
 def simulate_tls_pipeline(save_evidence: bool = True) -> dict[str, any]:
-    timestamp = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    timestamp = datetime.datetime.now(datetime.UTC).isoformat()
 
     # -------------------------------------------------------------
     # Case A: Pure Encrypted TLS (Direct to 443 without Termination)
@@ -194,7 +194,7 @@ def main() -> None:
     case_b = data["case_b"]
     console.print("\n[bold green]✓ Case B Decrypted L7 HTTP Inspection Detail:[/bold green]")
     console.print(f"• Decrypted Source: [bold white]{case_b['proxy_metadata']['ssl_terminated_by']}[/bold white]")
-    console.print(f"• Protocol Transition: [bold cyan]HTTPS/443 (TLSv1.3)[/bold cyan] ➔ [bold yellow]HTTP/3000 (Plaintext Internal)[/bold yellow]")
+    console.print("• Protocol Transition: [bold cyan]HTTPS/443 (TLSv1.3)[/bold cyan] ➔ [bold yellow]HTTP/3000 (Plaintext Internal)[/bold yellow]")
     console.print(f"• Detected Payload: [bold red]{case_b['http']['url']}[/bold red]")
     console.print(f"• Suricata Trigger: [bold magenta]{case_b['alert']['signature']}[/bold magenta] (SID: {case_b['alert']['signature_id']})")
 

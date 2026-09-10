@@ -5,13 +5,12 @@ Validates real-time ingestion from Suricata EVE JSON -> Wazuh Manager -> Wazuh I
 """
 
 import json
-import os
 import subprocess
 import sys
 import time
-import urllib.request
 import urllib.error
-from datetime import datetime, timezone
+import urllib.request
+from datetime import UTC, datetime
 from pathlib import Path
 
 # Add repo root to sys.path
@@ -27,15 +26,14 @@ if sys.platform == "win32" and hasattr(sys.stdout, "reconfigure"):
     except Exception:
         pass
 
+from fastapi.testclient import TestClient
 from rich.console import Console
-from rich.table import Table
 from rich.panel import Panel
 
-from scenarios.traffic_generator import generate_targeted_killchain_events
-from analyzer.parsers.eve_parser import stream_eve_log
 from analyzer.detection.correlation_engine import CorrelationEngine
-from fastapi.testclient import TestClient
+from analyzer.parsers.eve_parser import stream_eve_log
 from dashboard.app import app
+from scenarios.traffic_generator import generate_targeted_killchain_events
 
 console = Console()
 
@@ -89,7 +87,7 @@ def run_phase31_verification() -> dict:
 
     run_id = f"phase31_{int(time.time())}"
     flow_id_base = 920000000000000 + int(time.time()) % 100000
-    timestamp_start = datetime.now(timezone.utc)
+    timestamp_start = datetime.now(UTC)
 
     results = {
         "phase": "Phase 31",

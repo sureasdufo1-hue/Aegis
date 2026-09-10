@@ -1,6 +1,7 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from enum import StrEnum
 from typing import Any
+
 from pydantic import BaseModel, Field
 
 
@@ -32,7 +33,7 @@ class Severity(StrEnum):
 
 class NormalizedAlert(BaseModel):
     id: str = Field(description="Unique alert identifier")
-    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(UTC))
     engine: EngineType = Field(default=EngineType.SURICATA)
     event_type: EventType = Field(default=EventType.ALERT)
     

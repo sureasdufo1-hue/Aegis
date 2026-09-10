@@ -1,8 +1,9 @@
 import json
 import os
+
 import pytest
+
 from analyzer.ai.providers.ollama_provider import OllamaProvider
-from analyzer.ai.schemas.analysis import AIIncidentAnalysis, AnalysisStatus
 
 
 def test_ollama_provider_health_check():
