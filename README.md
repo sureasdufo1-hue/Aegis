@@ -273,6 +273,7 @@ python -m uvicorn dashboard.app:app --host 0.0.0.0 --port 8501 --reload
 
 | 구분 | 핵심 기술 문서 | 주요 내용 및 목적 |
 |---|---|---|
+| **최종 마스터 포트폴리오** | [**Aegis SOC 기술포트폴리오 및 종합보고서 (Word)**](docs/reports/AEGIS_SOC_최종_기술포트폴리오_및_종합관제보고서.docx) | **전 주기 12개 파트, 7대 룰북, 23대 면접가이드, 18종 주석 스크린샷 총망라 공식 마스터본** |
 | **라이브 쇼케이스** | [**Aegis Interactive Web Showcase**](https://sureasdufo1-hue.github.io/Aegis/) | **GitHub Pages 기반 포트폴리오 웹사이트 (15단계 파이프라인, 실시간 검색 면접가이드)** |
 | **면접 방어** | [**기술 면접 방어 가이드 23선**](docs/PORTFOLIO_DEFENSE_GUIDE.md) | **기술 면접관/SOC 리드 대응용 핵심 아키텍처 및 트러블슈팅 질의응답** |
 | **공식 보고서** | [**SOC 종합관제보고서 (Word)**](docs/reports/SOC_침해유형별_탐지대응룰북_및_종합관제보고서_한글가독성_전면개정본.docx) | 18개 주석 증적 스크린샷과 7대 룰북이 수록된 공식 운영 보고서 |
