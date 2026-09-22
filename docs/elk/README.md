@@ -1,7 +1,7 @@
 # 🛡️ SOC Detection & Monitoring Lab — ELK Stack Architecture Index
 
 > **Master Guide**: Central Security Data, Search, Threat Hunting & Correlation Layer  
-> **Status**: `PHASE ELK-1 APPROVED BASELINE`  
+> **Status**: `IMPLEMENTATION COMPLETE` (All 14 Phases & 8 Critical Release Gates Passed)  
 
 ---
 
@@ -14,6 +14,29 @@
 | [03-LOG-SOURCE-INVENTORY.md](file:///C:/Users/user/Documents/ChatGPT/Suricata-Snort-SOC-Lab/docs/elk/03-LOG-SOURCE-INVENTORY.md) | **Log Source Inventory** | Suricata EVE, Snort 3 JSON, Wazuh alerts, and nftables syslog ingestion paths and volume estimates. |
 | [04-DATA-STREAM-DESIGN.md](file:///C:/Users/user/Documents/ChatGPT/Suricata-Snort-SOC-Lab/docs/elk/04-DATA-STREAM-DESIGN.md) | **Data Stream & ILM Design** | Elastic Data Streams (`logs-*-*`), Single-node replica policy (`0`), and Hot/Warm/Cold ILM retention. |
 | [05-ECS-MAPPING.md](file:///C:/Users/user/Documents/ChatGPT/Suricata-Snort-SOC-Lab/docs/elk/05-ECS-MAPPING.md) | **ECS Normalization Matrix** | Universal Elastic Common Schema (ECS 8.x) mapping across Suricata, Snort, Wazuh, and Firewall. |
+
+---
+
+## Operational Verification & Verification Scripts
+
+| Script | Location | Purpose |
+|---|---|---|
+| `verify_cross_stream_search.py` | `infrastructure/elk/scripts/` | Cross-stream wildcard timeline & ATT&CK aggregation validation |
+| `verify_ilm_policy.py` | `infrastructure/elk/scripts/` | Validates ILM hot/warm/delete policy & index template management |
+| `verify_correlation_rules.py` | `infrastructure/elk/scripts/` | Validates Query DSL campaign & EQL sequence detection engine |
+| `verify_elk_final_release.py` | `infrastructure/elk/scripts/` | Final release gate evaluating all 8 operational and security gates |
+
+---
+
+## Kibana Operational Artifacts
+
+- **SOC Threat Operations Dashboard**: `http://127.0.0.1:5602/app/dashboards#/view/soc-unified-threat-dashboard`
+- **Data Views**:
+  - `soc-unified-logs` (`logs-*`): Cross-telemetry search & hunting
+  - `soc-suricata-logs` (`logs-suricata.*-*`): Suricata EVE telemetry
+  - `soc-snort-logs` (`logs-snort.*-*`): Snort 3 alerts
+  - `soc-firewall-logs` (`logs-firewall.*-*`): Gateway nftables audit logs
+  - `soc-wazuh-logs` (`logs-wazuh.*-*`): Wazuh SIEM alerts
 
 ---
 
