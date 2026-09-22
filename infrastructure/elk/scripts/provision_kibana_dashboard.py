@@ -100,11 +100,18 @@ def es_request(path, payload=None, method=None):
 def provision_geoip_pipeline_and_mappings():
     print("\n[Step 0] Configuring High-Fidelity ECS GeoIP Mappings & Pipeline...")
     
-    # 1. Update Index Mapping for geo_point
+    # 1. Update Index Mapping for geo_point and ip fields
     mapping_payload = {
         "properties": {
             "source": {
                 "properties": {
+                    "ip": {
+                        "type": "text",
+                        "fielddata": True,
+                        "fields": {
+                            "keyword": {"type": "keyword", "ignore_above": 256}
+                        }
+                    },
                     "geo": {
                         "properties": {
                             "location": {"type": "geo_point"},
@@ -115,6 +122,17 @@ def provision_geoip_pipeline_and_mappings():
                         }
                     }
                 }
+            },
+            "destination": {
+                "properties": {
+                    "ip": {
+                        "type": "text",
+                        "fielddata": True,
+                        "fields": {
+                            "keyword": {"type": "keyword", "ignore_above": 256}
+                        }
+                    }
+                }
             }
         }
     }
@@ -122,7 +140,7 @@ def provision_geoip_pipeline_and_mappings():
     if "error" in res_map:
         print(f"[WARN] Error updating geo mappings: {res_map}")
     else:
-        print("[PASS] Confirmed geo_point mapping for source.geo.location and destination.geo.location.")
+        print("[PASS] Confirmed geo_point mapping for source.geo.location and destination.geo.location with fielddata enabled.")
 
     # 2. Register Ingest Pipeline for deterministic GeoIP enrichment
     pipeline = {
@@ -571,6 +589,8 @@ def provision_map_visualization():
             "sourceDescriptor": {
                 "id": "source_threat_points",
                 "type": "ES_SEARCH",
+                "indexPatternId": "soc-unified-logs",
+                "indexPatternRefName": "layer_threat_sources_index_pattern",
                 "geoField": "source.geo.location",
                 "limit": 2048,
                 "filterByMapBounds": False,
@@ -584,11 +604,10 @@ def provision_map_visualization():
                     "event.module"
                 ],
                 "applyGlobalQuery": True,
-                "scalingType": "TOP_HITS",
-                "topHitsSplitField": "source.ip",
+                "applyGlobalTime": True,
+                "scalingType": "LIMIT",
                 "sortField": "@timestamp",
-                "sortOrder": "desc",
-                "indexPatternRefName": "layer_threat_sources_index_pattern"
+                "sortOrder": "desc"
             },
             "style": {
                 "type": "VECTOR",
@@ -608,14 +627,37 @@ def provision_map_visualization():
                     },
                     "lineWidth": {
                         "type": "STATIC",
-                        "options": {"size": 1.5}
+                        "options": {"size": 2}
                     },
                     "iconSize": {
                         "type": "STATIC",
-                        "options": {"size": 12}
+                        "options": {"size": 14}
                     },
                     "symbolizeAs": {
                         "options": {"value": "circle"}
+                    },
+                    "iconOrientation": {
+                        "type": "STATIC",
+                        "options": {"orientation": 0}
+                    },
+                    "labelText": {
+                        "type": "STATIC",
+                        "options": {"value": ""}
+                    },
+                    "labelColor": {
+                        "type": "STATIC",
+                        "options": {"color": "#FFFFFF"}
+                    },
+                    "labelSize": {
+                        "type": "STATIC",
+                        "options": {"size": 14}
+                    },
+                    "labelBorderColor": {
+                        "type": "STATIC",
+                        "options": {"color": "#000000"}
+                    },
+                    "labelBorderSize": {
+                        "options": {"size": "SMALL"}
                     }
                 }
             }
@@ -635,6 +677,9 @@ def provision_map_visualization():
             }),
             "layerListJSON": json.dumps(map_layers),
             "uiStateJSON": json.dumps({"isDarkMode": True})
+        },
+        "migrationVersion": {
+            "map": "8.4.0"
         },
         "references": [
             {
