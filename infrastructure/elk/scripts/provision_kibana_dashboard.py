@@ -23,31 +23,31 @@ HEADERS = {
 DATA_VIEWS = [
     {
         "id": "soc-unified-logs",
-        "name": "SOC Unified Security Telemetry (logs-*)",
+        "name": "[통합 로그] 전체 보안 텔레메트리 (logs-*)",
         "title": "logs-*",
         "timeFieldName": "@timestamp"
     },
     {
         "id": "soc-suricata-logs",
-        "name": "Suricata IDS (logs-suricata.eve-*)",
+        "name": "[Suricata] 침입 탐지 NIDS 실시간 로그 (logs-suricata.eve-*)",
         "title": "logs-suricata.eve-*",
         "timeFieldName": "@timestamp"
     },
     {
         "id": "soc-snort-logs",
-        "name": "Snort 3 IDS (logs-snort.alert-*)",
+        "name": "[Snort 3] 심층 패킷 검사 탐지 로그 (logs-snort.alert-*)",
         "title": "logs-snort.alert-*",
         "timeFieldName": "@timestamp"
     },
     {
         "id": "soc-firewall-logs",
-        "name": "Gateway nftables Firewall (logs-firewall.traffic-*)",
+        "name": "[Gateway] nftables 경계 방화벽 트래픽 (logs-firewall.traffic-*)",
         "title": "logs-firewall.traffic-*",
         "timeFieldName": "@timestamp"
     },
     {
         "id": "soc-wazuh-logs",
-        "name": "Wazuh SIEM (logs-wazuh.alert-*)",
+        "name": "[Wazuh] SIEM & 호스트 엔드포인트 보안 경보 (logs-wazuh.alert-*)",
         "title": "logs-wazuh.alert-*",
         "timeFieldName": "@timestamp"
     }
@@ -97,8 +97,8 @@ def provision_saved_search():
     print("\n[Step 2] Provisioning Saved Search 'soc-threat-event-feed'...")
     search_obj = {
         "attributes": {
-            "title": "SOC Unified Security Event Feed",
-            "description": "Chronological real-time feed across Suricata, Snort, Gateway, and Wazuh",
+            "title": "실시간 통합 보안 이벤트 피드 (Unified Security Event Feed)",
+            "description": "Suricata, Snort 3, Gateway nftables, Wazuh 4대 소스 통합 실시간 보안 이벤트 모니터링",
             "columns": [
                 "@timestamp",
                 "event.module",
@@ -141,8 +141,8 @@ def provision_lens_visualizations():
     # 1. Module Distribution Bar Chart
     mod_lens = {
         "attributes": {
-            "title": "Security Telemetry by Module",
-            "description": "Event distribution across Suricata, Snort 3, Gateway nftables, and Wazuh",
+            "title": "탐지 모듈별 이벤트 수집 현황 (Telemetry by Module)",
+            "description": "Suricata, Snort 3, Gateway nftables, Wazuh 감지 모듈별 수집 이벤트 통계",
             "visualizationType": "lnsXY",
             "state": {
                 "visualization": {
@@ -195,7 +195,7 @@ def provision_lens_visualizations():
                             "layer1": {
                                 "columns": {
                                     "x_dim": {
-                                        "label": "Detector Module",
+                                        "label": "탐지 모듈 (Module)",
                                         "dataType": "string",
                                         "operationType": "terms",
                                         "sourceField": "event.module.keyword",
@@ -208,7 +208,7 @@ def provision_lens_visualizations():
                                         }
                                     },
                                     "y_dim": {
-                                        "label": "Total Events",
+                                        "label": "수집 이벤트 수 (Events)",
                                         "dataType": "number",
                                         "operationType": "count",
                                         "scale": "ratio",
@@ -235,8 +235,8 @@ def provision_lens_visualizations():
     # 2. MITRE ATT&CK Distribution Donut Chart
     attack_lens = {
         "attributes": {
-            "title": "MITRE ATT&CK Technique Distribution",
-            "description": "Categorization of detected adversary techniques across all sensors",
+            "title": "MITRE ATT&CK 공격 기법별 탐지 통계 (Technique Distribution)",
+            "description": "전체 센서에서 탐지된 적대적 공격 기법(T1046, T1110, T1059 등)별 분포 비율",
             "visualizationType": "lnsPie",
             "state": {
                 "visualization": {
@@ -263,7 +263,7 @@ def provision_lens_visualizations():
                             "layer1": {
                                 "columns": {
                                     "x_dim": {
-                                        "label": "MITRE ATT&CK Technique",
+                                        "label": "공격 기법 (Technique)",
                                         "dataType": "string",
                                         "operationType": "terms",
                                         "sourceField": "threat.technique.id.keyword",
@@ -276,7 +276,7 @@ def provision_lens_visualizations():
                                         }
                                     },
                                     "y_dim": {
-                                        "label": "Alert Count",
+                                        "label": "탐지 건수 (Alerts)",
                                         "dataType": "number",
                                         "operationType": "count",
                                         "scale": "ratio",
@@ -303,8 +303,8 @@ def provision_lens_visualizations():
     # 3. Severity Distribution
     sev_lens = {
         "attributes": {
-            "title": "Events by Severity Level",
-            "description": "Severity breakdown (1:Low, 2:Medium, 3:High, 4:Critical)",
+            "title": "위협 심각도 수준별 이벤트 분포 (Severity Level)",
+            "description": "위협 심각도 수준별 이벤트 집계 (1:정보/Low, 2:주의/Medium, 3:경고/High, 4:치명/Critical)",
             "visualizationType": "lnsXY",
             "state": {
                 "visualization": {
@@ -357,7 +357,7 @@ def provision_lens_visualizations():
                             "layer1": {
                                 "columns": {
                                     "x_dim": {
-                                        "label": "Severity",
+                                        "label": "위협 심각도 (Severity)",
                                         "dataType": "number",
                                         "operationType": "terms",
                                         "sourceField": "event.severity",
@@ -370,7 +370,7 @@ def provision_lens_visualizations():
                                         }
                                     },
                                     "y_dim": {
-                                        "label": "Count",
+                                        "label": "이벤트 건수 (Count)",
                                         "dataType": "number",
                                         "operationType": "count",
                                         "scale": "ratio",
@@ -436,8 +436,8 @@ def provision_dashboard():
 
     dashboard_obj = {
         "attributes": {
-            "title": "SOC Threat Operations & Monitoring Dashboard",
-            "description": "Unified Multi-Source Real-time Security Monitoring across Suricata 8.0.6, Snort 3.12.2, Gateway nftables, and Wazuh 4.14.7",
+            "title": "SOC 통합 위협 관제 대시보드 (Unified Threat Monitoring)",
+            "description": "Suricata 8.0.6, Snort 3.12.2, Gateway nftables, Wazuh 4.14.7 실시간 통합 위협 관제 및 분석 대시보드",
             "hits": 0,
             "panelsJSON": json.dumps(panels),
             "timeRestore": True,
