@@ -287,6 +287,20 @@ def test_ilm_policy_and_verification_script():
     assert "logs-wazuh.alert-default" in content
 
 
+def test_kibana_dashboard_and_provisioning_script():
+    script_path = REPO_ROOT / "infrastructure" / "elk" / "scripts" / "provision_kibana_dashboard.py"
+    assert script_path.exists(), "provision_kibana_dashboard.py must exist"
+
+    content = script_path.read_text(encoding="utf-8")
+    assert "soc-unified-logs" in content
+    assert "soc-unified-threat-dashboard" in content
+    assert "soc-threat-event-feed" in content
+    assert "soc-lens-module-dist" in content
+    assert "soc-lens-technique-donut" in content
+    assert "soc-lens-severity-dist" in content
+
+
+
 
 
 
