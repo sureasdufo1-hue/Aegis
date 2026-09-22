@@ -176,7 +176,9 @@ def provision_lens_visualizations():
                                         "operationType": "count",
                                         "isBucketed": False
                                     }
-                                }
+                                },
+                                "columnOrder": ["x_dim", "y_dim"],
+                                "incompleteColumns": {}
                             }
                         }
                     }
@@ -203,8 +205,13 @@ def provision_lens_visualizations():
                     "layers": [
                         {
                             "layerId": "layer1",
-                            "primaryAccessor": "x_dim",
-                            "metricAccessor": "y_dim"
+                            "primaryGroups": ["x_dim"],
+                            "metrics": ["y_dim"],
+                            "numberDisplay": "percent",
+                            "categoryDisplay": "default",
+                            "legendDisplay": "default",
+                            "legendPosition": "right",
+                            "nestedLegend": False
                         }
                     ]
                 },
@@ -228,7 +235,9 @@ def provision_lens_visualizations():
                                         "operationType": "count",
                                         "isBucketed": False
                                     }
-                                }
+                                },
+                                "columnOrder": ["x_dim", "y_dim"],
+                                "incompleteColumns": {}
                             }
                         }
                     }
@@ -281,7 +290,9 @@ def provision_lens_visualizations():
                                         "operationType": "count",
                                         "isBucketed": False
                                     }
-                                }
+                                },
+                                "columnOrder": ["x_dim", "y_dim"],
+                                "incompleteColumns": {}
                             }
                         }
                     }
@@ -342,7 +353,9 @@ def provision_dashboard():
             "description": "Unified Multi-Source Real-time Security Monitoring across Suricata 8.0.6, Snort 3.12.2, Gateway nftables, and Wazuh 4.14.7",
             "hits": 0,
             "panelsJSON": json.dumps(panels),
-            "timeRestore": False,
+            "timeRestore": True,
+            "timeFrom": "now-7d",
+            "timeTo": "now",
             "kibanaSavedObjectMeta": {
                 "searchSourceJSON": json.dumps({
                     "query": {"query": "", "language": "kuery"},
