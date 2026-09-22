@@ -300,6 +300,22 @@ def test_kibana_dashboard_and_provisioning_script():
     assert "soc-lens-severity-dist" in content
 
 
+def test_correlation_rules_and_eql_queries():
+    script_path = REPO_ROOT / "infrastructure" / "elk" / "scripts" / "verify_correlation_rules.py"
+    assert script_path.exists(), "verify_correlation_rules.py must exist"
+
+    content = script_path.read_text(encoding="utf-8")
+    assert "INC-ELK-CORR-001" in content
+    assert "sequence by source.ip.keyword" in content
+    assert "nftables" in content
+    assert "wazuh" in content
+    assert "T1046" in content
+    assert "T1190" in content
+    assert "T1110" in content
+    assert "T1078" in content
+
+
+
 
 
 
