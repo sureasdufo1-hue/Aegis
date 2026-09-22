@@ -544,14 +544,18 @@ def provision_map_visualization():
             "id": "layer_basemap",
             "label": "세계 지도 (World Basemap)",
             "alpha": 1,
+            "locale": "auto",
             "sourceDescriptor": {
                 "type": "EMS_TMS",
                 "isAutoSelect": True,
                 "lightModeDefault": "road_map_desaturated"
             },
             "visible": True,
-            "style": {},
-            "type": "VECTOR_TILE",
+            "style": {
+                "type": "EMS_VECTOR_TILE",
+                "color": ""
+            },
+            "type": "EMS_VECTOR_TILE",
             "minZoom": 0,
             "maxZoom": 24
         },
@@ -562,7 +566,8 @@ def provision_map_visualization():
             "maxZoom": 24,
             "alpha": 1,
             "visible": True,
-            "type": "VECTOR",
+            "type": "GEOJSON_VECTOR",
+            "joins": [],
             "sourceDescriptor": {
                 "id": "source_threat_points",
                 "type": "ES_SEARCH",
@@ -579,12 +584,15 @@ def provision_map_visualization():
                     "event.module"
                 ],
                 "applyGlobalQuery": True,
-                "scalingType": "MVT",
+                "scalingType": "TOP_HITS",
+                "topHitsSplitField": "source.ip",
                 "sortField": "@timestamp",
+                "sortOrder": "desc",
                 "indexPatternRefName": "layer_threat_sources_index_pattern"
             },
             "style": {
                 "type": "VECTOR",
+                "isTimeAware": True,
                 "properties": {
                     "icon": {
                         "type": "STATIC",
@@ -605,6 +613,9 @@ def provision_map_visualization():
                     "iconSize": {
                         "type": "STATIC",
                         "options": {"size": 12}
+                    },
+                    "symbolizeAs": {
+                        "options": {"value": "circle"}
                     }
                 }
             }
