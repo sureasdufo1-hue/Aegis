@@ -1,0 +1,24 @@
+# ==============================================================================
+# Logstash Multi-Pipeline Configuration for SOC Detection Lab
+# Reference: Phase ELK-4 — Logstash 구축
+# ==============================================================================
+
+- pipeline.id: suricata-beats
+  path.config: "/usr/share/logstash/pipeline/suricata.conf"
+  pipeline.workers: 2
+  pipeline.batch.size: 125
+
+- pipeline.id: snort-alerts
+  path.config: "/usr/share/logstash/pipeline/snort.conf"
+  pipeline.workers: 1
+  pipeline.batch.size: 50
+
+- pipeline.id: firewall-traffic
+  path.config: "/usr/share/logstash/pipeline/firewall.conf"
+  pipeline.workers: 1
+  pipeline.batch.size: 50
+
+- pipeline.id: wazuh-alerts
+  path.config: "/usr/share/logstash/pipeline/wazuh.conf"
+  pipeline.workers: 1
+  pipeline.batch.size: 50

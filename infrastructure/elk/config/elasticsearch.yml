@@ -1,0 +1,33 @@
+# ==============================================================================
+# Elasticsearch 8.17.3 Baseline Configuration for SOC Detection Lab
+# Reference: ELK Architecture Design (Phase ELK-1 / ELK-2)
+# ==============================================================================
+
+cluster.name: soc-elk-cluster
+node.name: soc-elasticsearch
+
+# Network & Bindings (Internal container port 9200)
+network.host: 0.0.0.0
+http.port: 9200
+
+# Single-Node Topology Declaration
+discovery.type: single-node
+
+# Security & RBAC Configuration
+xpack.security.enabled: true
+xpack.security.enrollment.enabled: false
+xpack.security.http.ssl.enabled: false
+xpack.security.transport.ssl.enabled: false
+xpack.security.authc.api_key.enabled: true
+
+# Disk Watermarks for NVMe Protection
+cluster.routing.allocation.disk.threshold_enabled: true
+cluster.routing.allocation.disk.watermark.low: 85%
+cluster.routing.allocation.disk.watermark.high: 90%
+cluster.routing.allocation.disk.watermark.flood_stage: 95%
+
+# Index Lifecycle Management (ILM)
+indices.lifecycle.poll_interval: 5m
+
+# Auto Index Creation Restrictions
+action.auto_create_index: ".watches,.triggered_watches,.watcher-history-*,logs-*,soc-*"

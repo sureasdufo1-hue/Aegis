@@ -355,6 +355,22 @@ def test_fastapi_elk_endpoints():
     assert len(data_t.get("modules", [])) >= 3
 
 
+def test_elk_final_release_gate_script():
+    script_path = REPO_ROOT / "infrastructure" / "elk" / "scripts" / "verify_elk_final_release.py"
+    assert script_path.exists(), "verify_elk_final_release.py must exist"
+
+    content = script_path.read_text(encoding="utf-8")
+    assert "GATE-CONTAINER-01" in content
+    assert "GATE-PORT-ISOLATION-01" in content
+    assert "GATE-CLUSTER-GREEN-01" in content
+    assert "GATE-TELEMETRY-COVERAGE-01" in content
+    assert "GATE-CROSS-STREAM-01" in content
+    assert "GATE-ILM-POLICY-01" in content
+    assert "GATE-KIBANA-DASHBOARD-01" in content
+    assert "GATE-FASTAPI-CONSOLE-01" in content
+
+
+
 
 
 

@@ -1,0 +1,27 @@
+# ==============================================================================
+# Logstash 8.17.3 Baseline Configuration for SOC Detection Lab
+# Reference: ELK Architecture & Data Stream Design (Phase ELK-1 / ELK-4)
+# ==============================================================================
+
+node.name: soc-logstash
+http.host: "0.0.0.0"
+http.port: 9600
+
+# ECS Compatibility Mode
+pipeline.ecs_compatibility: v8
+
+# Queue Persistence Strategy
+queue.type: persisted
+path.queue: /usr/share/logstash/data/queue
+queue.page_capacity: 64mb
+queue.max_bytes: 4gb
+queue.checkpoint.writes: 1024
+
+# Dead Letter Queue (DLQ)
+dead_letter_queue.enable: true
+path.dead_letter_queue: /usr/share/logstash/data/dead_letter_queue
+dead_letter_queue.max_bytes: 1gb
+
+# Pipeline Management
+config.reload.automatic: true
+config.reload.interval: 10s

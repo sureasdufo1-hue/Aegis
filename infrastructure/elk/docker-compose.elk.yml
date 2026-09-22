@@ -1,0 +1,136 @@
+services:
+  # ==============================================================================
+  # 1. Elasticsearch 8.17.3 (Single-Node Central Security Store)
+  # ==============================================================================
+  soc-elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.17.3
+    container_name: soc-elasticsearch
+    hostname: soc-elasticsearch
+    restart: unless-stopped
+    ports:
+      # Expose on 9201 to eliminate collision with Wazuh Indexer on 9200
+      - "127.0.0.1:${ES_PORT:-9201}:9200"
+    environment:
+      - node.name=soc-elasticsearch
+      - cluster.name=soc-elk-cluster
+      - discovery.type=single-node
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD:-changeme_soc_lab_strong_pass_2026}
+      - ES_JAVA_OPTS=${ES_HEAP_OPTS:--Xms4g -Xmx4g}
+      - xpack.security.enabled=true
+      - xpack.security.http.ssl.enabled=false
+      - xpack.security.transport.ssl.enabled=false
+      - xpack.security.authc.api_key.enabled=true
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    mem_limit: ${ES_MEM_LIMIT:-6g}
+    volumes:
+      - soc-es-data:/usr/share/elasticsearch/data
+      - ./config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+    networks:
+      - soc-elk-net
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s -u elastic:${ELASTIC_PASSWORD:-changeme_soc_lab_strong_pass_2026} http://localhost:9200/_cluster/health | grep -E '\"status\":\"(green|yellow)\"' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+
+  # ==============================================================================
+  # 2. Kibana 8.17.3 (SOC Threat Hunting & Analytics Console)
+  # ==============================================================================
+  soc-kibana:
+    image: docker.elastic.co/kibana/kibana:8.17.3
+    container_name: soc-kibana
+    hostname: soc-kibana
+    restart: unless-stopped
+    depends_on:
+      soc-elasticsearch:
+        condition: service_healthy
+    ports:
+      # Expose on 5602 to eliminate collision with Wazuh Dashboard on 5601
+      - "127.0.0.1:${KIBANA_PORT:-5602}:5601"
+    environment:
+      - SERVER_NAME=soc-kibana
+      - ELASTICSEARCH_HOSTS=http://soc-elasticsearch:9200
+      - ELASTICSEARCH_USERNAME=kibana_system
+      - ELASTICSEARCH_PASSWORD=${KIBANA_PASSWORD:-changeme_kibana_system_2026}
+      - TELEMETRY_ENABLED=false
+      - NEWSFEED_ENABLED=false
+    mem_limit: ${KIBANA_MEM_LIMIT:-2g}
+    volumes:
+      - ./config/kibana.yml:/usr/share/kibana/config/kibana.yml:ro
+      - soc-kibana-data:/usr/share/kibana/data
+    networks:
+      - soc-elk-net
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s -I http://localhost:5601/api/status | grep -E 'HTTP/[1-2](\\.[0-9])? (200|302)' || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 15
+      start_period: 40s
+
+  # ==============================================================================
+  # 3. Logstash 8.17.3 (Multi-Pipeline Ingestion, Parsing & ECS Normalization)
+  # ==============================================================================
+  soc-logstash:
+    image: docker.elastic.co/logstash/logstash:8.17.3
+    container_name: soc-logstash
+    hostname: soc-logstash
+    restart: unless-stopped
+    depends_on:
+      soc-elasticsearch:
+        condition: service_healthy
+    ports:
+      # Beats Ingestion (5044/TCP)
+      - "${LOGSTASH_HOST_IP:-0.0.0.0}:${LOGSTASH_BEATS_PORT:-5044}:5044"
+      # Suricata TCP Ingestion (5047/TCP)
+      - "${LOGSTASH_HOST_IP:-0.0.0.0}:${LOGSTASH_SURICATA_TCP_PORT:-5047}:5047"
+      # Snort TCP Ingestion (5045/TCP)
+      - "${LOGSTASH_HOST_IP:-0.0.0.0}:${LOGSTASH_SNORT_PORT:-5045}:5045"
+      # Wazuh TCP Ingestion (5046/TCP)
+      - "${LOGSTASH_HOST_IP:-0.0.0.0}:${LOGSTASH_WAZUH_PORT:-5046}:5046"
+      # Gateway Firewall Syslog Ingestion (5514/UDP)
+      - "${LOGSTASH_HOST_IP:-0.0.0.0}:${LOGSTASH_SYSLOG_PORT:-5514}:5514/udp"
+      # Logstash Internal Monitoring API (127.0.0.1:9600)
+      - "127.0.0.1:${LOGSTASH_API_PORT:-9600}:9600"
+    environment:
+      - "LS_JAVA_OPTS=-Xms2g -Xmx2g"
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD:-changeme_soc_lab_strong_pass_2026}
+    mem_limit: ${LOGSTASH_MEM_LIMIT:-3g}
+    user: "0:0"
+    volumes:
+      - ./config/logstash.yml:/usr/share/logstash/config/logstash.yml
+      - ./config/pipelines.yml:/usr/share/logstash/config/pipelines.yml:ro
+      - ./pipeline:/usr/share/logstash/pipeline:ro
+      - soc-logstash-data:/usr/share/logstash/data
+      - docker_wazuh-manager-logs:/var/ossec/logs:ro
+    networks:
+      - soc-elk-net
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s -I http://localhost:9600/_node/pipelines | grep -E 'HTTP/[1-2](\\.[0-9])? 200' || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 15
+      start_period: 40s
+
+volumes:
+  soc-es-data:
+    name: soc-es-data
+  soc-kibana-data:
+    name: soc-kibana-data
+  soc-logstash-data:
+    name: soc-logstash-data
+  docker_wazuh-manager-logs:
+    external: true
+    name: docker_wazuh-manager-logs
+
+networks:
+  soc-elk-net:
+    name: soc-elk-net
+    driver: bridge
+
