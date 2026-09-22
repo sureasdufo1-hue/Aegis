@@ -262,6 +262,19 @@ def test_wazuh_pipeline_configuration_and_ecs_mapping():
     assert v_script.exists(), "verify_wazuh_ingest.py must exist"
 
 
+def test_cross_stream_search_and_aggregation_script_presence():
+    script_path = REPO_ROOT / "infrastructure" / "elk" / "scripts" / "verify_cross_stream_search.py"
+    assert script_path.exists(), "verify_cross_stream_search.py must exist"
+
+    content = script_path.read_text(encoding="utf-8")
+    assert "INDEX_PATTERN = \"logs-*\"" in content
+    assert "10.77.20.20" in content
+    assert "by_module" in content
+    assert "by_technique" in content or "techniques" in content
+    assert "severities" in content
+
+
+
 
 
 
