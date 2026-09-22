@@ -243,5 +243,25 @@ def test_firewall_pipeline_configuration_and_ecs_mapping():
     assert v_script.exists(), "verify_firewall_ingest.py must exist"
 
 
+def test_wazuh_pipeline_configuration_and_ecs_mapping():
+    conf_path = REPO_ROOT / "infrastructure" / "elk" / "pipeline" / "wazuh.conf"
+    assert conf_path.exists(), "wazuh.conf must exist"
+
+    content = conf_path.read_text(encoding="utf-8")
+    assert "port => 5046" in content, "TCP input on 5046 must be configured"
+    assert "alerts.json" in content, "File input for alerts.json must be configured"
+    assert "logs-wazuh.alert-default" in content, "Target index must be logs-wazuh.alert-default"
+    assert "[event][dataset]\" => \"wazuh.alert\"" in content
+    assert "[observer][name]\" => \"wazuh\"" in content
+    assert "[event][module]\" => \"wazuh\"" in content
+    assert "[threat][framework]\" => \"MITRE ATT&CK\"" in content
+    assert "[related][ip]" in content
+
+    # Check verification script presence
+    v_script = REPO_ROOT / "infrastructure" / "elk" / "scripts" / "verify_wazuh_ingest.py"
+    assert v_script.exists(), "verify_wazuh_ingest.py must exist"
+
+
+
 
 
