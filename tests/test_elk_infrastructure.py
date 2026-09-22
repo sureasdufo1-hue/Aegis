@@ -224,4 +224,24 @@ def test_snort_pipeline_configuration_and_ecs_mapping():
     assert v_script.exists(), "verify_snort_ingest.py must exist"
 
 
+def test_firewall_pipeline_configuration_and_ecs_mapping():
+    conf_path = REPO_ROOT / "infrastructure" / "elk" / "pipeline" / "firewall.conf"
+    assert conf_path.exists(), "firewall.conf must exist"
+
+    content = conf_path.read_text(encoding="utf-8")
+    assert "port => 5514" in content, "Syslog UDP input on 5514 must be configured"
+    assert "logs-firewall.traffic-default" in content, "Target index must be logs-firewall.traffic-default"
+    assert "[event][dataset]\" => \"firewall.traffic\"" in content
+    assert "[observer][name]\" => \"soc-gateway\"" in content
+    assert "[event][module]\" => \"nftables\"" in content
+    assert "[event][action]\" => \"drop\"" in content
+    assert "[event][action]\" => \"forward\"" in content
+    assert "[related][ip]" in content
+
+    # Check verification script presence
+    v_script = REPO_ROOT / "infrastructure" / "elk" / "scripts" / "verify_firewall_ingest.py"
+    assert v_script.exists(), "verify_firewall_ingest.py must exist"
+
+
+
 
