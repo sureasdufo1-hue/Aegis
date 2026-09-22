@@ -539,78 +539,95 @@ def build_lens_donut(title, description, x_field, x_label, query="", size=10):
 
 def provision_map_visualization():
     print("\n[Step 3-A] Provisioning Global Cyber Threat Geospatial Map (Elastic Map)...")
+    map_layers = [
+        {
+            "id": "layer_basemap",
+            "label": "세계 지도 (World Basemap)",
+            "alpha": 1,
+            "sourceDescriptor": {
+                "type": "EMS_TMS",
+                "isAutoSelect": True,
+                "lightModeDefault": "road_map_desaturated"
+            },
+            "visible": True,
+            "style": {},
+            "type": "VECTOR_TILE",
+            "minZoom": 0,
+            "maxZoom": 24
+        },
+        {
+            "id": "layer_threat_sources",
+            "label": "실시간 위협 발원지 (Threat Source Origins)",
+            "minZoom": 0,
+            "maxZoom": 24,
+            "alpha": 1,
+            "visible": True,
+            "type": "VECTOR",
+            "sourceDescriptor": {
+                "id": "source_threat_points",
+                "type": "ES_SEARCH",
+                "geoField": "source.geo.location",
+                "limit": 2048,
+                "filterByMapBounds": False,
+                "tooltipProperties": [
+                    "source.ip",
+                    "source.geo.country_name",
+                    "source.geo.city_name",
+                    "rule.name",
+                    "event.severity",
+                    "threat.technique.id",
+                    "event.module"
+                ],
+                "applyGlobalQuery": True,
+                "scalingType": "MVT",
+                "sortField": "@timestamp",
+                "indexPatternRefName": "layer_threat_sources_index_pattern"
+            },
+            "style": {
+                "type": "VECTOR",
+                "properties": {
+                    "icon": {
+                        "type": "STATIC",
+                        "options": {"value": "marker"}
+                    },
+                    "fillColor": {
+                        "type": "STATIC",
+                        "options": {"color": "#E74C3C"}
+                    },
+                    "lineColor": {
+                        "type": "STATIC",
+                        "options": {"color": "#FFFFFF"}
+                    },
+                    "lineWidth": {
+                        "type": "STATIC",
+                        "options": {"size": 1.5}
+                    },
+                    "iconSize": {
+                        "type": "STATIC",
+                        "options": {"size": 12}
+                    }
+                }
+            }
+        }
+    ]
+
     map_obj = {
         "attributes": {
             "title": "전세계 실시간 사이버 위협 발원지 지도 (Global Threat Origin Map)",
             "description": "Suricata, Snort 3, Gateway, Wazuh 통합 탐지 위협 발원지(GeoIP) 전세계 위치 시각화",
             "mapStateJSON": json.dumps({
-                "zoom": 1.8,
-                "center": {"lat": 25, "lon": 15},
+                "zoom": 1.5,
+                "center": {"lat": 20, "lon": 10},
                 "timeFilters": {"from": "now-7d", "to": "now"},
-                "refreshConfig": {"isPaused": True, "interval": 60000}
+                "refreshConfig": {"isPaused": True, "interval": 60000},
+                "query": {"language": "kuery", "query": ""}
             }),
-            "layerListJSON": json.dumps([
-                {
-                    "id": "ems_basemap",
-                    "label": "기본 세계 지도 (Basemap)",
-                    "minZoom": 0,
-                    "maxZoom": 24,
-                    "alpha": 1,
-                    "visible": True,
-                    "type": "EMS_TMS",
-                    "sourceDescriptor": {
-                        "type": "EMS_TMS",
-                        "isAutoSelect": True
-                    }
-                },
-                {
-                    "id": "soc_threat_points",
-                    "label": "실시간 위협 발원지 (Threat Source Origins)",
-                    "minZoom": 0,
-                    "maxZoom": 24,
-                    "alpha": 0.9,
-                    "visible": True,
-                    "type": "VECTOR",
-                    "sourceDescriptor": {
-                        "type": "ES_SEARCH",
-                        "id": "layer_soc_threat_points",
-                        "indexPatternId": "soc-unified-logs",
-                        "geoField": "source.geo.location",
-                        "filterBy": "CURRENT_TIME",
-                        "tooltipProperties": [
-                            "source.ip",
-                            "source.geo.country_name",
-                            "source.geo.city_name",
-                            "rule.name",
-                            "event.severity",
-                            "threat.technique.id",
-                            "event.module"
-                        ]
-                    },
-                    "style": {
-                        "type": "VECTOR",
-                        "properties": {
-                            "fillColor": {
-                                "type": "STATIC",
-                                "options": {"color": "#E74C3C"}
-                            },
-                            "lineColor": {
-                                "type": "STATIC",
-                                "options": {"color": "#922B21"}
-                            },
-                            "lineWidth": {"type": "STATIC", "options": {"size": 1.5}},
-                            "iconSize": {
-                                "type": "STATIC",
-                                "options": {"size": 12}
-                            }
-                        }
-                    }
-                }
-            ])
+            "layerListJSON": json.dumps(map_layers),
+            "uiStateJSON": json.dumps({"isDarkMode": True})
         },
         "references": [
             {
-                "name": "layer_soc_threat_points:indexpattern-datasource-layer-layer_soc_threat_points",
+                "name": "layer_threat_sources_index_pattern",
                 "type": "index-pattern",
                 "id": "soc-unified-logs"
             }
