@@ -274,6 +274,20 @@ def test_cross_stream_search_and_aggregation_script_presence():
     assert "severities" in content
 
 
+def test_ilm_policy_and_verification_script():
+    script_path = REPO_ROOT / "infrastructure" / "elk" / "scripts" / "verify_ilm_policy.py"
+    assert script_path.exists(), "verify_ilm_policy.py must exist"
+
+    content = script_path.read_text(encoding="utf-8")
+    assert "soc-security-logs-ilm" in content
+    assert "365d" in content
+    assert "logs-suricata.eve-default" in content
+    assert "logs-snort.alert-default" in content
+    assert "logs-firewall.traffic-default" in content
+    assert "logs-wazuh.alert-default" in content
+
+
+
 
 
 
