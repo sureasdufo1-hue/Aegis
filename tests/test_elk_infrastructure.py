@@ -315,6 +315,47 @@ def test_correlation_rules_and_eql_queries():
     assert "T1078" in content
 
 
+def test_fastapi_elk_endpoints():
+    from fastapi.testclient import TestClient
+    from dashboard.app import app
+
+    client = TestClient(app)
+
+    # 1. Health check endpoint
+    res_health = client.get("/api/elk/health")
+    assert res_health.status_code == 200
+    data_h = res_health.json()
+    assert data_h.get("cluster_status") == "GREEN"
+    assert "kibana_dashboard_url" in data_h
+
+    # 2. Stats endpoint
+    res_stats = client.get("/api/elk/stats")
+    assert res_stats.status_code == 200
+    data_s = res_stats.json()
+    assert data_s.get("total_documents", 0) >= 40
+    assert "modules" in data_s
+    assert "suricata" in data_s["modules"]
+
+    # 3. Events endpoint
+    res_events = client.get("/api/elk/events?limit=5")
+    assert res_events.status_code == 200
+    data_e = res_events.json()
+    assert data_e.get("count") == 5
+    assert len(data_e.get("events", [])) == 5
+    first_event = data_e["events"][0]
+    assert "module" in first_event
+    assert "timestamp" in first_event
+
+    # 4. Timeline endpoint
+    res_timeline = client.get("/api/elk/timeline/10.77.20.20")
+    assert res_timeline.status_code == 200
+    data_t = res_timeline.json()
+    assert data_t.get("ip") == "10.77.20.20"
+    assert data_t.get("total", 0) >= 15
+    assert len(data_t.get("modules", [])) >= 3
+
+
+
 
 
 
