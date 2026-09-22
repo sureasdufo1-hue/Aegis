@@ -2675,6 +2675,33 @@
             triggerInvestigation(incId, ip);
         }
 
+        function setModalStepState(stepNum, state) {
+            const stepEl = document.getElementById(`inv-step-${stepNum}`);
+            const iconEl = document.getElementById(`inv-step-${stepNum}-icon`);
+            const badgeEl = document.getElementById(`inv-step-${stepNum}-badge`);
+            if (!stepEl || !iconEl || !badgeEl) return;
+
+            if (state === 'active') {
+                stepEl.className = 'p-2.5 rounded-lg bg-slate-800/80 border border-cyan-500/80 flex items-center justify-between transition shadow-md shadow-cyan-950/40';
+                iconEl.textContent = '🌀';
+                iconEl.className = 'text-cyan-400 animate-spin';
+                badgeEl.textContent = '진행 중';
+                badgeEl.className = 'text-[10px] px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-bold animate-pulse';
+            } else if (state === 'completed') {
+                stepEl.className = 'p-2.5 rounded-lg bg-emerald-950/20 border border-emerald-500/40 flex items-center justify-between transition';
+                iconEl.textContent = '✅';
+                iconEl.className = 'text-emerald-400';
+                badgeEl.textContent = '완료';
+                badgeEl.className = 'text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold';
+            } else { // waiting
+                stepEl.className = 'p-2.5 rounded-lg bg-slate-950/40 border border-slate-800 flex items-center justify-between transition opacity-60';
+                iconEl.textContent = '⏳';
+                iconEl.className = 'text-slate-500';
+                badgeEl.textContent = '대기 중';
+                badgeEl.className = 'text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-400 font-bold';
+            }
+        }
+
         function triggerInvestigation(incidentId, srcIp) {
             activeIncidentId = incidentId;
             document.getElementById('investigationModal').classList.remove('hidden');
@@ -2682,6 +2709,15 @@
             document.getElementById('inv-modal-src-ip').textContent = srcIp;
 
             // Reset stepper
+            setModalStepState(1, 'active');
+            setModalStepState(2, 'waiting');
+            setModalStepState(3, 'waiting');
+            setModalStepState(4, 'waiting');
+            document.getElementById('inv-btn-view-result').classList.add('hidden');
+            document.getElementById('inv-progress-bar').style.width = '15%';
+            document.getElementById('inv-progress-pct').textContent = '15%';
+            document.getElementById('inv-progress-label').textContent = '증적 수집 및 도구 실행 중...';
+
             invStartTime = Date.now();
             updateInvestigationTimer();
             invTimerInterval = setInterval(updateInvestigationTimer, 100);
@@ -2691,6 +2727,10 @@
                 .then(res => res.json())
                 .then(data => {
                     clearInterval(invTimerInterval);
+                    setModalStepState(1, 'completed');
+                    setModalStepState(2, 'completed');
+                    setModalStepState(3, 'completed');
+                    setModalStepState(4, 'completed');
                     document.getElementById('inv-progress-bar').style.width = '100%';
                     document.getElementById('inv-progress-pct').textContent = '100%';
                     document.getElementById('inv-progress-label').textContent = '조사 및 인간 승인 큐 등록 완료';
