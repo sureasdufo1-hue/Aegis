@@ -150,11 +150,42 @@ def provision_lens_visualizations():
                     "layers": [
                         {
                             "layerId": "layer1",
+                            "layerType": "data",
                             "seriesType": "bar",
+                            "position": "top",
+                            "showGridlines": False,
                             "xAccessor": "x_dim",
                             "accessors": ["y_dim"]
                         }
-                    ]
+                    ],
+                    "legend": {
+                        "isVisible": True,
+                        "position": "right",
+                        "legendSize": "auto"
+                    },
+                    "valueLabels": "hide",
+                    "fittingFunction": "None",
+                    "axisTitlesVisibilitySettings": {
+                        "x": True,
+                        "yLeft": True,
+                        "yRight": False
+                    },
+                    "tickLabelsVisibilitySettings": {
+                        "x": True,
+                        "yLeft": True,
+                        "yRight": False
+                    },
+                    "gridlinesVisibilitySettings": {
+                        "x": False,
+                        "yLeft": True,
+                        "yRight": False
+                    },
+                    "yLeftExtent": {
+                        "mode": "full"
+                    },
+                    "yRightExtent": {
+                        "mode": "full"
+                    }
                 },
                 "query": {"query": "", "language": "kuery"},
                 "filters": [],
@@ -168,12 +199,20 @@ def provision_lens_visualizations():
                                         "dataType": "string",
                                         "operationType": "terms",
                                         "sourceField": "event.module.keyword",
-                                        "params": {"size": 10, "orderBy": {"type": "column", "columnId": "y_dim"}, "orderDirection": "desc"}
+                                        "scale": "ordinal",
+                                        "isBucketed": True,
+                                        "params": {
+                                            "size": 10,
+                                            "orderBy": {"type": "column", "columnId": "y_dim"},
+                                            "orderDirection": "desc"
+                                        }
                                     },
                                     "y_dim": {
                                         "label": "Total Events",
                                         "dataType": "number",
                                         "operationType": "count",
+                                        "scale": "ratio",
+                                        "sourceField": "___records___",
                                         "isBucketed": False
                                     }
                                 },
@@ -205,6 +244,7 @@ def provision_lens_visualizations():
                     "layers": [
                         {
                             "layerId": "layer1",
+                            "layerType": "data",
                             "primaryGroups": ["x_dim"],
                             "metrics": ["y_dim"],
                             "numberDisplay": "percent",
@@ -227,12 +267,20 @@ def provision_lens_visualizations():
                                         "dataType": "string",
                                         "operationType": "terms",
                                         "sourceField": "threat.technique.id.keyword",
-                                        "params": {"size": 10, "orderBy": {"type": "column", "columnId": "y_dim"}, "orderDirection": "desc"}
+                                        "scale": "ordinal",
+                                        "isBucketed": True,
+                                        "params": {
+                                            "size": 10,
+                                            "orderBy": {"type": "column", "columnId": "y_dim"},
+                                            "orderDirection": "desc"
+                                        }
                                     },
                                     "y_dim": {
                                         "label": "Alert Count",
                                         "dataType": "number",
                                         "operationType": "count",
+                                        "scale": "ratio",
+                                        "sourceField": "___records___",
                                         "isBucketed": False
                                     }
                                 },
@@ -264,11 +312,42 @@ def provision_lens_visualizations():
                     "layers": [
                         {
                             "layerId": "layer1",
+                            "layerType": "data",
                             "seriesType": "bar",
+                            "position": "top",
+                            "showGridlines": False,
                             "xAccessor": "x_dim",
                             "accessors": ["y_dim"]
                         }
-                    ]
+                    ],
+                    "legend": {
+                        "isVisible": True,
+                        "position": "right",
+                        "legendSize": "auto"
+                    },
+                    "valueLabels": "hide",
+                    "fittingFunction": "None",
+                    "axisTitlesVisibilitySettings": {
+                        "x": True,
+                        "yLeft": True,
+                        "yRight": False
+                    },
+                    "tickLabelsVisibilitySettings": {
+                        "x": True,
+                        "yLeft": True,
+                        "yRight": False
+                    },
+                    "gridlinesVisibilitySettings": {
+                        "x": False,
+                        "yLeft": True,
+                        "yRight": False
+                    },
+                    "yLeftExtent": {
+                        "mode": "full"
+                    },
+                    "yRightExtent": {
+                        "mode": "full"
+                    }
                 },
                 "query": {"query": "", "language": "kuery"},
                 "filters": [],
@@ -282,12 +361,20 @@ def provision_lens_visualizations():
                                         "dataType": "number",
                                         "operationType": "terms",
                                         "sourceField": "event.severity",
-                                        "params": {"size": 5, "orderBy": {"type": "column", "columnId": "x_dim"}, "orderDirection": "asc"}
+                                        "scale": "ordinal",
+                                        "isBucketed": True,
+                                        "params": {
+                                            "size": 5,
+                                            "orderBy": {"type": "column", "columnId": "x_dim"},
+                                            "orderDirection": "asc"
+                                        }
                                     },
                                     "y_dim": {
                                         "label": "Count",
                                         "dataType": "number",
                                         "operationType": "count",
+                                        "scale": "ratio",
+                                        "sourceField": "___records___",
                                         "isBucketed": False
                                     }
                                 },
