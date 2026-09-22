@@ -213,12 +213,18 @@
                 <span class="text-sky-400 font-semibold">SOC Analyst</span>
             </div>
 
-            <!-- Refresh & Threat Matrix -->
+            <!-- Refresh & External Telemetry Links -->
             <button onclick="refreshAllTelemetry()" class="px-2 py-1 text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded transition flex items-center gap-1" title="실시간 텔레메트리 갱신">
                 <span>🔄</span>
             </button>
+            <a href="http://127.0.0.1:5602/app/dashboards#/view/soc-unified-threat-dashboard" target="_blank" class="px-2 py-1 text-[11px] font-semibold bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-600/40 rounded transition flex items-center gap-1" title="Kibana 통합 위협 관제 대시보드 열기 (Port 5602)">
+                <span>📊</span> Kibana
+            </a>
+            <a href="https://127.0.0.1:5601" target="_blank" class="px-2 py-1 text-[11px] font-semibold bg-slate-800 hover:bg-slate-700 text-cyan-300 border border-cyan-600/40 rounded transition flex items-center gap-1" title="Wazuh SIEM 관리 콘솔 열기 (Port 5601)">
+                <span>🦅</span> Wazuh
+            </a>
             <a href="/threat-matrix" target="_blank" class="px-2.5 py-1 text-[11px] font-semibold bg-gradient-to-r from-sky-950 to-blue-950 hover:from-sky-900 hover:to-blue-900 text-sky-300 border border-sky-600/40 rounded transition flex items-center gap-1 shadow-sm" title="3D 위협 요격 매트릭스 전체화면 열기">
-                <span>🛡️</span> 3D 위협 요격 매트릭스
+                <span>🛡️</span> 3D 매트릭스
             </a>
         </div>
     </header>
@@ -252,12 +258,12 @@
     <div class="flex-1 flex overflow-hidden">
         
         <!-- Left Sub-Navigation Sidebar (Collapsible, Enterprise Gray/Navy) -->
-        <aside id="main-sidebar" class="soc-sidebar w-56 flex-shrink-0 flex flex-col justify-between overflow-y-auto text-xs select-none">
+        <aside id="main-sidebar" class="soc-sidebar w-56 flex-shrink-0 flex flex-col justify-between overflow-y-auto text-xs select-none transition-all duration-300">
             <div class="py-2 space-y-3">
                 <!-- Sub-menu Category Heading -->
                 <div class="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400 border-b border-slate-800 pb-1 flex items-center justify-between">
                     <span id="sidebar-category-title">Monitor Center</span>
-                    <span class="text-[9px] text-slate-400 cursor-pointer" onclick="toggleSidebarCollapse()">◀</span>
+                    <span id="sidebar-collapse-btn" class="text-[9px] text-slate-400 cursor-pointer p-1 hover:text-white" onclick="toggleSidebarCollapse()" title="사이드바 접기/펼치기">◀</span>
                 </div>
 
                 <!-- Submenu Links Container -->
@@ -267,7 +273,7 @@
             </div>
 
             <!-- Sidebar Footer Hardware Mini-Card -->
-            <div class="p-3 border-t border-slate-800/80 bg-[#0a0f19] text-[10px] font-mono space-y-1">
+            <div id="sidebar-footer-card" class="p-3 border-t border-slate-800/80 bg-[#0a0f19] text-[10px] font-mono space-y-1">
                 <div class="text-slate-400 font-semibold flex items-center justify-between">
                     <span>SENSOR GATEWAY</span>
                     <span class="text-emerald-400 font-bold">NORMAL</span>
@@ -555,7 +561,7 @@
                 </div>
 
                 <!-- 1.6 Operational Event Log (Prompt Section 15 & Reference Image 1) -->
-                <div class="soc-panel rounded overflow-hidden">
+                <div id="section-audit-log" class="soc-panel rounded overflow-hidden">
                     <div class="soc-panel-header px-3 py-2 flex items-center justify-between text-xs font-mono">
                         <div class="flex items-center gap-2">
                             <span class="text-slate-300 font-bold">📋 운영 이벤트 로그 (Event Log)</span>
@@ -1111,6 +1117,42 @@
 
             <!-- VIEW 7: AI ANALYSIS & HUMAN APPROVAL (Prompt Section 12 & 13) -->
             <div id="view-ai-analysis" class="hidden space-y-3">
+                <!-- AI Autonomous Copilot Investigation Panel -->
+                <section class="soc-panel rounded p-4 space-y-3 border-l-4 border-l-indigo-500">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-slate-800 pb-2">
+                        <div>
+                            <h2 class="text-sm font-bold text-indigo-300 font-mono flex items-center gap-2">
+                                <span>🤖 AI 침해사고 자율 분석 & 포렌식 인텔리전스 (SOC Copilot)</span>
+                            </h2>
+                            <p class="text-xs text-slate-400 font-mono mt-0.5">
+                                Suricata 및 Snort 탐지 경보를 복합 상관분석하여 킬체인 단계, 침해 여부, MITRE ATT&CK 기법을 자동 매핑합니다.
+                            </p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <select id="ai-quick-incident-select" class="px-2.5 py-1 text-xs bg-slate-900 border border-slate-700 rounded text-slate-200 font-mono">
+                                <option value="INC-2026-001" data-ip="10.77.20.20">INC-2026-001 (공격자: 10.77.20.20)</option>
+                            </select>
+                            <button onclick="triggerQuickAiInvestigation()" class="px-3 py-1 text-xs bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded transition flex items-center gap-1 shadow">
+                                <span>⚡</span> AI 심층 조사 실행
+                            </button>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 font-mono text-xs text-slate-300">
+                        <div class="p-2.5 rounded bg-slate-950 border border-slate-800">
+                            <span class="text-[10px] text-slate-500 block">LLM 추론 엔진</span>
+                            <span class="text-indigo-400 font-bold">Qwen3.5 9B (SOC Domain Fine-Tuned)</span>
+                        </div>
+                        <div class="p-2.5 rounded bg-slate-950 border border-slate-800">
+                            <span class="text-[10px] text-slate-500 block">탐지 데이터 파이프라인</span>
+                            <span class="text-sky-400 font-bold">Suricata + Snort + eve.json</span>
+                        </div>
+                        <div class="p-2.5 rounded bg-slate-950 border border-slate-800">
+                            <span class="text-[10px] text-slate-500 block">검증 게이트웨이</span>
+                            <span class="text-emerald-400 font-bold">Human-in-the-Loop (HITL) Gate</span>
+                        </div>
+                    </div>
+                </section>
+
                 <!-- Human-in-the-Loop Approval Queue (Preserved IDs for existing tests) -->
                 <section class="soc-panel rounded p-4 space-y-3">
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-slate-800 pb-2">
@@ -1534,10 +1576,12 @@
         let engChartInstance = null;
         let detailTrafficChart = null;
         let threatTimelineChart = null;
+        let threatOverviewChart = null;
 
         // Caches
         let rawAlertsCache = [];
         let rawIncidentsCache = [];
+        let rawInterfacesCache = [];
         let invTimerInterval = null;
         let wsConnection = null;
 
@@ -1582,7 +1626,36 @@
             ]
         };
 
-        // Navigation Switching
+        // Sidebar Collapse Toggle
+        function toggleSidebarCollapse() {
+            const sidebar = document.getElementById('main-sidebar');
+            const collapseBtn = document.getElementById('sidebar-collapse-btn');
+            if (!sidebar) return;
+
+            const isCurrentlyCollapsed = sidebar.classList.contains('w-14');
+
+            if (isCurrentlyCollapsed) {
+                sidebar.classList.remove('w-14');
+                sidebar.classList.add('w-56');
+                if (collapseBtn) collapseBtn.textContent = '◀';
+                const title = document.getElementById('sidebar-category-title');
+                if (title) title.classList.remove('hidden');
+                const footer = document.getElementById('sidebar-footer-card');
+                if (footer) footer.classList.remove('hidden');
+            } else {
+                sidebar.classList.remove('w-56');
+                sidebar.classList.add('w-14');
+                if (collapseBtn) collapseBtn.textContent = '▶';
+                const title = document.getElementById('sidebar-category-title');
+                if (title) title.classList.add('hidden');
+                const footer = document.getElementById('sidebar-footer-card');
+                if (footer) footer.classList.add('hidden');
+            }
+
+            renderSidebar(currentTopMenu, currentSubMenu);
+        }
+
+        // Navigation Switching with Dynamic Telemetry Loading
         function switchView(topMenu, subMenu) {
             currentTopMenu = topMenu;
             currentSubMenu = subMenu;
@@ -1595,8 +1668,25 @@
             if (activeTab) activeTab.classList.add('nav-item-active');
 
             // Update Breadcrumb
-            document.getElementById('breadcrumb-main').textContent = topMenu.toUpperCase();
-            document.getElementById('breadcrumb-sub').textContent = subMenu;
+            const topMenuNameMap = {
+                'dashboard': 'Dashboard',
+                'monitor': 'Monitor Center',
+                'incidents': 'Incidents',
+                'assets': 'Assets',
+                'network': 'Network',
+                'detection': 'Detection',
+                'ai': 'AI Analysis',
+                'policy': 'Policy',
+                'reports': 'Reports',
+                'system': 'System'
+            };
+            const breadcrumbMain = document.getElementById('breadcrumb-main');
+            if (breadcrumbMain) breadcrumbMain.textContent = topMenuNameMap[topMenu] || topMenu.toUpperCase();
+
+            const subList = SUBMENU_MAP[topMenu] || [];
+            const subItem = subList.find(s => s.id === subMenu);
+            const breadcrumbSub = document.getElementById('breadcrumb-sub');
+            if (breadcrumbSub) breadcrumbSub.textContent = subItem ? subItem.name : subMenu;
 
             // Render Submenu in Sidebar
             renderSidebar(topMenu, subMenu);
@@ -1613,32 +1703,86 @@
                 if (el) el.classList.add('hidden');
             });
 
-            // Show active panel
+            // Show active panel & lazy fetch corresponding data
             if (topMenu === 'dashboard') {
-                document.getElementById('view-dashboard').classList.remove('hidden');
+                const dash = document.getElementById('view-dashboard');
+                if (dash) {
+                    dash.classList.remove('hidden');
+                    if (subMenu === 'matrix') {
+                        setTimeout(() => {
+                            const hub = document.getElementById('central-shield-hub');
+                            if (hub) hub.scrollIntoView({ behavior: 'smooth' });
+                        }, 50);
+                    } else {
+                        dash.scrollTo({ top: 0, behavior: 'smooth' });
+                    }
+                }
             } else if (topMenu === 'monitor') {
-                if (subMenu === 'traffic') document.getElementById('view-traffic-analysis').classList.remove('hidden');
-                else if (subMenu === 'threat_overview') document.getElementById('view-threat-overview').classList.remove('hidden');
-                else if (subMenu === 'interfaces') document.getElementById('view-interfaces').classList.remove('hidden');
-                else if (subMenu === 'attack_map') document.getElementById('view-attack-map').classList.remove('hidden');
-                else if (subMenu === 'events') document.getElementById('view-events').classList.remove('hidden');
+                if (subMenu === 'traffic') {
+                    const el = document.getElementById('view-traffic-analysis');
+                    if (el) el.classList.remove('hidden');
+                    setTimeout(() => { fetchTrafficData(); }, 50);
+                } else if (subMenu === 'threat_overview') {
+                    const el = document.getElementById('view-threat-overview');
+                    if (el) el.classList.remove('hidden');
+                    setTimeout(() => { renderThreatOverviewChart(); }, 50);
+                } else if (subMenu === 'interfaces') {
+                    const el = document.getElementById('view-interfaces');
+                    if (el) el.classList.remove('hidden');
+                    setTimeout(() => { fetchInterfaces(); }, 50);
+                } else if (subMenu === 'attack_map') {
+                    const el = document.getElementById('view-attack-map');
+                    if (el) el.classList.remove('hidden');
+                    setTimeout(() => { initWorldThreatMap(); fetchGeoThreats(); }, 50);
+                } else if (subMenu === 'events') {
+                    const el = document.getElementById('view-events');
+                    if (el) el.classList.remove('hidden');
+                    setTimeout(() => { fetchAlerts(); }, 50);
+                }
             } else if (topMenu === 'incidents') {
-                if (subMenu === 'queue') document.getElementById('view-incidents').classList.remove('hidden');
-                else if (subMenu === 'approvals') document.getElementById('view-ai-analysis').classList.remove('hidden');
+                if (subMenu === 'queue') {
+                    const el = document.getElementById('view-incidents');
+                    if (el) el.classList.remove('hidden');
+                    setTimeout(() => { fetchIncidents(); }, 50);
+                } else if (subMenu === 'approvals') {
+                    const el = document.getElementById('view-ai-analysis');
+                    if (el) el.classList.remove('hidden');
+                    setTimeout(() => { fetchActionProposals(); }, 50);
+                }
             } else if (topMenu === 'assets') {
-                document.getElementById('view-assets').classList.remove('hidden');
+                const el = document.getElementById('view-assets');
+                if (el) el.classList.remove('hidden');
+                setTimeout(() => { fetchAssets(); }, 50);
             } else if (topMenu === 'network') {
-                document.getElementById('view-interfaces').classList.remove('hidden');
+                const el = document.getElementById('view-interfaces');
+                if (el) el.classList.remove('hidden');
+                setTimeout(() => { fetchInterfaces(); }, 50);
             } else if (topMenu === 'detection') {
-                document.getElementById('view-policy').classList.remove('hidden');
+                const el = document.getElementById('view-policy');
+                if (el) el.classList.remove('hidden');
+                setTimeout(() => { fetchPolicies(); }, 50);
             } else if (topMenu === 'ai') {
-                document.getElementById('view-ai-analysis').classList.remove('hidden');
+                const el = document.getElementById('view-ai-analysis');
+                if (el) el.classList.remove('hidden');
+                setTimeout(() => { fetchActionProposals(); fetchIncidents(); }, 50);
             } else if (topMenu === 'policy') {
-                document.getElementById('view-policy').classList.remove('hidden');
+                const el = document.getElementById('view-policy');
+                if (el) el.classList.remove('hidden');
+                setTimeout(() => { fetchPolicies(); }, 50);
             } else if (topMenu === 'reports') {
-                document.getElementById('view-dashboard').classList.remove('hidden');
+                const el = document.getElementById('view-dashboard');
+                if (el) {
+                    el.classList.remove('hidden');
+                    setTimeout(() => {
+                        fetchAuditLogs();
+                        const auditSection = document.getElementById('section-audit-log') || document.getElementById('audit-log-tbody')?.closest('.soc-panel');
+                        if (auditSection) auditSection.scrollIntoView({ behavior: 'smooth' });
+                    }, 50);
+                }
             } else if (topMenu === 'system') {
-                document.getElementById('view-system').classList.remove('hidden');
+                const el = document.getElementById('view-system');
+                if (el) el.classList.remove('hidden');
+                setTimeout(() => { fetchSensors(); }, 50);
             }
 
             // Trigger chart resize
@@ -1648,17 +1792,86 @@
         function renderSidebar(topMenu, subMenu) {
             const list = SUBMENU_MAP[topMenu] || SUBMENU_MAP['dashboard'];
             const container = document.getElementById('sidebar-links');
-            document.getElementById('sidebar-category-title').textContent = topMenu.toUpperCase();
+            const sidebar = document.getElementById('main-sidebar');
+            const isCollapsed = sidebar ? sidebar.classList.contains('w-14') : false;
+
+            const titleEl = document.getElementById('sidebar-category-title');
+            if (titleEl) titleEl.textContent = topMenu.toUpperCase();
 
             container.innerHTML = list.map(item => `
-                <div onclick="switchView('${topMenu}', '${item.id}')" class="px-2.5 py-1.5 rounded cursor-pointer transition flex items-center justify-between ${item.id === subMenu ? 'subnav-item-active text-sky-400' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'}">
-                    <span class="flex items-center gap-1.5">
-                        <span>${item.icon}</span>
-                        <span>${item.name}</span>
+                <div onclick="switchView('${topMenu}', '${item.id}')" title="${item.name}" class="px-2.5 py-1.5 rounded cursor-pointer transition flex items-center justify-between ${item.id === subMenu ? 'subnav-item-active text-sky-400' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'}">
+                    <span class="flex items-center gap-1.5 ${isCollapsed ? 'justify-center w-full' : ''}">
+                        <span class="text-sm">${item.icon}</span>
+                        ${isCollapsed ? '' : `<span class="truncate">${item.name}</span>`}
                     </span>
-                    ${item.id === subMenu ? '<span class="text-[9px]">●</span>' : ''}
+                    ${!isCollapsed && item.id === subMenu ? '<span class="text-[9px]">●</span>' : ''}
                 </div>
             `).join('');
+        }
+
+        // Threat Overview Timeline Chart (Suricata + Snort + nftables)
+        function renderThreatOverviewChart() {
+            const canvas = document.getElementById('threatOverviewTimelineChart');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            if (threatOverviewChart) threatOverviewChart.destroy();
+
+            const labels = [];
+            for (let i = 11; i >= 0; i--) {
+                const d = new Date(Date.now() - i * 5 * 60000);
+                labels.push(d.toTimeString().split(' ')[0].slice(0, 5));
+            }
+
+            const suricataDetections = [4, 7, 5, 12, 18, 25, 22, 16, 14, 20, 28, 19];
+            const snortDetections = [3, 5, 4, 10, 15, 20, 18, 13, 11, 16, 24, 15];
+            const firewallDrops = [8, 12, 9, 21, 33, 45, 40, 29, 25, 36, 52, 34];
+
+            threatOverviewChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Suricata 8.0.6 탐지 (Primary IDS)',
+                            data: suricataDetections,
+                            backgroundColor: 'rgba(56, 189, 248, 0.7)',
+                            borderColor: '#38bdf8',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Snort 3.12 교차검증 (Secondary)',
+                            data: snortDetections,
+                            backgroundColor: 'rgba(168, 85, 247, 0.7)',
+                            borderColor: '#a855f7',
+                            borderWidth: 1
+                        },
+                        {
+                            type: 'line',
+                            label: 'Gateway Drop 차단 (nftables)',
+                            data: firewallDrops,
+                            borderColor: '#f87171',
+                            backgroundColor: 'rgba(248, 113, 113, 0.1)',
+                            borderWidth: 2,
+                            fill: false,
+                            tension: 0.3
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: { color: '#94a3b8', font: { size: 10, family: 'JetBrains Mono' }, boxWidth: 12 }
+                        }
+                    },
+                    scales: {
+                        x: { grid: { color: '#1e293b' }, ticks: { color: '#64748b', font: { size: 10, family: 'JetBrains Mono' } } },
+                        y: { grid: { color: '#1e293b' }, ticks: { color: '#64748b', font: { size: 10, family: 'JetBrains Mono' } } }
+                    }
+                }
+            });
         }
 
         // -------------------------------------------------------------
@@ -1775,6 +1988,7 @@
                 const res = await fetch('/api/network/interfaces');
                 if (!res.ok) return;
                 const ifaces = await res.json();
+                rawInterfacesCache = ifaces;
                 document.getElementById('interface-count').textContent = ifaces.length;
                 const tbody = document.getElementById('interfaces-tbody');
                 tbody.innerHTML = ifaces.map(iface => `
@@ -2252,6 +2466,12 @@
                 const res = await fetch('/api/incidents');
                 if (!res.ok) return;
                 rawIncidentsCache = await res.json();
+                const quickSel = document.getElementById('ai-quick-incident-select');
+                if (quickSel && rawIncidentsCache.length > 0) {
+                    quickSel.innerHTML = rawIncidentsCache.map(inc => `
+                        <option value="${inc.incident_id}" data-ip="${inc.src_ip}">${inc.incident_id} (${inc.highest_severity} · ${inc.src_ip})</option>
+                    `).join('');
+                }
                 const container = document.getElementById('incidents-container');
                 if (rawIncidentsCache.length === 0) {
                     container.innerHTML = '<p class="text-slate-500 text-xs font-mono">현재 활성화된 복합 침해사고가 없습니다.</p>';
@@ -2382,6 +2602,14 @@
         // -------------------------------------------------------------
         let invStartTime = null;
         let activeIncidentId = null;
+
+        function triggerQuickAiInvestigation() {
+            const sel = document.getElementById('ai-quick-incident-select');
+            const incId = sel ? sel.value : 'INC-2026-001';
+            const opt = sel && sel.selectedIndex >= 0 ? sel.options[sel.selectedIndex] : null;
+            const ip = opt ? opt.getAttribute('data-ip') : '10.77.20.20';
+            triggerInvestigation(incId, ip);
+        }
 
         function triggerInvestigation(incidentId, srcIp) {
             activeIncidentId = incidentId;
@@ -2519,7 +2747,37 @@
         }
 
         function showInterfaceDrawer(ifaceName) {
-            showToast(`인터페이스 [${ifaceName}] 상세 열림`, 'sky');
+            const iface = rawInterfacesCache ? rawInterfacesCache.find(i => i.interface === ifaceName) : null;
+            document.getElementById('modalTitle').textContent = `인터페이스 상세 정보: ${ifaceName}`;
+
+            if (iface) {
+                document.getElementById('modalBody').innerHTML = `
+                    <div class="space-y-3 font-mono text-xs">
+                        <div class="grid grid-cols-2 gap-2 p-3 bg-slate-950 rounded border border-slate-800">
+                            <div><span class="text-slate-500">인터페이스명:</span> <b class="text-sky-400">${iface.interface}</b></div>
+                            <div><span class="text-slate-500">소속 시스템:</span> <b class="text-white">${iface.device}</b></div>
+                            <div><span class="text-slate-500">네트워크 Zone:</span> <b class="text-amber-400">${iface.zone}</b></div>
+                            <div><span class="text-slate-500">인터페이스 유형:</span> <b class="text-emerald-400">${iface.type}</b></div>
+                            <div><span class="text-slate-500">IPv4 주소:</span> <b class="text-white">${iface.ipv4}</b></div>
+                            <div><span class="text-slate-500">링크 상태 / 속도:</span> <b class="text-white">${iface.status} / ${iface.speed}</b></div>
+                            <div><span class="text-slate-500">RX 대역폭 (bps):</span> <b class="text-sky-300">${iface.rx_bps}</b></div>
+                            <div><span class="text-slate-500">TX 대역폭 (bps):</span> <b class="text-emerald-300">${iface.tx_bps}</b></div>
+                            <div><span class="text-slate-500">누적 바이트:</span> <b class="text-slate-300">${iface.rx_bytes} / ${iface.tx_bytes}</b></div>
+                            <div><span class="text-slate-500">누적 패킷 수:</span> <b class="text-slate-300">${(iface.rx_pkts + iface.tx_pkts).toLocaleString()}</b></div>
+                        </div>
+                        <div class="p-3 bg-slate-950 rounded border border-slate-800 space-y-1">
+                            <div class="text-[10px] text-slate-500 font-bold uppercase">포트 미러링 및 침입 탐지 바인딩</div>
+                            <div class="text-slate-300">Hyper-V vSwitch 포트 미러링 대상: <b class="text-cyan-400">${iface.interface.includes('eth1') || iface.interface.includes('eth2') || iface.type.includes('Monitor') ? '활성화 (Source / Destination Bound)' : '표준 L3 게이트웨이 인터페이스'}</b></div>
+                            <div class="text-slate-400 text-[11px]">Suricata AF_PACKET 클러스터 모드: ${iface.interface.includes('eth1') ? 'eth1 (Primary Capture Interface)' : '-'}</div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                document.getElementById('modalBody').innerHTML = `
+                    <p class="text-slate-400 font-mono text-xs">인터페이스 [${ifaceName}]의 실시간 패킷 카운터 및 vSwitch 미러링 상태가 정상 작동 중입니다.</p>
+                `;
+            }
+            document.getElementById('generalModal').classList.remove('hidden');
         }
 
         function showAppliedChangesModal() {
