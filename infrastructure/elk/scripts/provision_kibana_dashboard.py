@@ -365,7 +365,7 @@ def provision_lens_visualizations():
                                         "isBucketed": True,
                                         "params": {
                                             "size": 5,
-                                            "orderBy": {"type": "column", "columnId": "x_dim"},
+                                            "orderBy": {"type": "alphabetical"},
                                             "orderDirection": "asc"
                                         }
                                     },
