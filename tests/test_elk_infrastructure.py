@@ -298,6 +298,9 @@ def test_kibana_dashboard_and_provisioning_script():
     assert "soc-lens-module-dist" in content
     assert "soc-lens-technique-donut" in content
     assert "soc-lens-severity-dist" in content
+    assert "soc-map-global-threats" in content
+    assert "soc-lens-top-countries-hbar" in content
+    assert "source.geo.location" in content
 
 
 def test_correlation_rules_and_eql_queries():
