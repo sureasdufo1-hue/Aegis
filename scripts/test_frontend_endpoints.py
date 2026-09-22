@@ -25,6 +25,10 @@ endpoints = [
     ("GET", "/api/elk/stats"),
     ("GET", "/api/elk/events"),
     ("GET", "/api/elk/timeline/10.77.20.20"),
+    ("GET", "/api/reports/executive"),
+    ("GET", "/api/reports/incident"),
+    ("GET", "/api/reports/daily"),
+    ("GET", "/api/reports/audit"),
 ]
 
 print("Testing all frontend API endpoints:")

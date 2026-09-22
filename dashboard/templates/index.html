@@ -96,6 +96,18 @@
             stroke-dasharray: 2, 4;
             fill: none;
         }
+
+        /* Print and PDF Export Styles */
+        @media print {
+            body { background: #ffffff !important; color: #0f172a !important; }
+            header, aside, #toast-container, .modal, button, #top-nav-tabs, #breadcrumb-main { display: none !important; }
+            #view-reports { display: block !important; width: 100% !important; margin: 0 !important; padding: 0 !important; }
+            .soc-panel { background: #ffffff !important; border: 1px solid #cbd5e1 !important; color: #0f172a !important; box-shadow: none !important; }
+            .soc-panel-header { background: #f1f5f9 !important; border-bottom: 1px solid #cbd5e1 !important; color: #0f172a !important; }
+            .text-white { color: #0f172a !important; }
+            .text-slate-400, .text-slate-500 { color: #475569 !important; }
+            .bg-slate-950, .bg-slate-900, .bg-slate-800 { background: #f8fafc !important; border-color: #cbd5e1 !important; }
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col antialiased select-none">
@@ -150,7 +162,7 @@
                 <button onclick="switchView('policy', 'firewall')" id="tab-policy" class="px-2.5 py-1.5 rounded hover:bg-slate-800 transition">
                     Policy
                 </button>
-                <button onclick="switchView('reports', 'audit')" id="tab-reports" class="px-2.5 py-1.5 rounded hover:bg-slate-800 transition">
+                <button onclick="switchView('reports', 'executive')" id="tab-reports" class="px-2.5 py-1.5 rounded hover:bg-slate-800 transition">
                     Reports
                 </button>
                 <button onclick="switchView('system', 'sensors')" id="tab-system" class="px-2.5 py-1.5 rounded hover:bg-slate-800 transition">
@@ -1389,6 +1401,58 @@
             <!-- Top Threat Actors Mini-List (Preserved ID for existing tests) -->
             <div id="top-attackers-list" class="hidden"></div>
 
+            <!-- VIEW 12: SOC REPORTS & AUDIT CENTER -->
+            <div id="view-reports" class="hidden space-y-3">
+                <!-- Reports Center Header & Sub-Navigation -->
+                <div class="soc-panel rounded p-4">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-800 pb-3 mb-3 gap-2">
+                        <div>
+                            <h2 class="text-sm font-bold text-white font-mono flex items-center gap-2">
+                                <span>📑 보안관제 보고서 및 종합 분석 센터 (SOC Reports Center)</span>
+                                <span class="text-[10px] px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 font-mono">
+                                    NIST SP 800-61 COMPLIANT
+                                </span>
+                            </h2>
+                            <p class="text-xs text-slate-400 font-mono mt-0.5">
+                                종합 보안관제 성과보고서, 침해사고 포렌식 보고서(IR-06), 일일 관제 동향 및 운영 감사 로그를 열람·인쇄·출력합니다.
+                            </p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="window.print()" class="px-2.5 py-1 text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded transition flex items-center gap-1 font-mono" title="현재 보고서 인쇄 또는 PDF로 내보내기">
+                                <span>🖨️</span> 인쇄 / PDF 저장
+                            </button>
+                            <button onclick="copyCurrentReportMarkdown()" class="px-2.5 py-1 text-xs bg-slate-800 hover:bg-slate-700 text-sky-300 border border-slate-700 rounded transition flex items-center gap-1 font-mono" title="마크다운 포맷으로 클립보드에 복사">
+                                <span>📋</span> 마크다운 복사
+                            </button>
+                            <button onclick="reloadCurrentReport()" class="px-2.5 py-1 text-xs bg-sky-700 hover:bg-sky-600 text-white rounded transition flex items-center gap-1 font-mono font-medium" title="최신 텔레메트리로 보고서 재집계">
+                                <span>🔄</span> 실시간 재집계
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Report Sub-Type Navigation Tabs -->
+                    <div class="flex flex-wrap items-center gap-1.5 text-xs font-mono border-b border-slate-800/80 pb-2 mb-4">
+                        <button onclick="loadReportView('executive')" id="btn-rep-executive" class="px-3 py-1.5 rounded bg-sky-700 text-white font-bold transition flex items-center gap-1.5">
+                            <span>📑</span> 종합 관제 보고서 (Executive)
+                        </button>
+                        <button onclick="loadReportView('incident')" id="btn-rep-incident" class="px-3 py-1.5 rounded text-slate-400 hover:text-white hover:bg-slate-800 transition flex items-center gap-1.5">
+                            <span>🚨</span> 침해사고 분석 보고서 (IR-06 킬체인)
+                        </button>
+                        <button onclick="loadReportView('daily')" id="btn-rep-daily" class="px-3 py-1.5 rounded text-slate-400 hover:text-white hover:bg-slate-800 transition flex items-center gap-1.5">
+                            <span>📅</span> 일일 보안관제 동향 (Daily Briefing)
+                        </button>
+                        <button onclick="loadReportView('audit')" id="btn-rep-audit" class="px-3 py-1.5 rounded text-slate-400 hover:text-white hover:bg-slate-800 transition flex items-center gap-1.5">
+                            <span>📋</span> 운영 및 변경 감사 로그 (Audit Log)
+                        </button>
+                    </div>
+
+                    <!-- Dynamic Report Content Body -->
+                    <div id="report-content-body" class="font-mono space-y-4">
+                        <div class="py-12 text-center text-slate-500 text-xs">보고서를 불러오는 중입니다...</div>
+                    </div>
+                </div>
+            </div>
+
         </main>
     </div>
 
@@ -1619,7 +1683,10 @@
                 { id: 'firewall', name: '방화벽 / IDS 정책', icon: '📜' }
             ],
             'reports': [
-                { id: 'audit', name: '운영 감사 로그', icon: '📋' }
+                { id: 'executive', name: '종합 관제 보고서 (Executive)', icon: '📑' },
+                { id: 'incident', name: '침해사고 분석 보고서 (IR-06)', icon: '🚨' },
+                { id: 'daily', name: '일일 관제 동향 (Daily)', icon: '📅' },
+                { id: 'audit', name: '운영 감사 로그 (Audit)', icon: '📋' }
             ],
             'system': [
                 { id: 'sensors', name: '센서 및 파이프라인 상태', icon: '📡' }
@@ -1696,7 +1763,7 @@
                 'view-dashboard', 'view-traffic-analysis', 'view-threat-overview',
                 'view-interfaces', 'view-attack-map', 'view-incidents',
                 'view-ai-analysis', 'view-policy', 'view-assets',
-                'view-system', 'view-events'
+                'view-system', 'view-events', 'view-reports'
             ];
             viewPanels.forEach(id => {
                 const el = document.getElementById(id);
@@ -1770,14 +1837,11 @@
                 if (el) el.classList.remove('hidden');
                 setTimeout(() => { fetchPolicies(); }, 50);
             } else if (topMenu === 'reports') {
-                const el = document.getElementById('view-dashboard');
+                const el = document.getElementById('view-reports');
                 if (el) {
                     el.classList.remove('hidden');
-                    setTimeout(() => {
-                        fetchAuditLogs();
-                        const auditSection = document.getElementById('section-audit-log') || document.getElementById('audit-log-tbody')?.closest('.soc-panel');
-                        if (auditSection) auditSection.scrollIntoView({ behavior: 'smooth' });
-                    }, 50);
+                    const repSub = (subMenu && ['executive', 'incident', 'daily', 'audit'].includes(subMenu)) ? subMenu : 'executive';
+                    setTimeout(() => { loadReportView(repSub); }, 50);
                 }
             } else if (topMenu === 'system') {
                 const el = document.getElementById('view-system');
@@ -2803,6 +2867,559 @@
 
         function closeModal() {
             document.getElementById('generalModal').classList.add('hidden');
+        }
+
+        // -------------------------------------------------------------
+        // SOC Reports & Audit Center Functions
+        // -------------------------------------------------------------
+        let currentReportType = 'executive';
+        let currentReportData = null;
+
+        async function loadReportView(reportType) {
+            currentReportType = reportType || 'executive';
+
+            // 1. Update Sub-Navigation Tabs Highlight
+            ['executive', 'incident', 'daily', 'audit'].forEach(t => {
+                const btn = document.getElementById(`btn-rep-${t}`);
+                if (btn) {
+                    if (t === currentReportType) {
+                        btn.className = 'px-3 py-1.5 rounded bg-sky-700 text-white font-bold transition flex items-center gap-1.5';
+                    } else {
+                        btn.className = 'px-3 py-1.5 rounded text-slate-400 hover:text-white hover:bg-slate-800 transition flex items-center gap-1.5';
+                    }
+                }
+            });
+
+            const body = document.getElementById('report-content-body');
+            if (!body) return;
+            body.innerHTML = `
+                <div class="py-12 text-center text-slate-400 text-xs flex flex-col items-center justify-center gap-2">
+                    <span class="animate-spin text-xl text-sky-400">🌀</span>
+                    <span>최신 보안관제 텔레메트리 및 보고서 데이터를 집계하는 중입니다...</span>
+                </div>
+            `;
+
+            try {
+                const res = await fetch(`/api/reports/${currentReportType}`);
+                if (!res.ok) {
+                    body.innerHTML = `
+                        <div class="p-4 bg-red-500/10 border border-red-500/30 rounded text-red-300 text-xs">
+                            보고서 데이터를 불러오는 중 오류가 발생했습니다. (HTTP ${res.status})
+                        </div>
+                    `;
+                    return;
+                }
+                currentReportData = await res.json();
+                renderReportContent(currentReportType, currentReportData);
+            } catch (err) {
+                body.innerHTML = `
+                    <div class="p-4 bg-red-500/10 border border-red-500/30 rounded text-red-300 text-xs">
+                        통신 장애가 발생했습니다: ${err.message}
+                    </div>
+                `;
+            }
+        }
+
+        function renderReportContent(type, data) {
+            const body = document.getElementById('report-content-body');
+            if (!body) return;
+
+            if (type === 'executive') {
+                body.innerHTML = `
+                    <div class="p-4 rounded bg-slate-950 border border-slate-800 space-y-3">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-slate-800/80 pb-3">
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <h3 class="text-base font-bold text-white">${data.title}</h3>
+                                    <span class="text-[10px] px-2 py-0.5 rounded bg-amber-500/15 text-amber-300 border border-amber-500/30 font-mono font-bold">${data.classification}</span>
+                                </div>
+                                <div class="text-[11px] text-slate-400 mt-1 flex flex-wrap items-center gap-4">
+                                    <span>문서번호: <b class="text-slate-300">${data.doc_no}</b></span>
+                                    <span>보고일자: <b class="text-slate-300">${data.date}</b></span>
+                                    <span>작성자: <b class="text-slate-300">${data.author}</b></span>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-[10px] px-2 py-1 rounded bg-sky-500/10 text-sky-400 border border-sky-500/30 font-mono">
+                                    ${data.framework}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-2 pt-1">
+                            <div class="p-2.5 rounded bg-slate-900 border border-slate-800 text-center">
+                                <span class="text-[10px] text-slate-500 block">총 인입 이벤트</span>
+                                <span class="text-base font-bold text-sky-400">${Number(data.summary.total_events).toLocaleString()}건</span>
+                            </div>
+                            <div class="p-2.5 rounded bg-slate-900 border border-slate-800 text-center">
+                                <span class="text-[10px] text-slate-500 block">P0 크리티컬 경보</span>
+                                <span class="text-base font-bold text-red-400">${data.summary.critical_alerts}건</span>
+                            </div>
+                            <div class="p-2.5 rounded bg-slate-900 border border-slate-800 text-center">
+                                <span class="text-[10px] text-slate-500 block">능동 차단 건수</span>
+                                <span class="text-base font-bold text-emerald-400">${data.summary.blocked_count}건</span>
+                            </div>
+                            <div class="p-2.5 rounded bg-slate-900 border border-slate-800 text-center">
+                                <span class="text-[10px] text-slate-500 block">상관분석 복합사고</span>
+                                <span class="text-base font-bold text-amber-400">${data.summary.correlated_incidents}건</span>
+                            </div>
+                            <div class="p-2.5 rounded bg-slate-900 border border-slate-800 text-center">
+                                <span class="text-[10px] text-slate-500 block">방어 성공률</span>
+                                <span class="text-base font-bold text-purple-400">${data.summary.defense_rate}</span>
+                            </div>
+                            <div class="p-2.5 rounded bg-slate-900 border border-slate-800 text-center">
+                                <span class="text-[10px] text-slate-500 block">평균 탐지시간 (MTTD)</span>
+                                <span class="text-base font-bold text-cyan-300">${data.summary.mean_time_to_detect}</span>
+                            </div>
+                            <div class="p-2.5 rounded bg-slate-900 border border-slate-800 text-center">
+                                <span class="text-[10px] text-slate-500 block">평균 대응시간 (MTTR)</span>
+                                <span class="text-base font-bold text-emerald-300">${data.summary.mean_time_to_respond}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="p-4 rounded bg-slate-950 border border-slate-800 space-y-2.5">
+                            <h4 class="text-xs font-bold text-sky-400 flex items-center gap-1.5 border-b border-slate-800 pb-2">
+                                <span>🏛️</span> 인프라 및 침입탐지 아키텍처 상태
+                            </h4>
+                            <div class="space-y-1.5 text-xs">
+                                <div class="p-2 rounded bg-slate-900/80 border border-slate-800">
+                                    <div class="text-[10px] text-slate-500 uppercase font-bold">인프라 배포 모델</div>
+                                    <div class="text-slate-200 mt-0.5">${data.architecture.model}</div>
+                                </div>
+                                <div class="p-2 rounded bg-slate-900/80 border border-slate-800">
+                                    <div class="text-[10px] text-slate-500 uppercase font-bold">Primary IDS (실시간 인라인 탐지)</div>
+                                    <div class="text-sky-300 font-bold mt-0.5">Suricata ${data.architecture.suricata}</div>
+                                </div>
+                                <div class="p-2 rounded bg-slate-900/80 border border-slate-800">
+                                    <div class="text-[10px] text-slate-500 uppercase font-bold">Secondary IDS (오프라인 정밀 대조)</div>
+                                    <div class="text-indigo-300 font-bold mt-0.5">Snort ${data.architecture.snort}</div>
+                                </div>
+                                <div class="p-2 rounded bg-slate-900/80 border border-slate-800">
+                                    <div class="text-[10px] text-slate-500 uppercase font-bold">중앙 SIEM & 방화벽</div>
+                                    <div class="text-slate-200 mt-0.5">Wazuh ${data.architecture.wazuh} · ${data.architecture.gateway_firewall}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-4 rounded bg-slate-950 border border-slate-800 space-y-2.5">
+                            <h4 class="text-xs font-bold text-emerald-400 flex items-center gap-1.5 border-b border-slate-800 pb-2">
+                                <span>🎯</span> 핵심 보안관제 발견사항 (Key Findings)
+                            </h4>
+                            <div class="space-y-2 text-xs">
+                                ${data.findings.map(f => `
+                                    <div class="p-2.5 rounded bg-slate-900/80 border border-slate-800 flex items-start gap-2">
+                                        <span class="text-emerald-400 font-bold">✓</span>
+                                        <span class="text-slate-300 leading-relaxed">${f}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-4 rounded bg-slate-950 border border-slate-800 space-y-2.5">
+                        <h4 class="text-xs font-bold text-amber-400 flex items-center gap-1.5 border-b border-slate-800 pb-2">
+                            <span>💡</span> 전략적 보안 개선 및 권고사항 (Recommendations)
+                        </h4>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs">
+                            ${data.recommendations.map((r, i) => `
+                                <div class="p-3 rounded bg-slate-900 border border-slate-800 space-y-1">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold">REC-${i+1}</span>
+                                        <span class="text-slate-400 text-[10px]">권고 이행 항목</span>
+                                    </div>
+                                    <p class="text-slate-200 text-xs leading-relaxed pt-1">${r}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            } else if (type === 'incident') {
+                body.innerHTML = `
+                    <div class="p-4 rounded bg-slate-950 border border-slate-800 space-y-3">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-slate-800/80 pb-3">
+                            <div>
+                                <div class="flex flex-wrap items-center gap-2">
+                                    <h3 class="text-base font-bold text-white">${data.title}</h3>
+                                    <span class="text-[10px] px-2 py-0.5 rounded bg-red-500/20 text-red-400 border border-red-500/40 font-bold">${data.severity}</span>
+                                    <span class="text-[10px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 border border-amber-500/30">${data.classification}</span>
+                                </div>
+                                <div class="text-[11px] text-slate-400 mt-1 flex flex-wrap items-center gap-4">
+                                    <span>사고 ID: <b class="text-sky-400">${data.incident_id}</b></span>
+                                    <span>문서번호: <b class="text-slate-300">${data.doc_no}</b></span>
+                                    <span>분석일시: <b class="text-slate-300">${data.date}</b></span>
+                                    <span>담당 조사관: <b class="text-slate-300">${data.investigator}</b></span>
+                                </div>
+                            </div>
+                            <div>
+                                <span class="text-xs px-2.5 py-1 rounded bg-rose-950/80 text-rose-300 border border-rose-600 font-bold">
+                                    ${data.verdict}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1 text-xs">
+                            <div class="p-3 rounded bg-slate-900 border border-slate-800">
+                                <span class="text-[10px] text-slate-500 uppercase font-bold block">공격 출발지 (Attacker)</span>
+                                <span class="text-sm font-bold text-red-400 block mt-0.5">${data.attacker_ip}</span>
+                                <span class="text-[11px] text-slate-400">soc-attacker (ZONE-ATTACK 10.77.20.0/24)</span>
+                            </div>
+                            <div class="p-3 rounded bg-slate-900 border border-slate-800">
+                                <span class="text-[10px] text-slate-500 uppercase font-bold block">침해 대상 자산 (Victim Target)</span>
+                                <span class="text-sm font-bold text-sky-400 block mt-0.5">${(data.target_ips || []).join(', ')}</span>
+                                <span class="text-[11px] text-slate-400">soc-victim (OWASP Web & SSH Target)</span>
+                            </div>
+                            <div class="p-3 rounded bg-slate-900 border border-slate-800">
+                                <span class="text-[10px] text-slate-500 uppercase font-bold block">AI 모델 복합 위험도 평가</span>
+                                <span class="text-sm font-bold text-amber-400 block mt-0.5">${data.ai_risk_score} / 100 (HIGH SEVERITY)</span>
+                                <span class="text-[11px] text-slate-400">Qwen 3.5 9B 기반 가설 검증 및 킬체인 연계</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-4 rounded bg-slate-950 border border-slate-800 space-y-2.5">
+                        <h4 class="text-xs font-bold text-red-400 flex items-center gap-1.5 border-b border-slate-800 pb-2">
+                            <span>🚨</span> 다단계 공격 킬체인 진행 현황 (Multi-Stage Kill Chain)
+                        </h4>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs soc-table">
+                                <thead>
+                                    <tr>
+                                        <th class="w-12 text-center">단계</th>
+                                        <th>공격 단계명 (Kill Chain Stage)</th>
+                                        <th>MITRE ATT&CK 기법</th>
+                                        <th>탐지 시그니처 (Detection Signature)</th>
+                                        <th class="w-36 text-center">차단 및 대응 상태</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${(data.stages || []).map((s, idx) => `
+                                        <tr>
+                                            <td class="font-bold text-slate-400 text-center">${idx + 1}</td>
+                                            <td class="font-bold text-slate-200">${s.stage}</td>
+                                            <td><span class="px-2 py-0.5 rounded bg-sky-500/10 text-sky-400 border border-sky-500/30 text-[10px]">${s.technique}</span></td>
+                                            <td class="text-slate-300">${s.signature}</td>
+                                            <td class="text-center">
+                                                <span class="px-2 py-0.5 rounded text-[10px] font-bold ${s.status.includes('BLOCKED') ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/40' : 'bg-amber-500/15 text-amber-400 border border-amber-500/40'}">
+                                                    ${s.status}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="p-4 rounded bg-slate-950 border border-slate-800 space-y-2">
+                            <h4 class="text-xs font-bold text-emerald-400 flex items-center gap-1.5 border-b border-slate-800 pb-2">
+                                <span>🛡️</span> 능동 방어 및 격리 조치 (Applied Containment)
+                            </h4>
+                            <div class="p-3 rounded bg-slate-900 border border-slate-800 font-mono text-xs space-y-1">
+                                <div class="text-[10px] text-slate-500 font-bold uppercase">적용된 게이트웨이 방화벽 정책</div>
+                                <code class="text-emerald-300 block bg-slate-950 p-2 rounded border border-slate-800">${data.applied_containment}</code>
+                                <div class="text-[11px] text-slate-400 pt-1">
+                                    인간 승인(HITL) 큐 승인 완료 후 즉시 L3 패킷 포워딩 차단 정책이 활성화되었습니다.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-4 rounded bg-slate-950 border border-slate-800 space-y-2">
+                            <h4 class="text-xs font-bold text-cyan-400 flex items-center gap-1.5 border-b border-slate-800 pb-2">
+                                <span>🔗</span> 법적·기술적 객관적 증적 체인 (Evidence References)
+                            </h4>
+                            <div class="space-y-1.5 text-xs">
+                                <p class="text-slate-400 text-[11px]">본 침해사고 조사는 아래 SHA-256 해시 검증 완료된 물리 증적과 교차 검증되었습니다:</p>
+                                <div class="flex flex-wrap gap-2 pt-1">
+                                    ${(data.evidence_references || []).map(ev => `
+                                        <span class="px-2.5 py-1 rounded bg-slate-900 border border-cyan-500/30 text-cyan-300 font-mono text-xs font-bold flex items-center gap-1">
+                                            <span>📁</span> ${ev}
+                                        </span>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (type === 'daily') {
+                body.innerHTML = `
+                    <div class="p-4 rounded bg-slate-950 border border-slate-800 space-y-3">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-slate-800/80 pb-3">
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <h3 class="text-base font-bold text-white">${data.title}</h3>
+                                    <span class="text-[10px] px-2 py-0.5 rounded bg-sky-500/20 text-sky-400 border border-sky-500/40 font-mono font-bold">${data.classification}</span>
+                                </div>
+                                <div class="text-[11px] text-slate-400 mt-1">
+                                    관제 기준 일시: <b class="text-slate-300">${data.date}</b>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-xs text-slate-400">보고서 ID: <b class="text-sky-400 font-mono">${data.report_id}</b></span>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2 pt-1 text-xs">
+                            <div class="p-2.5 rounded bg-slate-900 border border-slate-800 text-center">
+                                <span class="text-[10px] text-slate-500 block">검사된 패킷 수</span>
+                                <span class="text-sm font-bold text-sky-400">${data.summary_metrics.total_inspected_packets}</span>
+                            </div>
+                            <div class="p-2.5 rounded bg-slate-900 border border-slate-800 text-center">
+                                <span class="text-[10px] text-slate-500 block">RX / TX 대역폭</span>
+                                <span class="text-sm font-bold text-cyan-300">${data.summary_metrics.rx_bandwidth} / ${data.summary_metrics.tx_bandwidth}</span>
+                            </div>
+                            <div class="p-2.5 rounded bg-slate-900 border border-slate-800 text-center">
+                                <span class="text-[10px] text-slate-500 block">총 탐지 알람</span>
+                                <span class="text-sm font-bold text-white">${data.summary_metrics.total_alerts}건</span>
+                            </div>
+                            <div class="p-2.5 rounded bg-slate-900 border border-slate-800 text-center">
+                                <span class="text-[10px] text-slate-500 block">Critical/High 알람</span>
+                                <span class="text-sm font-bold text-red-400">${data.summary_metrics.critical_high_count}건</span>
+                            </div>
+                            <div class="p-2.5 rounded bg-slate-900 border border-slate-800 text-center">
+                                <span class="text-[10px] text-slate-500 block">차단된 공격 시도</span>
+                                <span class="text-sm font-bold text-emerald-400">${data.summary_metrics.blocked_attempts}건</span>
+                            </div>
+                            <div class="p-2.5 rounded bg-slate-900 border border-slate-800 text-center">
+                                <span class="text-[10px] text-slate-500 block">Zero-Hit 방화벽 룰</span>
+                                <span class="text-sm font-bold text-amber-400">${data.summary_metrics.zero_hit_rules}건 (정리 검토)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-4 rounded bg-slate-950 border border-slate-800 space-y-2.5">
+                        <h4 class="text-xs font-bold text-sky-400 flex items-center gap-1.5 border-b border-slate-800 pb-2">
+                            <span>🌍</span> 최근 24시간 국가별 위협 유입 및 방어 현황 (Top Threat Origins)
+                        </h4>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs soc-table">
+                                <thead>
+                                    <tr>
+                                        <th>출발 국가 (Country)</th>
+                                        <th class="text-center">유입 시도 (Attacks)</th>
+                                        <th class="text-center">차단 성공 (Blocked)</th>
+                                        <th class="text-center">방어 성공률</th>
+                                        <th class="text-center">상태</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${(data.top_threat_origins || []).map(o => `
+                                        <tr>
+                                            <td class="font-bold text-slate-200">
+                                                <span class="mr-1.5">${o.flag}</span>${o.country}
+                                            </td>
+                                            <td class="text-center text-red-400 font-bold">${o.attacks}회</td>
+                                            <td class="text-center text-emerald-400 font-bold">${o.blocked}회</td>
+                                            <td class="text-center text-sky-300 font-bold">100.0%</td>
+                                            <td class="text-center">
+                                                <span class="px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-400 text-[10px] font-bold">CONTAINED</span>
+                                            </td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="p-4 rounded bg-slate-950 border border-slate-800 space-y-2">
+                        <h4 class="text-xs font-bold text-emerald-400 flex items-center gap-1.5 border-b border-slate-800 pb-2">
+                            <span>📡</span> 보안관제 인프라 및 센서 건전성 (Infrastructure Health)
+                        </h4>
+                        <div class="p-3 rounded bg-slate-900 border border-slate-800 flex items-center justify-between text-xs">
+                            <span class="text-slate-300">${data.infrastructure_status}</span>
+                            <span class="px-2.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[10px] font-bold">HEALTHY</span>
+                        </div>
+                    </div>
+                `;
+            } else if (type === 'audit') {
+                const logs = data.logs || [];
+                body.innerHTML = `
+                    <div class="p-4 rounded bg-slate-950 border border-slate-800 space-y-3">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-slate-800/80 pb-3">
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <h3 class="text-base font-bold text-white">${data.title}</h3>
+                                    <span class="text-[10px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 border border-amber-500/40 font-mono font-bold">${data.classification}</span>
+                                </div>
+                                <div class="text-[11px] text-slate-400 mt-1">
+                                    기준 일자: <b class="text-slate-300">${data.date}</b> · 총 감사 기록: <b class="text-sky-400">${data.total_logs}건</b>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <input type="text" id="report-audit-search" oninput="filterReportAuditLogs()" placeholder="감사 로그 검색 (행위자, 정책, 결과)..." class="px-2.5 py-1 bg-slate-900 border border-slate-700 rounded text-xs text-white focus:outline-none focus:border-sky-500 font-mono w-64">
+                            </div>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs soc-table">
+                                <thead>
+                                    <tr>
+                                        <th class="w-36">타임스탬프</th>
+                                        <th class="w-24">유형</th>
+                                        <th class="w-48">수행 작업 (Action)</th>
+                                        <th class="w-28">행위자 (Actor)</th>
+                                        <th class="w-20 text-center">결과</th>
+                                        <th>상세 내용 (Audit Detail)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="report-audit-tbody">
+                                    ${logs.map(l => `
+                                        <tr>
+                                            <td class="text-slate-400 font-mono text-[11px]">${l.timestamp || '-'}</td>
+                                            <td>
+                                                <span class="px-2 py-0.5 rounded text-[10px] font-bold ${l.type === 'HITL' ? 'bg-indigo-500/20 text-indigo-300' : l.type === 'POLICY' ? 'bg-amber-500/20 text-amber-300' : 'bg-slate-800 text-slate-300'}">
+                                                    ${l.type || 'SYSTEM'}
+                                                </span>
+                                            </td>
+                                            <td class="font-bold text-slate-200">${l.action || '-'}</td>
+                                            <td class="text-sky-300 font-mono">${l.actor || '-'}</td>
+                                            <td class="text-center">
+                                                <span class="px-1.5 py-0.5 rounded text-[10px] font-bold ${l.result === 'SUCCESS' ? 'text-emerald-400 bg-emerald-500/10' : 'text-red-400 bg-red-500/10'}">
+                                                    ${l.result || 'OK'}
+                                                </span>
+                                            </td>
+                                            <td class="text-slate-400 text-[11px] truncate max-w-md" title="${l.detail || ''}">${l.detail || '-'}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function filterReportAuditLogs() {
+            const q = (document.getElementById('report-audit-search')?.value || '').toLowerCase();
+            const tbody = document.getElementById('report-audit-tbody');
+            if (!tbody || !currentReportData || !currentReportData.logs) return;
+
+            const filtered = currentReportData.logs.filter(l => {
+                return !q || (l.action && l.action.toLowerCase().includes(q)) ||
+                    (l.actor && l.actor.toLowerCase().includes(q)) ||
+                    (l.detail && l.detail.toLowerCase().includes(q)) ||
+                    (l.type && l.type.toLowerCase().includes(q)) ||
+                    (l.result && l.result.toLowerCase().includes(q));
+            });
+
+            tbody.innerHTML = filtered.map(l => `
+                <tr>
+                    <td class="text-slate-400 font-mono text-[11px]">${l.timestamp || '-'}</td>
+                    <td>
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold ${l.type === 'HITL' ? 'bg-indigo-500/20 text-indigo-300' : l.type === 'POLICY' ? 'bg-amber-500/20 text-amber-300' : 'bg-slate-800 text-slate-300'}">
+                            ${l.type || 'SYSTEM'}
+                        </span>
+                    </td>
+                    <td class="font-bold text-slate-200">${l.action || '-'}</td>
+                    <td class="text-sky-300 font-mono">${l.actor || '-'}</td>
+                    <td class="text-center">
+                        <span class="px-1.5 py-0.5 rounded text-[10px] font-bold ${l.result === 'SUCCESS' ? 'text-emerald-400 bg-emerald-500/10' : 'text-red-400 bg-red-500/10'}">
+                            ${l.result || 'OK'}
+                        </span>
+                    </td>
+                    <td class="text-slate-400 text-[11px] truncate max-w-md" title="${l.detail || ''}">${l.detail || '-'}</td>
+                </tr>
+            `).join('');
+        }
+
+        function reloadCurrentReport() {
+            loadReportView(currentReportType);
+            showToast(`보고서 [${currentReportType.toUpperCase()}] 최신 텔레메트리 재집계 완료`, 'sky');
+        }
+
+        function copyCurrentReportMarkdown() {
+            if (!currentReportData) {
+                showToast('복사할 보고서 데이터가 없습니다.', 'amber');
+                return;
+            }
+
+            let md = '';
+            const d = currentReportData;
+
+            if (currentReportType === 'executive') {
+                md = `# 🛡️ ${d.title}\n\n` +
+                    `> **분류:** ${d.classification} | **문서번호:** ${d.doc_no} | **보고일자:** ${d.date}\n` +
+                    `> **작성자:** ${d.author} | **준수 표준:** ${d.framework}\n\n` +
+                    `## 1. 종합 관제 핵심 성과 지표 (KPIs)\n\n` +
+                    `| 지표 항목 | 성과 수치 | 비고 |\n` +
+                    `|---|:---:|---|\n` +
+                    `| 총 인입 보안 이벤트 | **${d.summary.total_events}**건 | 실시간 AF_PACKET 수집 |\n` +
+                    `| P0 크리티컬 경보 | **${d.summary.critical_alerts}**건 | 즉각 조사 및 격리 조치 |\n` +
+                    `| 능동 차단 성공 건수 | **${d.summary.blocked_count}**건 | Gateway nftables 차단 |\n` +
+                    `| 상관분석 복합 침해사고 | **${d.summary.correlated_incidents}**건 | 킬체인 타임윈도우 엔진 |\n` +
+                    `| 침해 방어율 | **${d.summary.defense_rate}** | 엔드투엔드 탐지 및 방어 |\n` +
+                    `| 평균 탐지 / 대응 시간 | **${d.summary.mean_time_to_detect} / ${d.summary.mean_time_to_respond}** | RAG Copilot 및 자동화 |\n\n` +
+                    `## 2. 보안 인프라 및 침입탐지 아키텍처\n\n` +
+                    `- **배포 모델:** ${d.architecture.model}\n` +
+                    `- **Primary IDS:** Suricata ${d.architecture.suricata}\n` +
+                    `- **Secondary IDS:** Snort ${d.architecture.snort}\n` +
+                    `- **SIEM & Firewall:** Wazuh ${d.architecture.wazuh} / ${d.architecture.gateway_firewall}\n\n` +
+                    `## 3. 핵심 보안관제 실증 발견사항 (Key Findings)\n\n` +
+                    d.findings.map(f => `- [x] ${f}`).join('\n') + `\n\n` +
+                    `## 4. 전략적 보안 개선 및 권고사항\n\n` +
+                    d.recommendations.map((r, i) => `${i+1}. ${r}`).join('\n') + `\n`;
+            } else if (currentReportType === 'incident') {
+                md = `# 🚨 ${d.title}\n\n` +
+                    `> **사고 ID:** ${d.incident_id} | **심각도:** ${d.severity} | **분류:** ${d.classification}\n` +
+                    `> **최종 판정:** ${d.verdict} | **일자:** ${d.date} | **조사관:** ${d.investigator}\n\n` +
+                    `## 1. 침해사고 개요\n\n` +
+                    `- **공격 출발지:** \`${d.attacker_ip}\` (soc-attacker, ZONE-ATTACK)\n` +
+                    `- **침해 대상 자산:** \`${(d.target_ips || []).join(', ')}\` (soc-victim, ZONE-VICTIM)\n` +
+                    `- **AI 모델 복합 위험도:** **${d.ai_risk_score} / 100**\n\n` +
+                    `## 2. 다단계 공격 킬체인 진행 현황 (MITRE ATT&CK)\n\n` +
+                    `| 단계 | 공격 단계명 | MITRE 기법 | 탐지 시그니처 | 상태 |\n` +
+                    `|:---:|---|:---:|---|:---:|\n` +
+                    d.stages.map((s, idx) => `| ${idx+1} | ${s.stage} | ${s.technique} | ${s.signature} | **${s.status}** |`).join('\n') + `\n\n` +
+                    `## 3. 능동 방어 및 격리 조치\n\n` +
+                    `\`\`\`bash\n${d.applied_containment}\n\`\`\`\n\n` +
+                    `## 4. 연계 증적 참조 (Evidence Chain)\n\n` +
+                    d.evidence_references.map(ev => `- \`${ev}\``).join('\n') + `\n`;
+            } else if (currentReportType === 'daily') {
+                md = `# 📅 ${d.title}\n\n` +
+                    `> **문서 ID:** ${d.report_id} | **기준:** ${d.date} | **분류:** ${d.classification}\n\n` +
+                    `## 1. 최근 24시간 보안관제 지표\n\n` +
+                    `- 총 검사 패킷 수: **${d.summary_metrics.total_inspected_packets}**\n` +
+                    `- 네트워크 대역폭: RX ${d.summary_metrics.rx_bandwidth} / TX ${d.summary_metrics.tx_bandwidth}\n` +
+                    `- 총 알람 / 긴급 알람: ${d.summary_metrics.total_alerts}건 / ${d.summary_metrics.critical_high_count}건\n` +
+                    `- 능동 차단 시도: ${d.summary_metrics.blocked_attempts}건\n` +
+                    `- Zero-Hit 방화벽 룰: ${d.summary_metrics.zero_hit_rules}건\n\n` +
+                    `## 2. 국가별 위협 유입 및 차단 현황\n\n` +
+                    `| 국가 | 유입 시도 | 차단 건수 | 차단율 |\n` +
+                    `|---|:---:|:---:|:---:|\n` +
+                    d.top_threat_origins.map(o => `| ${o.flag} ${o.country} | ${o.attacks}회 | ${o.blocked}회 | 100.0% |`).join('\n') + `\n\n` +
+                    `## 3. 인프라 가동 상태\n\n` +
+                    `> ${d.infrastructure_status}\n`;
+            } else if (currentReportType === 'audit') {
+                md = `# 📋 ${d.title}\n\n` +
+                    `> **문서 ID:** ${d.report_id} | **기준:** ${d.date} | **분류:** ${d.classification} | **총 로그:** ${d.total_logs}건\n\n` +
+                    `| 타임스탬프 | 유형 | 수행 작업 | 행위자 | 결과 | 상세 내용 |\n` +
+                    `|---|:---:|---|:---:|:---:|---|\n` +
+                    (d.logs || []).map(l => `| ${l.timestamp || '-'} | ${l.type || 'SYSTEM'} | ${l.action || '-'} | ${l.actor || '-'} | ${l.result || 'OK'} | ${l.detail || '-'} |`).join('\n') + `\n`;
+            }
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(md).then(() => {
+                    showToast('보고서가 마크다운(Markdown) 포맷으로 클립보드에 복사되었습니다.', 'emerald');
+                }).catch(() => {
+                    fallbackCopyText(md);
+                });
+            } else {
+                fallbackCopyText(md);
+            }
+        }
+
+        function fallbackCopyText(text) {
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            ta.style.position = 'fixed';
+            ta.style.left = '-9999px';
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+            showToast('보고서가 클립보드에 복사되었습니다.', 'emerald');
         }
 
         function quickFilterSearch(ip) {

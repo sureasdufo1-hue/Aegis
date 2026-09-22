@@ -118,6 +118,42 @@ SIGNATURE_MAP = {
         "explanation": "내부 호스트에서 공격자 IP로 아웃바운드 연결이 맺어지고 유닉스 셸 프롬프트가 오간 패턴이 탐지되었습니다. 침해 가능성이 매우 높습니다.",
         "investigation_guide": "피해 호스트의 실행 중인 프로세스 트리(sh, bash, python 등) 및 외향 연결 소켓을 즉각 격리하고 메모리 덤프를 확보하십시오.",
     },
+    "SOC-ATTACK: Apache Log4j JNDI RCE Exploit (${jndi:})": {
+        "ko_title": "Apache Log4j 원격 코드 실행 취약점 악용 시도 (${jndi:})",
+        "category_ko": "원격 코드 실행 (RCE)",
+        "explanation": "JNDI 조회 문자열을 이용해 악성 원격 클래스를 로드하여 임의의 명령을 실행하려는 공격입니다.",
+        "investigation_guide": "웹 애플리케이션 로그에 ${jndi:ldap/rmi} 패턴 유입 여부와 아웃바운드 LDAP/RMI 통신 발생 여부를 확인하십시오.",
+    },
+    "SNORT-SCAN: Nmap Stealth NULL Scan (TCP Zero Flags)": {
+        "ko_title": "Nmap 스텔스 NULL 포트 스캔 탐지",
+        "category_ko": "정보 수집 시도 (스캔)",
+        "explanation": "TCP 플래그가 전혀 설정되지 않은 비정상 패킷을 전송하여 방화벽을 우회하고 열린 포트를 탐색하는 정찰 기법입니다.",
+        "investigation_guide": "출발지 IP가 최근 다른 포트나 호스트를 지속적으로 스캔했는지 확인하고 웹 서버 접근 여부를 추적하십시오.",
+    },
+    "SNORT-ATTACK: Web SQL Injection UNION SELECT Pattern": {
+        "ko_title": "웹 애플리케이션 SQL 인젝션 공격 시도 탐지",
+        "category_ko": "웹 애플리케이션 공격",
+        "explanation": "HTTP 파라미터에 'UNION SELECT' 구문을 삽입하여 데이터베이스 내부 정보를 비인가 조회하려는 공격입니다.",
+        "investigation_guide": "웹 서버의 응답 코드(200 OK vs 500/403)와 응답 데이터 크기를 확인하여 실제 데이터베이스 질의 성공 여부를 검증하십시오.",
+    },
+    "SNORT-AUTH: SSH Brute Force Connection Burst": {
+        "ko_title": "SSH 계정 무차별 대입 공격 (Brute Force) 탐지",
+        "category_ko": "관리자 권한 획득 시도",
+        "explanation": "단시간 내에 비정상적으로 높은 빈도로 SSH 접속을 시도하여 유효한 계정 자격증명을 탈취하려는 공격입니다.",
+        "investigation_guide": "대상 호스트의 `/var/log/auth.log`를 검토하여 'Accepted password' 기록이 존재하는지 점검하십시오.",
+    },
+    "SNORT-MALWARE: Reverse Shell Session Activity (/bin/sh)": {
+        "ko_title": "대화형 리버스 셸 세션 수립 의심 (/bin/sh 프롬프트 감지)",
+        "category_ko": "네트워크 트로이목마 / C2",
+        "explanation": "내부 호스트에서 공격자 IP로 아웃바운드 연결이 맺어지고 유닉스 셸 프롬프트가 오간 패턴이 탐지되었습니다.",
+        "investigation_guide": "피해 호스트의 실행 중인 프로세스 트리 및 외향 연결 소켓을 즉각 격리하십시오.",
+    },
+    "SNORT-ATTACK: Apache Log4j JNDI RCE Exploit (${jndi:})": {
+        "ko_title": "Apache Log4j 원격 코드 실행 취약점 악용 시도 (${jndi:})",
+        "category_ko": "원격 코드 실행 (RCE)",
+        "explanation": "JNDI 조회 문자열을 이용해 악성 원격 클래스를 로드하여 임의의 명령을 실행하려는 공격입니다.",
+        "investigation_guide": "웹 애플리케이션 로그에 ${jndi:ldap/rmi} 패턴 유입 여부와 아웃바운드 LDAP/RMI 통신 발생 여부를 확인하십시오.",
+    },
 }
 
 # 5. MITRE ATT&CK Techniques (MITRE ATT&CK 매핑 사전)

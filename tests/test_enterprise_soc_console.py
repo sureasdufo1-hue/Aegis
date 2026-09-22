@@ -145,6 +145,7 @@ def test_enterprise_console_html_structure():
     assert "tab-incidents" in html
     assert "tab-network" in html
     assert "tab-policy" in html
+    assert "tab-reports" in html
     assert "tab-system" in html
 
     # High Density Workspaces
@@ -158,6 +159,7 @@ def test_enterprise_console_html_structure():
     assert "view-policy" in html
     assert "view-assets" in html
     assert "view-system" in html
+    assert "view-reports" in html
 
     # Operational Logs & Tables
     assert "audit-log-tbody" in html
@@ -167,5 +169,54 @@ def test_enterprise_console_html_structure():
     assert "assets-tbody" in html
     assert "sensors-tbody" in html
 
-    # Drill-down Drawer
+    # Drill-down Drawer & Reports Center
     assert "eventDetailDrawer" in html
+    assert "report-content-body" in html
+    assert "btn-rep-executive" in html
+    assert "loadReportView" in html
+
+
+def test_soc_reports_api():
+    # 1. Executive Report
+    res_exec = client.get("/api/reports/executive")
+    assert res_exec.status_code == 200
+    d_exec = res_exec.json()
+    assert d_exec["report_id"] == "SOC-REP-2026-EXECUTIVE"
+    assert "summary" in d_exec
+    assert "architecture" in d_exec
+    assert "findings" in d_exec
+    assert "recommendations" in d_exec
+    assert d_exec["summary"]["defense_rate"] == "99.9%"
+    assert "8.0.6" in d_exec["architecture"]["suricata"]
+
+    # 2. Incident Report
+    res_inc = client.get("/api/reports/incident")
+    assert res_inc.status_code == 200
+    d_inc = res_inc.json()
+    assert d_inc["report_id"] == "SOC-REP-2026-INC001"
+    assert "stages" in d_inc
+    assert len(d_inc["stages"]) == 4
+    assert d_inc["attacker_ip"] == "10.77.20.20"
+    assert "TRUE_POSITIVE" in d_inc["verdict"]
+
+    # 3. Daily Briefing Report
+    res_daily = client.get("/api/reports/daily")
+    assert res_daily.status_code == 200
+    d_daily = res_daily.json()
+    assert d_daily["report_id"] == "SOC-REP-2026-DAILY"
+    assert "summary_metrics" in d_daily
+    assert "top_threat_origins" in d_daily
+    assert len(d_daily["top_threat_origins"]) >= 3
+
+    # 4. Audit Report
+    res_audit = client.get("/api/reports/audit")
+    assert res_audit.status_code == 200
+    d_audit = res_audit.json()
+    assert d_audit["report_id"] == "SOC-REP-2026-AUDIT"
+    assert "logs" in d_audit
+    assert d_audit["total_logs"] >= 0
+
+    # 5. Invalid Report Type -> 404
+    res_invalid = client.get("/api/reports/unknown_type")
+    assert res_invalid.status_code == 404
+
