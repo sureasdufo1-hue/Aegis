@@ -1,12 +1,67 @@
-# 🧪 05. SOC Lab 종합 테스트 및 검증 계획서 (Testing & Quality Gates)
+# 🧪 05. 보안관제 및 AI 통합 평가·검증 체계 (Testing & AI Evaluation)
 
-> **기준 문서**: SOC Detection & Monitoring Lab Implementation Plan v1.0 (Section 45)  
-> **적용 규정**: AGENTS.md Section 17 (Testing Rules)  
-> **검증 대상**: 전체 파이프라인 (네트워크 ➔ 미러링 ➔ 듀얼 IDS ➔ SIEM ➔ 상관분석 ➔ 튜닝)  
+> **기준 일자:** 2026-09-28  
+> **프로젝트 공식 명칭:** **AegisAI — AI for Security × Security for AI Integrated SOC Platform**  
+> **현재 유효 기준선:** **v2.0 AI Evaluation Plan (09_AI_EVALUATION_PLAN.md)**  
+> **레거시 참조:** v1.0 SOC Lab 종합 테스트 및 검증 계획서 (Implementation Plan Section 45)  
+> **적용 규정:** AGENTS.md Section 8 (Phase & Gate Policy), Section 17 (Testing Rules), Section 18 (Evidence Rules)
 
 ---
 
-## 1. 테스트 케이스 매트릭스 (Test Case Matrix)
+## 1. 평가 및 테스트 문서 계층 및 로드맵
+
+```text
+[ v2.0 통합 시스템 상세설계서 (LLD) ]
+docs/03-design/08_LOW_LEVEL_DESIGN.md (126개 챕터, 48개 모듈, 10대 API)
+      │
+      ▼
+[ v2.0 AI 보안 기능 평가 및 성능검증 계획서 ]
+docs/05-testing/09_AI_EVALUATION_PLAN.md (★ 160개 챕터, 3대 평가 도메인, 17대 매트릭스)
+      │
+      ├──────────────────────────────┬──────────────────────────────┐
+      ▼                              ▼                              ▼
+[ v2.0 통합 구현 계획서 ]     [ v2.0 통합 시험 계획서 ]    [ v2.0 AI 레드팀 시나리오 ]
+10_IMPLEMENTATION_PLAN.md    11_TEST_PLAN.md              12_AI_RED_TEAM_SCENARIOS.md
+(예정)                       (예정)                       (예정)
+```
+
+---
+
+## 2. 핵심 평가 및 테스트 산출물 바로가기
+
+| 문서 ID | 문서명 | 버전 / 성격 | 설명 및 링크 |
+|---|---|:---:|---|
+| `09_AI_EVALUATION_PLAN` | **AegisAI AI 보안 기능 평가 및 성능검증 계획서** | `v2.0 Eval Master` | [09_AI_EVALUATION_PLAN.md](./09_AI_EVALUATION_PLAN.md)<br>160개 챕터, 3대 도메인, 10대 평가대상(`EVT-*`), 6대 데이터셋(`DS-*`), 14대 메트릭(`MET-*`), 7대 무관용 결함(`CRIT-FAIL-*`), 6대 MVP 시나리오, 17대 매트릭스(A~Q) |
+| `E2E_VAL_REPORT_V1.0` | **Phase 31 E2E 통합 검증 보고서** | `v1.0 Baseline` | [PHASE31_E2E_VALIDATION_REPORT.md](./PHASE31_E2E_VALIDATION_REPORT.md)<br>전통적 SOC Lab 31개 페이즈 및 14대 게이트 실측 증적 요약 |
+
+---
+
+## 3. v2.0 AI 평가 체계 핵심 요약 (Evaluation Highlights)
+
+```text
+┌────────────────────────────────────────────────────────────────────────┐
+│ 1. 3대 평가 도메인:                                                    │
+│    - Domain A: AI for Security (탐지/요약/RAG 지원)                   │
+│    - Domain B: Security for AI (Gateway 차단/DLP/Agent 격리)           │
+│    - Domain C: Closed-loop Integrated SOC (HITL Nonce/SOAR/생존성)     │
+│ 2. 7대 무관용 보안 결함 (Zero Tolerance / Gate Fail):                  │
+│    - 비인가 RAG 인출, 임의 쉘 실행, 자기 승인, Nonce 재사용,            │
+│      보호 자산 차단, 원문 시크릿 로깅, 무승인 Level 4 자동 집행        │
+│ 3. 6대 MVP 평가 시나리오:                                              │
+│    - Scen 1: Traditional SOC ➔ AI SOC 파이프라인                     │
+│    - Scen 2: Prompt Injection ➔ AI Gateway 인라인 방어                │
+│    - Scen 3: PII & Secret Leakage ➔ AI DLP 마스킹                     │
+│    - Scen 4: Unauthorized RAG Access ➔ 권한 격리                     │
+│    - Scen 5: High-Risk Response ➔ HITL Nonce & TTL 롤백                │
+│    - Scen 6: AI 장애 시 Core SOC 지속성 및 무손실 가동                 │
+│ 4. 1대 복합 교차 도메인 시나리오:                                      │
+│    - Nmap 정찰 + Web 취약점 ➔ Prompt 탈옥 ➔ RAG 인출 시도 ➔ 15분 상관분석│
+└────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 4. 레거시 v1.0 테스트 케이스 매트릭스 (Traditional SOC Baseline)
 
 | Test ID | 대상 단계 | 요구사항 ID | 검증 항목 | 검증 방식 | 성공 기준 (Pass Criteria) | 증적 (Evidence) |
 |---|---|---|---|---|---|---|
@@ -22,28 +77,3 @@
 | **TC-SIEM-001** | Phase 19 | `REQ-SIEM-01`| Wazuh EVE JSON 로그 수집 파이프라인 | `local_rules.xml` 디코딩 검증 | Suricata `eve.json` ➔ Wazuh Alert 디코딩/인덱싱 성공 | `EV-WAZUH-001` |
 | **TC-ANALYSIS-001**| Phase 22 | `REQ-SOC-01`| 다단계 킬체인 상관분석 엔진 | `python -m analyzer.main` | 정찰 ➔ 초기 침투 ➔ C2 3단계 공격 단일 Incident 그룹화 | `EV-ANALYSIS-001` |
 | **TC-TUNE-001** | Phase 25 | `REQ-SOC-02`| 오탐(False Positive) 룰 튜닝 | Before/After 트래픽 검증 | 정상 트래픽 오탐 제거 + 공격 트래픽 탐지 유지 동시 만족 | `EV-TUNE-001` |
-
----
-
-## 2. 자동화 단위 테스트 실행 (Pytest Suite)
-
-### 실행 명령:
-```bash
-pytest -v
-```
-
-### 테스트 결과 요약:
-```text
-tests/test_correlation.py::test_multi_stage_correlation PASSED           [ 10%]
-tests/test_dashboard_api.py::test_dashboard_index_html PASSED            [ 20%]
-tests/test_dashboard_api.py::test_dashboard_api_stats PASSED             [ 30%]
-tests/test_dashboard_api.py::test_dashboard_api_alerts PASSED            [ 40%]
-tests/test_dashboard_api.py::test_dashboard_api_incidents PASSED         [ 50%]
-tests/test_parsers.py::test_suricata_eve_parser PASSED                   [ 60%]
-tests/test_parsers.py::test_snort_parser PASSED                          [ 70%]
-tests/test_threat_intel.py::test_threat_intel_ip_match PASSED            [ 80%]
-tests/test_threat_intel.py::test_threat_intel_domain_match PASSED        [ 90%]
-tests/test_threat_intel.py::test_threat_intel_benign_ip PASSED           [100%]
-
-======================== 10 passed in 0.69s ========================
-```
