@@ -26,7 +26,11 @@ docs/02-architecture/03_AI_THREAT_MODEL.md (★ 위협 모델 기준선)
       │
       ▼
 [ v2.0 통합 요구사항 정의서 ]
-docs/01-requirements/04_REQUIREMENTS_SPECIFICATION_V2.md (44개 요구사항 연계)
+docs/01-requirements/04_REQUIREMENTS_SPECIFICATION_V2.md (68개 챕터, 112개 요구사항)
+      │
+      ▼
+[ v2.0 통합 보안 이벤트 스키마 및 정규화 명세서 ]
+docs/02-architecture/05_SECURITY_EVENT_SCHEMA.md (★ 80개 챕터, ECS 기반 8대 도메인 스키마 계약)
 ```
 
 ---
@@ -37,6 +41,7 @@ docs/01-requirements/04_REQUIREMENTS_SPECIFICATION_V2.md (44개 요구사항 연
 |---|---|:---:|---|
 | `02_TO_BE_ARCHITECTURE` | **AegisAI 목표 시스템 아키텍처 설계서** | `v2.0 TO-BE` | [02_TO_BE_ARCHITECTURE.md](./02_TO_BE_ARCHITECTURE.md)<br>4-Layer 아키텍처, 14개 구조 다이어그램, 10개 ADR, Trust Boundary, Closed-loop SOAR |
 | `03_AI_THREAT_MODEL` | **AegisAI AI/LLM/RAG/Agent 통합 위협모델 분석서** | `v2.0 Threat Model` | [03_AI_THREAT_MODEL.md](./03_AI_THREAT_MODEL.md)<br>STRIDE 분석, OWASP 2026(LLM/Agent), 15대 자산, 10대 Entry Point, 위협-통제-탐지 매트릭스 |
+| `05_SECURITY_EVENT_SCHEMA` | **AegisAI 통합 보안 이벤트 스키마 및 정규화 명세서** | `v2.0 Schema Master` | [05_SECURITY_EVENT_SCHEMA.md](./05_SECURITY_EVENT_SCHEMA.md)<br>80개 챕터, 10대 다이어그램, ECS+aegis.* 네임스페이스, 12대 JSON 예제, 10대 SDR, 전수 매트릭스 |
 | `HLD_V1.0_ORIGINAL` | **보안관제 시스템 아키텍처 및 기본설계서 (HLD v1.0 원본)** | `v1.0 Baseline` | [`보안관제_프로젝트_시스템_아키텍처_및_기본설계서(HLD)_v1.0.pdf`](./보안관제_프로젝트_시스템_아키텍처_및_기본설계서(HLD)_v1.0.pdf)<br>Hyper-V/VMware 3망 분리, Suricata/Snort 듀얼 IDS, Wazuh Docker 기본 설계 |
 | `DESIGN-ISSUE-001` | **M1·M2 통합 네트워크 전환 설계 이슈 분석서** | `Design Issue` | [DESIGN-ISSUE-001-M1M2-SOC-INTEGRATION.md](./DESIGN-ISSUE-001-M1M2-SOC-INTEGRATION.md)<br>Cisco L3 SPAN 및 TrusGuard 방화벽 물리/가상망 통합 시 고려사항 |
 | `TLS_PROXY_ARCH` | **TLS 복호화 및 리버스 프록시 연동 아키텍처** | `Reference` | [TLS_DECRYPTION_AND_REVERSE_PROXY_ARCHITECTURE.md](./TLS_DECRYPTION_AND_REVERSE_PROXY_ARCHITECTURE.md)<br>인라인 프록시 및 SSL/TLS 미러링 기술 설계 |
