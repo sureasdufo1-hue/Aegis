@@ -20,6 +20,10 @@ docs/03-design/08_LOW_LEVEL_DESIGN.md (★ 126개 챕터, 18대 다이어그램,
       ▼
 [ v2.0 AI 보안 기능 평가 및 성능검증 계획서 ]
 docs/05-testing/09_AI_EVALUATION_PLAN.md (160개 챕터, 3대 도메인, 17대 매트릭스)
+      │
+      ▼
+[ v2.0 통합 구축 및 구현 계획서 ]
+docs/04-deployment/10_IMPLEMENTATION_PLAN.md (★ 182개 챕터, 15대 트랙, 24대 매트릭스)
 ```
 
 ---

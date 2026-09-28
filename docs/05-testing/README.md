@@ -21,8 +21,9 @@ docs/05-testing/09_AI_EVALUATION_PLAN.md (★ 160개 챕터, 3대 평가 도메�
       ├──────────────────────────────┬──────────────────────────────┐
       ▼                              ▼                              ▼
 [ v2.0 통합 구현 계획서 ]     [ v2.0 통합 시험 계획서 ]    [ v2.0 AI 레드팀 시나리오 ]
-10_IMPLEMENTATION_PLAN.md    11_TEST_PLAN.md              12_AI_RED_TEAM_SCENARIOS.md
-(예정)                       (예정)                       (예정)
+docs/04-deployment/          11_TEST_PLAN.md              12_AI_RED_TEAM_SCENARIOS.md
+10_IMPLEMENTATION_PLAN.md    (차기 작성)                  (예정)
+(★ 182개 챕터, 24대 매트릭스)
 ```
 
 ---

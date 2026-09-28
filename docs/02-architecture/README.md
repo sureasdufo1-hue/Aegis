@@ -47,6 +47,10 @@ docs/03-design/08_LOW_LEVEL_DESIGN.md (★ 126개 챕터, 18대 다이어그램,
       ▼
 [ v2.0 AI 보안 기능 평가 및 성능검증 계획서 ]
 docs/05-testing/09_AI_EVALUATION_PLAN.md (★ 160개 챕터, 3대 도메인, 17대 매트릭스)
+      │
+      ▼
+[ v2.0 통합 구축 및 구현 계획서 ]
+docs/04-deployment/10_IMPLEMENTATION_PLAN.md (★ 182개 챕터, 15대 트랙, 24대 매트릭스)
 ```
 
 ---
@@ -62,6 +66,7 @@ docs/05-testing/09_AI_EVALUATION_PLAN.md (★ 160개 챕터, 3대 도메인, 17�
 | `07_HIGH_LEVEL_DESIGN` | **AegisAI 통합 시스템 상위설계서 (HLD)** | `v2.0 HLD Master` | [07_HIGH_LEVEL_DESIGN.md](./07_HIGH_LEVEL_DESIGN.md)<br>92개 챕터, 12대 다이어그램, 12대 ADR, 22개 컴포넌트 레지스트리, Closed-loop HLD 기준선 |
 | `08_LOW_LEVEL_DESIGN` | **AegisAI 통합 시스템 상세설계서 (LLD)** | `v2.0 LLD Master` | [../03-design/08_LOW_LEVEL_DESIGN.md](../03-design/08_LOW_LEVEL_DESIGN.md)<br>126개 챕터, 18대 다이어그램, 48개 모듈(MOD-*), 10대 API, 20대 구현 금지사항 |
 | `09_AI_EVALUATION_PLAN`| **AegisAI AI 보안 기능 평가 및 성능검증 계획서** | `v2.0 Eval Master` | [../05-testing/09_AI_EVALUATION_PLAN.md](../05-testing/09_AI_EVALUATION_PLAN.md)<br>160개 챕터, 3대 도메인, 10대 대상, 14대 메트릭, 7대 무관용 결함, 6대 MVP 시나리오, 17대 매트릭스 |
+| `10_IMPLEMENTATION_PLAN`| **AegisAI 통합 구축 및 구현 계획서** | `v2.0 Imp Master` | [../04-deployment/10_IMPLEMENTATION_PLAN.md](../04-deployment/10_IMPLEMENTATION_PLAN.md)<br>182개 챕터, 15대 구현 트랙, 16대 WP, 9대 스프린트, 8대 게이트, 12대 다이어그램, 24대 매트릭스 |
 | `HLD_V1.0_ORIGINAL` | **보안관제 시스템 아키텍처 및 기본설계서 (HLD v1.0 원본)** | `v1.0 Baseline` | [`보안관제_프로젝트_시스템_아키텍처_및_기본설계서(HLD)_v1.0.pdf`](./보안관제_프로젝트_시스템_아키텍처_및_기본설계서(HLD)_v1.0.pdf)<br>Hyper-V/VMware 3망 분리, Suricata/Snort 듀얼 IDS, Wazuh Docker 기본 설계 |
 | `DESIGN-ISSUE-001` | **M1·M2 통합 네트워크 전환 설계 이슈 분석서** | `Design Issue` | [DESIGN-ISSUE-001-M1M2-SOC-INTEGRATION.md](./DESIGN-ISSUE-001-M1M2-SOC-INTEGRATION.md)<br>Cisco L3 SPAN 및 TrusGuard 방화벽 물리/가상망 통합 시 고려사항 |
 | `TLS_PROXY_ARCH` | **TLS 복호화 및 리버스 프록시 연동 아키텍처** | `Reference` | [TLS_DECRYPTION_AND_REVERSE_PROXY_ARCHITECTURE.md](./TLS_DECRYPTION_AND_REVERSE_PROXY_ARCHITECTURE.md)<br>인라인 프록시 및 SSL/TLS 미러링 기술 설계 |
