@@ -1,64 +1,51 @@
-# 📐 03. 보안관제 프로젝트 상세설계서 (LLD v1.0)
+# 📐 03. 보안관제 시스템 상세설계 체계 (Detailed Design)
 
-> **원본 문서**: [`보안관제_프로젝트_상세설계서(LLD)_v1.0.pdf`](./보안관제_프로젝트_상세설계서(LLD)_v1.0.pdf)  
-> **문서 버전**: v1.0 (48 Pages)  
-> **기준 일자**: 2026-08-24  
-> **프로젝트 명**: SOC Detection & Monitoring Lab  
-
----
-
-## 1. 컴포넌트별 상세 스펙 및 설정 (Detailed Specifications)
-
-### 1.1 Hyper-V 가상 스위치 및 포트 미러링 설정
-- **vSwitch 목록**:
-  - `soc-vsw-mgmt` (Internal)
-  - `soc-vsw-attack` (Private)
-  - `soc-vsw-victim` (Private)
-- **Port Mirroring PowerShell 구성**:
-  ```powershell
-  # Source (Victim)
-  Set-VMNetworkAdapter -VMName "soc-victim" -PortMirroring Source
-  # Destination (Sensor Monitor NIC)
-  Set-VMNetworkAdapter -VMName "soc-sensor" -Name "nic-monitor" -PortMirroring Destination
-  ```
-
-### 1.2 Suricata 8.x 상세 구성
-- **EVE JSON 경로**: `/var/log/suricata/eve.json`
-- **SID 할당 대역**: `9000000` ~ `9099999`
-  - `9000000–9009999`: Network & Reconnaissance
-  - `9010000–9019999`: Web Application Attacks
-  - `9020000–9029999`: Authentication & Brute Force
-  - `9030000–9039999`: Lab / Malware C2
-- **AF_PACKET 인터페이스**: `nic-monitor` (Promiscuous mode, Cluster ID: 99)
-
-### 1.3 Snort 3 상세 구성
-- **SID 할당 대역**: `9100000` ~ `9199999`
-- **실행 모드**: `snort -c /etc/snort/rules/local.rules -r traffic.pcap -A alert_json`
-
-### 1.4 Wazuh 4.14.7 Docker 포트 바인딩 및 파이프라인
-- **공개 포트 (MGMT Zone)**:
-  - `1514/TCP`: Agent Event Ingestion
-  - `1515/TCP`: Agent Registration Service
-  - `443/TCP`: Wazuh Dashboard Web UI
-- **로컬 전용 포트 (Localhost)**:
-  - `9200/TCP`: Wazuh Indexer
-  - `55000/TCP`: Wazuh Manager REST API
+> **기준 일자:** 2026-09-28  
+> **프로젝트 공식 명칭:** **AegisAI — AI for Security × Security for AI Integrated SOC Platform**  
+> **현재 유효 기준선:** **v2.0 Low-Level Design (08_LOW_LEVEL_DESIGN.md)**  
+> **레거시 참조:** v1.0 원본 PDF ([`보안관제_프로젝트_상세설계서(LLD)_v1.0.pdf`](./보안관제_프로젝트_상세설계서(LLD)_v1.0.pdf))
 
 ---
 
-## 2. 게이트웨이 방화벽 정책 (nftables / iptables LLD)
+## 1. 상세설계 문서 계층 및 로드맵
 
 ```text
-Default Policy: DROP
+[ v2.0 통합 시스템 상위설계서 (HLD) ]
+docs/02-architecture/07_HIGH_LEVEL_DESIGN.md (92개 챕터, 12대 다이어그램, 22개 컴포넌트)
+      │
+      ▼
+[ v2.0 통합 시스템 상세설계서 (LLD) ]
+docs/03-design/08_LOW_LEVEL_DESIGN.md (★ 126개 챕터, 18대 다이어그램, 48개 모듈)
+      │
+      ▼
+[ v2.0 AI 보안 기능 평가 및 성능검증 계획서 ]
+docs/05-testing/09_AI_EVALUATION_PLAN.md (예정)
+```
 
-[INPUT]
-- lo: ACCEPT
-- ESTABLISHED, RELATED: ACCEPT
-- MGMT -> GW (SSH: 22): ACCEPT
+---
 
-[FORWARD]
-- ATTACK (10.77.20.20) -> VICTIM (10.77.30.20) (TCP 80, 443, 3000, 22): ACCEPT
-- VICTIM (10.77.30.20) -> WAZUH (10.77.10.10) (TCP 1514, 1515): ACCEPT
-- ATTACK -> MGMT: DROP & LOG
-- DEFAULT: DROP
+## 2. 핵심 상세설계 산출물 바로가기
+
+| 문서 ID | 문서명 | 버전 / 성격 | 설명 및 링크 |
+|---|---|:---:|---|
+| `08_LOW_LEVEL_DESIGN` | **AegisAI 통합 시스템 상세설계서 (LLD)** | `v2.0 LLD Master` | [08_LOW_LEVEL_DESIGN.md](./08_LOW_LEVEL_DESIGN.md)<br>126개 챕터, 48개 모듈(MOD-*), 10대 API, Pydantic 스키마, 12개 시퀀스, 6개 DFD, 20대 구현 금지사항 |
+| `LLD_V1.0_ORIGINAL` | **보안관제 프로젝트 상세설계서 (LLD v1.0 원본)** | `v1.0 Baseline` | [`보안관제_프로젝트_상세설계서(LLD)_v1.0.pdf`](./보안관제_프로젝트_상세설계서(LLD)_v1.0.pdf)<br>Hyper-V 3망 분리, Suricata/Snort 듀얼 IDS, Wazuh Docker 기본 상세 스펙 |
+
+---
+
+## 3. LLD v2.0 핵심 설계 요약 (Implementation Highlights)
+
+```text
+┌────────────────────────────────────────────────────────┐
+│ 1. 48개 모듈 레지스트리 (MOD-SURI-001 ~ MOD-AUD-002)     │
+│ 2. 10대 RESTful API 패밀리 (Pydantic v2 Schema 강제)    │
+│ 3. AI Security Gateway 8단계 인라인 검사 파이프라인    │
+│ 4. Presidio 6대 PII + 20대 Secret 가명화 토큰화       │
+│ 5. 15분 슬라이딩 윈도우 결정론적 공격 체인 상관분석   │
+│ 6. Ollama Qwen2.5 7B 로컬 격리 바인딩 (127.0.0.1)     │
+│ 7. BGE-M3 + Elasticsearch kNN 하이브리드 RAG 검색      │
+│ 8. 1-Click 암호 Nonce (900s) + Level 4 Dual-Control     │
+│ 9. L3 Gateway nftables ipset 동적 차단 및 3,600s TTL   │
+│ 10. WORM 불변 감사 로그 및 SHA-256 해시 체이닝        │
+└────────────────────────────────────────────────────────┘
 ```
