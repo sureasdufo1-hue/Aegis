@@ -1,75 +1,55 @@
-# 🏛️ 02. 보안관제 프로젝트 시스템 아키텍처 및 기본설계서 (HLD v1.0)
+# 🏛️ 02. 보안관제 시스템 아키텍처 문서 체계
 
-> **원본 문서**: [`보안관제_프로젝트_시스템_아키텍처_및_기본설계서(HLD)_v1.0.pdf`](./보안관제_프로젝트_시스템_아키텍처_및_기본설계서(HLD)_v1.0.pdf)  
-> **문서 버전**: v1.0 (57 Pages)  
-> **기준 일자**: 2026-08-24  
-> **프로젝트 명**: SOC Detection & Monitoring Lab  
+> **기준 일자:** 2026-09-28  
+> **프로젝트 공식 명칭:** **AegisAI — AI for Security × Security for AI Integrated SOC Platform**  
+> **현재 유효 기준선:** **v2.0 TO-BE Architecture (AegisAI)**
 
 ---
 
-## 1. 아키텍처 토폴로지 (System Architecture Topology)
+## 1. 아키텍처 문서 계층 및 로드맵
 
-```mermaid
-graph TD
-    subgraph Host["Windows 10/11 Host (10.77.10.10)"]
-        subgraph HyperV["Hyper-V Virtual Infrastructure"]
-            subgraph AttackerVM["soc-attacker (Kali Linux 2026.2)"]
-                AttackerNIC["nic-attack (10.77.20.20)"]
-            end
-
-            subgraph GatewayVM["soc-gateway (Ubuntu 22.04 Router/Firewall)"]
-                GW_Att["nic-attack (10.77.20.1)"]
-                GW_Vic["nic-victim (10.77.30.1)"]
-                GW_Mgmt["nic-mgmt (10.77.10.1)"]
-            end
-
-            subgraph VictimVM["soc-victim (Ubuntu 22.04 + OWASP Juice Shop)"]
-                VicNIC["nic-victim (10.77.30.20) [Mirror Source]"]
-            end
-
-            subgraph SensorVM["soc-sensor (Ubuntu 22.04 Passive Sensor)"]
-                MonNIC["nic-monitor (NO IP) [Mirror Destination]"]
-                SensMgmt["nic-mgmt (10.77.10.20)"]
-                SuricataEng["Suricata 8.0.6 (AF_PACKET)"]
-                SnortEng["Snort 3.12.2.0 (Offline/Validation)"]
-                WazuhAg["Wazuh Agent"]
-            end
-        end
-
-        subgraph DockerWSL["Docker Desktop + WSL 2 (Management Zone)"]
-            WazuhMgr["soc-wazuh-manager (4.14.7)"]
-            WazuhIdx["soc-wazuh-indexer (4.14.7)"]
-            WazuhDash["soc-wazuh-dashboard (4.14.7)"]
-            SOC_API["soc-dashboard / FastStream Pipeline (8501)"]
-        end
-    end
-
-    AttackerNIC <-->|ZONE-ATTACK| GW_Att
-    GW_Vic <-->|ZONE-VICTIM| VicNIC
-    VicNIC -.->|Hyper-V Port Mirroring| MonNIC
-    MonNIC --> SuricataEng
-    SuricataEng -->|eve.json| WazuhAg
-    WazuhAg -->|1514/TCP| WazuhMgr
-    WazuhMgr --> WazuhIdx --> WazuhDash
+```text
+[ v2.0 최상위 프로젝트 정의서 ]
+docs/01-requirements/00_PROJECT_DEFINITION_V2.md
+      │
+      ▼
+[ v2.0 AS-IS 기준선 분석서 ]
+docs/01-requirements/01_AS_IS_SOC_BASELINE.md
+      │
+      ▼
+[ v2.0 목표 시스템 아키텍처 설계서 ]
+docs/02-architecture/02_TO_BE_ARCHITECTURE.md (★ 현재 공식 기준선)
+      │
+      ├── [L1: Existing SOC Core (Suricata 8.0, Wazuh 4.14, Elasticsearch 8.19)]
+      ├── [L2: AI Security Enforcement (AI Security Gateway, PII/Secret DLP, OWASP 2026)]
+      ├── [L3: AI SOC Intelligence (AI SOC Analyst, Correlation, Security Knowledge RAG)]
+      └── [L4: Unified AI-SOC & Response (Kibana Threat Map, FastAPI, 1-Click HITL SOAR)]
 ```
 
 ---
 
-## 2. 3대 보안 영역 및 IP 할당 기준 (Network Baseline)
+## 2. 핵심 아키텍처 문서 바로가기
 
-| 존 (Zone) | 서브넷 | 기본 게이트웨이 | 주요 호스트 및 IP | 용도 및 보안 정책 |
-|---|---|---|---|---|
-| **ZONE-MGMT** | `10.77.10.0/24` | `10.77.10.1` | Host: `10.77.10.10`<br>Sensor: `10.77.10.20`<br>Wazuh: `10.77.10.10` | 관제 트래픽 및 SIEM 통신만 허용 (외부 침투 절대 격리) |
-| **ZONE-ATTACK** | `10.77.20.0/24` | `10.77.20.1` | Attacker: `10.77.20.20` | 모의 침투 및 공격 트래픽 발신 전용 대역 |
-| **ZONE-VICTIM** | `10.77.30.0/24` | `10.77.30.1` | Victim: `10.77.30.20` | 공격 대상 웹 애플리케이션 및 타깃 시스템 |
-| **Sensor Monitor**| - | - | Sensor: **NO IP** | 무IP 수동 모니터링 인터페이스 (패킷 캡처 전용) |
+| 문서 ID | 문서명 | 버전 / 성격 | 설명 및 링크 |
+|---|---|:---:|---|
+| `02_TO_BE_ARCHITECTURE` | **AegisAI 목표 시스템 아키텍처 설계서** | `v2.0 TO-BE` | [02_TO_BE_ARCHITECTURE.md](./02_TO_BE_ARCHITECTURE.md)<br>4-Layer 아키텍처, 14개 구조 다이어그램, 10개 ADR, Trust Boundary, Closed-loop SOAR |
+| `HLD_V1.0_ORIGINAL` | **보안관제 시스템 아키텍처 및 기본설계서 (HLD v1.0 원본)** | `v1.0 Baseline` | [`보안관제_프로젝트_시스템_아키텍처_및_기본설계서(HLD)_v1.0.pdf`](./보안관제_프로젝트_시스템_아키텍처_및_기본설계서(HLD)_v1.0.pdf)<br>Hyper-V/VMware 3망 분리, Suricata/Snort 듀얼 IDS, Wazuh Docker 기본 설계 |
+| `DESIGN-ISSUE-001` | **M1·M2 통합 네트워크 전환 설계 이슈 분석서** | `Design Issue` | [DESIGN-ISSUE-001-M1M2-SOC-INTEGRATION.md](./DESIGN-ISSUE-001-M1M2-SOC-INTEGRATION.md)<br>Cisco L3 SPAN 및 TrusGuard 방화벽 물리/가상망 통합 시 고려사항 |
+| `TLS_PROXY_ARCH` | **TLS 복호화 및 리버스 프록시 연동 아키텍처** | `Reference` | [TLS_DECRYPTION_AND_REVERSE_PROXY_ARCHITECTURE.md](./TLS_DECRYPTION_AND_REVERSE_PROXY_ARCHITECTURE.md)<br>인라인 프록시 및 SSL/TLS 미러링 기술 설계 |
 
 ---
 
-## 3. 핵심 기술 스택 및 버전 고정 (Technology Baseline)
+## 3. v2.0 목표 아키텍처 4대 핵심 계층 (4-Layer Invariant)
 
-- **Primary IDS**: Suricata `8.0.6` (AF_PACKET 실시간 EVE JSON)
-- **Secondary IDS**: Snort `3.12.2.0` / libDAQ `3.0.27` (오프라인 검증 및 룰 비교)
-- **Primary SIEM**: Wazuh `4.14.7` (Single-Node Docker 배포)
-- **위협 프레임워크**: MITRE ATT&CK `19.2`
-- **가상화 플랫폼**: Windows Hyper-V + Docker Desktop (WSL 2)
+```text
+┌────────────────────────────────────────────────────────┐
+│ L4  Unified AI-SOC / Human Approval (FastAPI/Kibana)   │
+├────────────────────────────────────────────────────────┤
+│ L3  AI SOC Analyst / Security RAG (Correlation/Triage) │
+├────────────────────────────────────────────────────────┤
+│ L2  AI Security Gateway / DLP (OWASP 2026 / Telemetry) │
+├────────────────────────────────────────────────────────┤
+│ L1  Existing SOC Core (Suricata / Wazuh / Elastic)     │
+│     * Fail-Safe: L2~L4 장애 시에도 L1은 100% 무손실 유지*│
+└────────────────────────────────────────────────────────┘
+```
