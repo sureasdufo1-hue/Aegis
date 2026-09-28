@@ -1,4 +1,4 @@
-# 📋 01. 보안관제 프로젝트 요구사항 정의서 관리 체계
+# 📋 01. 보안관제 프로젝트 요구사항 및 기준선 문서 체계
 
 > **기준 일자:** 2026-09-28  
 > **프로젝트 공식 명칭:** **AegisAI — AI for Security × Security for AI Integrated SOC Platform**  
@@ -8,33 +8,39 @@
 
 ## 1. 문서 체계 및 버전 이력 (Document Hierarchy)
 
-본 저장소의 요구사항 문서는 실습망 구축 단계(v1.0)에서 엔터프라이즈 AI 통합 보안관제 플랫폼(v2.0)으로 체계적으로 확장되었습니다.
+본 저장소의 문서는 실습망 구축 단계(v1.0)에서 엔터프라이즈 AI 통합 보안관제 플랫폼(v2.0)으로 체계적으로 확장되었습니다.
 
 ```text
 [ v2.0 최상위 프로젝트 정의서 ]
 docs/01-requirements/00_PROJECT_DEFINITION_V2.md
       │
-      ▼
-[ v2.0 통합 요구사항 정의서 ]
-docs/01-requirements/04_REQUIREMENTS_SPECIFICATION_V2.md (현재 기준선)
-      │
-      ├── [기존 v1.x Core SOC 인프라 보존 (NIDS, HIDS, SIEM, Rulebook)]
+      ├───────────────────────────────────────────┐
+      ▼                                           ▼
+[ v2.0 AS-IS 기준선 분석서 ]             [ v2.0 통합 요구사항 정의서 ]
+docs/01-requirements/                    docs/01-requirements/
+01_AS_IS_SOC_BASELINE.md                 04_REQUIREMENTS_SPECIFICATION_V2.md
+(현재 자산 동결 및 환경 분리)             (44개 세부 요구사항 & 스키마)
+      │                                           │
+      ├── [Environment A: VMware SOC Lab (VERIFIED - KEEP)]
       │     └── 보안관제_포트폴리오_프로젝트_요구사항_정의서_v1.0.pdf
       │
-      ├── [AI for Security (AI 기반 경보 분류, 인시던트 상관분석, RAG, ATT&CK)]
+      ├── [Environment B: 실제 Network/Server 환경 (PARTIAL - REVALIDATE)]
+      │     └── VLAN 10/20/30, DMZ, TrusGuard FW, L3 SPAN
       │
-      └── [Security for AI (AI 보안 게이트웨이, PII/Secret DLP, OWASP 2026 방어)]
+      └── [Environment C: AI Security 환경 (PARTIAL/PLANNED - INTEGRATE/NEW)]
+            └── AI Gateway, PII/Secret DLP, OWASP 2026 방어, AI SOC Analyst
 ```
 
 ---
 
-## 2. 요구사항 문서 바로가기
+## 2. 핵심 문서 바로가기
 
-| 문서 ID | 문서명 | 버전 | 설명 및 링크 |
+| 문서 ID | 문서명 | 버전 / 성격 | 설명 및 링크 |
 |---|---|:---:|---|
-| `00_PROJECT_DEFINITION_V2` | **보안관제 프로젝트 v2.0 프로젝트 정의서** | `v2.0` | [00_PROJECT_DEFINITION_V2.md](./00_PROJECT_DEFINITION_V2.md)<br>AegisAI 비전, 핵심 원칙, 2026 표준 기준선, 전체 산출물 로드맵 |
-| `04_REQUIREMENTS_SPECIFICATION_V2` | **AegisAI 차세대 통합 보안관제 플랫폼 요구사항 정의서** | `v2.0` | [04_REQUIREMENTS_SPECIFICATION_V2.md](./04_REQUIREMENTS_SPECIFICATION_V2.md)<br>44개 세부 기능/비기능 요구사항(REQ-GEN, PIPE, AIA, RAG, GW, DLP, ATK, SOC, NFR, VAL) |
-| `REQ_V1.0_ORIGINAL` | **보안관제 포트폴리오 프로젝트 요구사항 정의서 (v1.0 원본)** | `v1.0` | [`보안관제_포트폴리오_프로젝트_요구사항_정의서_v1.0.pdf`](./보안관제_포트폴리오_프로젝트_요구사항_정의서_v1.0.pdf)<br>기존 3망 분리, 포트 미러링, Suricata/Snort 듀얼 IDS, Wazuh SIEM 랩 기준선 |
+| `00_PROJECT_DEFINITION_V2` | **보안관제 프로젝트 v2.0 프로젝트 정의서** | `v2.0 Master` | [00_PROJECT_DEFINITION_V2.md](./00_PROJECT_DEFINITION_V2.md)<br>AegisAI 비전, 2대 축(AI for Security × Security for AI), 2026 표준, 15개 산출물 로드맵 |
+| `01_AS_IS_SOC_BASELINE` | **기존 보안관제 시스템 기준선 분석서** | `v2.0 Baseline Freeze` | [01_AS_IS_SOC_BASELINE.md](./01_AS_IS_SOC_BASELINE.md)<br>3대 환경 분류(VMware Lab, 실제 인프라, AI 보안), Asset Reuse Matrix, Gap Analysis, 4개 계층 제약조건 |
+| `04_REQUIREMENTS_SPECIFICATION_V2` | **AegisAI 차세대 통합 보안관제 플랫폼 요구사항 정의서** | `v2.0 Requirements` | [04_REQUIREMENTS_SPECIFICATION_V2.md](./04_REQUIREMENTS_SPECIFICATION_V2.md)<br>44개 세부 기능/비기능 요구사항(REQ-GEN, PIPE, AIA, RAG, GW, DLP, ATK, SOC, NFR, VAL) |
+| `REQ_V1.0_ORIGINAL` | **보안관제 포트폴리오 프로젝트 요구사항 정의서 (v1.0 원본)** | `v1.0 Baseline` | [`보안관제_포트폴리오_프로젝트_요구사항_정의서_v1.0.pdf`](./보안관제_포트폴리오_프로젝트_요구사항_정의서_v1.0.pdf)<br>기존 3망 분리, 포트 미러링, Suricata/Snort 듀얼 IDS, Wazuh SIEM 랩 기준선 |
 
 ---
 
