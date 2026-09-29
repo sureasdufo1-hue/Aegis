@@ -23,7 +23,11 @@ docs/05-testing/09_AI_EVALUATION_PLAN.md (160개 챕터, 3대 도메인, 17대 �
       │
       ▼
 [ v2.0 통합 구축 및 구현 계획서 ]
-docs/04-deployment/10_IMPLEMENTATION_PLAN.md (★ 182개 챕터, 15대 트랙, 24대 매트릭스)
+docs/04-deployment/10_IMPLEMENTATION_PLAN.md (182개 챕터, 15대 트랙, 24대 매트릭스)
+      │
+      ▼
+[ v2.0 통합 시스템 시험 및 검증 계획서 ]
+docs/05-testing/11_TEST_PLAN.md (★ 175개 챕터, 24대 매트릭스)
 ```
 
 ---

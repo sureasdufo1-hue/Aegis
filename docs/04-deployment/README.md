@@ -21,8 +21,9 @@ docs/04-deployment/10_IMPLEMENTATION_PLAN.md (★ 182개 챕터, 15대 트랙, 2
       ├──────────────────────────────┬──────────────────────────────┐
       ▼                              ▼                              ▼
 [ v2.0 통합 시험 계획서 ]    [ v2.0 AI 레드팀 시나리오 ]    [ v2.0 운영 플레이북 ]
-11_TEST_PLAN.md              12_AI_RED_TEAM_SCENARIOS.md    13_OPERATION_PLAYBOOK.md
-(차기 작성)                  (예정)                         (예정)
+../05-testing/               12_AI_RED_TEAM_SCENARIOS.md    13_OPERATION_PLAYBOOK.md
+11_TEST_PLAN.md              (차기 작성)                    (예정)
+(★ 175개 챕터, 24대 매트릭스)
 ```
 
 ---
