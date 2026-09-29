@@ -31,7 +31,11 @@ docs/05-testing/11_TEST_PLAN.md (175개 챕터, 24대 매트릭스)
       │
       ▼
 [ v2.0 AI 보안 레드팀 공격 시나리오 ]
-docs/05-testing/12_AI_RED_TEAM_SCENARIOS.md (★ 180개 챕터, 24대 매트릭스)
+docs/05-testing/12_AI_RED_TEAM_SCENARIOS.md (180개 챕터, 24대 매트릭스)
+      │
+      ▼
+[ v2.0 통합 SOC 운영·대응 플레이북 ]
+docs/04-deployment/13_OPERATION_PLAYBOOK.md (★ 135개 챕터, 25대 매트릭스)
 ```
 
 ---

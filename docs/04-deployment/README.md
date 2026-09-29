@@ -22,7 +22,7 @@ docs/04-deployment/10_IMPLEMENTATION_PLAN.md (★ 182개 챕터, 15대 트랙, 2
       ▼                              ▼                              ▼
 [ v2.0 통합 시험 계획서 ]    [ v2.0 AI 레드팀 시나리오 ]    [ v2.0 운영 플레이북 ]
 ../05-testing/               ../05-testing/                13_OPERATION_PLAYBOOK.md
-11_TEST_PLAN.md              12_AI_RED_TEAM_SCENARIOS.md   (예정)
+11_TEST_PLAN.md              12_AI_RED_TEAM_SCENARIOS.md   (★ 135개 챕터, 25대 매트릭스)
 (★ 175개 챕터, 24대 매트릭스) (★ 180개 챕터, 24대 매트릭스)
 ```
 
@@ -33,6 +33,7 @@ docs/04-deployment/10_IMPLEMENTATION_PLAN.md (★ 182개 챕터, 15대 트랙, 2
 | 문서 ID | 문서명 | 버전 / 성격 | 설명 및 링크 |
 |---|---|:---:|---|
 | `10_IMPLEMENTATION_PLAN` | **AegisAI 통합 구축 및 구현 계획서** | `v2.0 Master` | [10_IMPLEMENTATION_PLAN.md](./10_IMPLEMENTATION_PLAN.md)<br>182개 챕터, 15대 구현 트랙, 16대 Work Package, 9대 스프린트(Sprint 0~8), 8대 품질 게이트(G0~G7), 12대 다이어그램, 24대 매트릭스(A~X) |
+| `13_OPERATION_PLAYBOOK` | **AegisAI 통합 SOC 운영·탐지·대응 플레이북** | `v2.0 Ops Master` | [13_OPERATION_PLAYBOOK.md](./13_OPERATION_PLAYBOOK.md)<br>135개 챕터, 15대 SOP/런북, 19대 다이어그램, 25대 필수 매트릭스, 38개 최종 체크리스트 |
 | `IMP_V1.0_ORIGINAL` | **SOC Detection & Monitoring Lab 구현 계획서** | `v1.0 Baseline` | [`SOC_Detection__Monitoring_Lab_Implementation_Plan_v1.0.pdf`](./SOC_Detection__Monitoring_Lab_Implementation_Plan_v1.0.pdf)<br>Hyper-V 30단계 구축 계획, 패킷 미러링 가시성 우선 원칙, 게이트웨이 라우팅 |
 
 ---

@@ -58,7 +58,11 @@ docs/05-testing/11_TEST_PLAN.md (175개 챕터, 24대 매트릭스)
       │
       ▼
 [ v2.0 AI 보안 레드팀 공격 시나리오 및 적대적 검증 계획서 ]
-docs/05-testing/12_AI_RED_TEAM_SCENARIOS.md (★ 180개 챕터, 24대 매트릭스)
+docs/05-testing/12_AI_RED_TEAM_SCENARIOS.md (180개 챕터, 24대 매트릭스)
+      │
+      ▼
+[ v2.0 통합 SOC 운영·대응 플레이북 ]
+docs/04-deployment/13_OPERATION_PLAYBOOK.md (★ 135개 챕터, 25대 매트릭스)
 ```
 
 ---
@@ -77,6 +81,7 @@ docs/05-testing/12_AI_RED_TEAM_SCENARIOS.md (★ 180개 챕터, 24대 매트릭�
 | `10_IMPLEMENTATION_PLAN`| **AegisAI 통합 구축 및 구현 계획서** | `v2.0 Imp Master` | [../04-deployment/10_IMPLEMENTATION_PLAN.md](../04-deployment/10_IMPLEMENTATION_PLAN.md)<br>182개 챕터, 15대 구현 트랙, 16대 WP, 9대 스프린트, 8대 게이트, 12대 다이어그램, 24대 매트릭스 |
 | `11_TEST_PLAN`         | **AegisAI 통합 시스템 시험 및 검증 계획서** | `v2.0 Test Master` | [../05-testing/11_TEST_PLAN.md](../05-testing/11_TEST_PLAN.md)<br>175개 챕터, 35개 핵심 TC, 14대 다이어그램, 7대 무관용 결함 CI 게이트, 6대 E2E 시나리오, 24대 매트릭스 |
 | `12_AI_RED_TEAM_SCENARIOS` | **AegisAI AI 보안 레드팀 공격 시나리오 및 적대적 검증 계획서** | `v2.0 Red Team Master` | [../05-testing/12_AI_RED_TEAM_SCENARIOS.md](../05-testing/12_AI_RED_TEAM_SCENARIOS.md)<br>180개 챕터, 51개 세부 시나리오, 7대 심층 시나리오, 16대 다이어그램, 24대 매트릭스 |
+| `13_OPERATION_PLAYBOOK` | **AegisAI 통합 SOC 운영·탐지·대응 플레이북** | `v2.0 Ops Master` | [../04-deployment/13_OPERATION_PLAYBOOK.md](../04-deployment/13_OPERATION_PLAYBOOK.md)<br>135개 챕터, 15대 SOP/런북, 19대 다이어그램, 25대 필수 매트릭스, 38개 최종 체크리스트 |
 | `HLD_V1.0_ORIGINAL` | **보안관제 시스템 아키텍처 및 기본설계서 (HLD v1.0 원본)** | `v1.0 Baseline` | [`보안관제_프로젝트_시스템_아키텍처_및_기본설계서(HLD)_v1.0.pdf`](./보안관제_프로젝트_시스템_아키텍처_및_기본설계서(HLD)_v1.0.pdf)<br>Hyper-V/VMware 3망 분리, Suricata/Snort 듀얼 IDS, Wazuh Docker 기본 설계 |
 | `DESIGN-ISSUE-001` | **M1·M2 통합 네트워크 전환 설계 이슈 분석서** | `Design Issue` | [DESIGN-ISSUE-001-M1M2-SOC-INTEGRATION.md](./DESIGN-ISSUE-001-M1M2-SOC-INTEGRATION.md)<br>Cisco L3 SPAN 및 TrusGuard 방화벽 물리/가상망 통합 시 고려사항 |
 | `TLS_PROXY_ARCH` | **TLS 복호화 및 리버스 프록시 연동 아키텍처** | `Reference` | [TLS_DECRYPTION_AND_REVERSE_PROXY_ARCHITECTURE.md](./TLS_DECRYPTION_AND_REVERSE_PROXY_ARCHITECTURE.md)<br>인라인 프록시 및 SSL/TLS 미러링 기술 설계 |

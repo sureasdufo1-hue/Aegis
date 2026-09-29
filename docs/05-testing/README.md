@@ -24,6 +24,10 @@ docs/05-testing/09_AI_EVALUATION_PLAN.md (★ 160개 챕터, 3대 평가 도메�
 docs/04-deployment/          11_TEST_PLAN.md              12_AI_RED_TEAM_SCENARIOS.md
 10_IMPLEMENTATION_PLAN.md    (★ 175개 챕터, 24대 매트릭스) (★ 180개 챕터, 24대 매트릭스)
 (182개 챕터, 24대 매트릭스)
+      │
+      ▼
+[ v2.0 통합 SOC 운영·대응 플레이북 ]
+docs/04-deployment/13_OPERATION_PLAYBOOK.md (★ 135개 챕터, 25대 매트릭스)
 ```
 
 ---
