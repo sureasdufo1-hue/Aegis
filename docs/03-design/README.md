@@ -27,7 +27,11 @@ docs/04-deployment/10_IMPLEMENTATION_PLAN.md (182개 챕터, 15대 트랙, 24대
       │
       ▼
 [ v2.0 통합 시스템 시험 및 검증 계획서 ]
-docs/05-testing/11_TEST_PLAN.md (★ 175개 챕터, 24대 매트릭스)
+docs/05-testing/11_TEST_PLAN.md (175개 챕터, 24대 매트릭스)
+      │
+      ▼
+[ v2.0 AI 보안 레드팀 공격 시나리오 ]
+docs/05-testing/12_AI_RED_TEAM_SCENARIOS.md (★ 180개 챕터, 24대 매트릭스)
 ```
 
 ---

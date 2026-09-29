@@ -22,7 +22,7 @@ docs/05-testing/09_AI_EVALUATION_PLAN.md (★ 160개 챕터, 3대 평가 도메�
       ▼                              ▼                              ▼
 [ v2.0 통합 구현 계획서 ]     [ v2.0 통합 시험 계획서 ]    [ v2.0 AI 레드팀 시나리오 ]
 docs/04-deployment/          11_TEST_PLAN.md              12_AI_RED_TEAM_SCENARIOS.md
-10_IMPLEMENTATION_PLAN.md    (★ 175개 챕터, 24대 매트릭스) (예정)
+10_IMPLEMENTATION_PLAN.md    (★ 175개 챕터, 24대 매트릭스) (★ 180개 챕터, 24대 매트릭스)
 (182개 챕터, 24대 매트릭스)
 ```
 
@@ -34,6 +34,7 @@ docs/04-deployment/          11_TEST_PLAN.md              12_AI_RED_TEAM_SCENARI
 |---|---|:---:|---|
 | `09_AI_EVALUATION_PLAN` | **AegisAI AI 보안 기능 평가 및 성능검증 계획서** | `v2.0 Eval Master` | [09_AI_EVALUATION_PLAN.md](./09_AI_EVALUATION_PLAN.md)<br>160개 챕터, 3대 도메인, 10대 평가대상(`EVT-*`), 6대 데이터셋(`DS-*`), 14대 메트릭(`MET-*`), 7대 무관용 결함(`CRIT-FAIL-*`), 6대 MVP 시나리오, 17대 매트릭스(A~Q) |
 | `11_TEST_PLAN` | **AegisAI 통합 시스템 시험 및 검증 계획서** | `v2.0 Test Master` | [11_TEST_PLAN.md](./11_TEST_PLAN.md)<br>175개 챕터, 35개 핵심 TC, 14대 다이어그램, 7대 무관용 결함 CI 게이트, 6대 E2E 시나리오, 24대 매트릭스(A~X) |
+| `12_AI_RED_TEAM_SCENARIOS` | **AegisAI AI 보안 레드팀 공격 시나리오 및 적대적 검증 계획서** | `v2.0 Red Team Master` | [12_AI_RED_TEAM_SCENARIOS.md](./12_AI_RED_TEAM_SCENARIOS.md)<br>180개 챕터, 51개 세부 공격 시나리오, 7대 심층 시나리오, 16대 다이어그램, 24대 필수 매트릭스(A~X) |
 | `E2E_VAL_REPORT_V1.0` | **Phase 31 E2E 통합 검증 보고서** | `v1.0 Baseline` | [PHASE31_E2E_VALIDATION_REPORT.md](./PHASE31_E2E_VALIDATION_REPORT.md)<br>전통적 SOC Lab 31개 페이즈 및 14대 게이트 실측 증적 요약 |
 
 ---
