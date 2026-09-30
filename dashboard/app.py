@@ -8,7 +8,7 @@ from typing import Any
 
 from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, PlainTextResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
@@ -21,6 +21,7 @@ from dashboard.quarantine_manager import (
     QuarantineRollbackRequest,
 )
 from dashboard.mitre_matrix import mitre_matrix_engine
+from dashboard.incident_report_generator import incident_report_engine
 
 
 
@@ -572,6 +573,35 @@ def get_incident_ai_analysis(incident_id: str):
         status_code=404,
         content={"error": f"No AI analysis found for incident '{incident_id}'. Please trigger investigation first."}
     )
+
+
+# =============================================================================
+# Official Incident Investigation Report (IR Report) Endpoints (과제 1)
+# =============================================================================
+@app.get("/api/incidents/{incident_id}/report")
+def get_incident_report(incident_id: str, scenario: str = "MULTI"):
+    """Retrieve full KISA/NIST-compliant incident investigation report data."""
+    report = incident_report_engine.generate_report(incident_id, scenario=scenario)
+    return report.model_dump()
+
+
+@app.get("/api/incidents/{incident_id}/report/markdown")
+def get_incident_report_markdown(incident_id: str, scenario: str = "MULTI"):
+    """Retrieve or export report in GitHub-flavored Markdown format."""
+    report = incident_report_engine.generate_report(incident_id, scenario=scenario)
+    md_content = report.to_markdown()
+    return PlainTextResponse(
+        content=md_content,
+        media_type="text/markdown",
+        headers={"Content-Disposition": f'inline; filename="{report.metadata.doc_number}.md"'}
+    )
+
+
+@app.get("/api/incidents/{incident_id}/report/print", response_class=HTMLResponse)
+def get_incident_report_printable_html(incident_id: str, scenario: str = "MULTI"):
+    """Retrieve standalone printable A4 HTML view for browser printing or PDF saving."""
+    report = incident_report_engine.generate_report(incident_id, scenario=scenario)
+    return HTMLResponse(content=report.to_html_printable())
 
 
 @app.get("/api/action-proposals")

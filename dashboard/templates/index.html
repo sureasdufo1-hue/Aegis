@@ -554,6 +554,23 @@
             color: #292524 !important;
         }
 
+        /* Incident Investigation Report Modal Warm Ivory */
+        body.theme-light-pristine #incidentReportModal > div {
+            background-color: #fffefa !important;
+            border-color: #e7e2d6 !important;
+            color: #1c1917 !important;
+        }
+        body.theme-light-pristine #incidentReportModal .report-preview-sheet {
+            background-color: #ffffff !important;
+            border-color: #e7e2d6 !important;
+            color: #1c1917 !important;
+        }
+        body.theme-light-pristine #incidentReportModal .report-sub-box {
+            background-color: #f6f2e9 !important;
+            border-color: #e7e2d6 !important;
+            color: #292524 !important;
+        }
+
 
 
 
@@ -2558,6 +2575,9 @@
                     <button onclick="minimizeInvestigationModal()" class="px-3.5 py-1.5 text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg transition font-medium">
                         백그라운드로 계속
                     </button>
+                    <button id="inv-btn-view-report" onclick="openCurrentInvestigationReport()" class="hidden px-3.5 py-1.5 text-xs bg-amber-600 hover:bg-amber-500 text-white font-bold rounded-lg transition shadow flex items-center gap-1.5 cursor-pointer">
+                        <span>📄</span> 공식 조사 보고서
+                    </button>
                     <button id="inv-btn-view-result" onclick="closeInvestigationModalAndScroll()" class="hidden px-4 py-1.5 text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-lg transition shadow flex items-center gap-1.5">
                         <span>✅</span> 결과 확인하기
                     </button>
@@ -2730,6 +2750,166 @@
                     </button>
                     <button id="mitre-modal-pcap-btn" onclick="triggerMitrePcapCarving()" class="px-4 py-1.5 rounded bg-indigo-600 hover:bg-indigo-500 text-white font-bold transition flex items-center gap-1.5 cursor-pointer shadow">
                         <span>🔎</span> 1-Click 관련 PCAP 세션 패킷 검증
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Official SOC Incident Investigation & Response Report Modal (과제 1) -->
+    <div id="incidentReportModal" class="hidden fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-3 font-mono">
+        <div class="bg-slate-900 border border-slate-700/80 rounded-xl shadow-2xl max-w-4xl w-full max-h-[92vh] flex flex-col overflow-hidden">
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between border-b border-slate-800 px-5 py-3 bg-slate-950/60">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">📄</span>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span id="rep-modal-doc-num" class="px-2 py-0.5 rounded bg-amber-950 border border-amber-800 text-amber-300 font-bold text-xs">IR-2026-0930-001</span>
+                            <span id="rep-modal-classification" class="px-2 py-0.5 rounded bg-rose-950/80 border border-rose-700 text-rose-300 font-bold text-[10px]">대외비 (CONFIDENTIAL)</span>
+                            <span class="text-xs text-slate-400 font-sans hidden sm:inline">KISA 및 NIST SP 800-61 Rev.2 표준 준수</span>
+                        </div>
+                        <h3 class="text-sm font-bold text-white mt-0.5">공식 침해사고 조사 및 대응 결과 보고서 (IR Report)</h3>
+                    </div>
+                </div>
+                <button onclick="closeIncidentReportModal()" class="text-slate-400 hover:text-white text-xl cursor-pointer">&times;</button>
+            </div>
+
+            <!-- Modal Body: Scrollable Report Preview Sheet -->
+            <div class="flex-1 overflow-y-auto p-5 space-y-4 text-xs font-sans text-slate-300 leading-relaxed report-preview-sheet">
+                <!-- Report Letterhead -->
+                <div class="border-b-2 border-rose-700 pb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div>
+                        <div class="text-[11px] font-bold text-rose-400 tracking-wider">AEGIS SOC CYBER DEFENSE CENTER &bull; CERT</div>
+                        <h2 id="rep-modal-title" class="text-base font-extrabold text-white mt-0.5">다단계 복합 공격 킬체인 침해사고 조사보고서</h2>
+                        <p class="text-[11px] text-slate-400">사고 발신지: <span id="rep-modal-actor-ip" class="font-mono text-amber-300 font-bold">10.77.20.20</span> &bull; 표적 호스트: <span id="rep-modal-victim-ip" class="font-mono text-cyan-300 font-bold">10.77.30.20</span></p>
+                    </div>
+                    <div class="text-[11px] text-slate-400 sm:text-right font-mono space-y-0.5">
+                        <div>발행일시: <span id="rep-modal-date" class="text-slate-200">-</span></div>
+                        <div>최종판정: <span id="rep-modal-verdict" class="font-bold text-emerald-400">TRUE_POSITIVE</span></div>
+                        <div>사고등급: <span id="rep-modal-severity" class="font-bold text-rose-400">CRITICAL</span></div>
+                    </div>
+                </div>
+
+                <!-- 1. Executive Summary -->
+                <div class="space-y-1.5">
+                    <h4 class="font-bold text-white text-xs border-l-2 border-rose-600 pl-2">1. 경영진 요약 (Executive Summary)</h4>
+                    <div id="rep-modal-summary" class="p-3 rounded bg-slate-950/80 border border-slate-800 text-[12px] text-slate-200 leading-relaxed report-sub-box">
+                        요약 정보 로딩 중...
+                    </div>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] font-mono">
+                        <div class="p-2 rounded bg-slate-950/60 border border-slate-800 report-sub-box">
+                            <span class="text-slate-500 block">탐지 소요(MTTD):</span>
+                            <span id="rep-modal-mttd" class="font-bold text-slate-200">0.4s (실시간 탐지)</span>
+                        </div>
+                        <div class="p-2 rounded bg-slate-950/60 border border-slate-800 report-sub-box">
+                            <span class="text-slate-500 block">격리 소요(MTTR):</span>
+                            <span id="rep-modal-mttr" class="font-bold text-slate-200">1.2s (SOAR 자동화)</span>
+                        </div>
+                        <div class="p-2 rounded bg-slate-950/60 border border-slate-800 report-sub-box">
+                            <span class="text-slate-500 block">피해 확산 여부:</span>
+                            <span class="font-bold text-emerald-400">전면 차단 성공 (봉쇄)</span>
+                        </div>
+                        <div class="p-2 rounded bg-slate-950/60 border border-slate-800 report-sub-box">
+                            <span class="text-slate-500 block">사고 처리 상태:</span>
+                            <span class="font-bold text-cyan-400">CONTAINED (조치완료)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Cyber Kill Chain Stages -->
+                <div class="space-y-1.5">
+                    <h4 class="font-bold text-white text-xs border-l-2 border-rose-600 pl-2">2. 다단계 공격 킬체인 타임라인 (Cyber Kill Chain Progression)</h4>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-[11px] text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-950 text-slate-400 border-b border-slate-800">
+                                    <th class="p-1.5">단계</th>
+                                    <th class="p-1.5">MITRE ATT&CK</th>
+                                    <th class="p-1.5">탐지 룰 SID</th>
+                                    <th class="p-1.5">탐지 시그니처</th>
+                                    <th class="p-1.5">관측 행위 요약</th>
+                                </tr>
+                            </thead>
+                            <tbody id="rep-modal-stages-body" class="divide-y divide-slate-800/60 font-mono">
+                                <!-- Stages dynamically inserted -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 3. Forensic Evidence & Dual IDS Validation -->
+                <div class="space-y-1.5">
+                    <h4 class="font-bold text-white text-xs border-l-2 border-rose-600 pl-2">3. 포렌식 증적 상세 &amp; 듀얼 IDS 교차검증 (Forensic Evidence)</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="p-2.5 rounded bg-slate-950/80 border border-slate-800 space-y-1 text-[11px] font-mono report-sub-box">
+                            <div class="text-slate-400 font-bold font-sans">5-Tuple 네트워크 세션 정보:</div>
+                            <div id="rep-modal-5tuple" class="text-slate-200">TCP 10.77.20.20:49152 ➔ 10.77.30.20:80</div>
+                            <div class="text-slate-400 font-bold font-sans mt-2">PCAP 세션 무결성 해시:</div>
+                            <div id="rep-modal-pcap-hash" class="text-indigo-300 truncate">SHA256 해시 연산 중...</div>
+                            <div class="text-slate-400 font-bold font-sans mt-2">Snort 3.12.2.0 교차 검증:</div>
+                            <div id="rep-modal-snort" class="text-emerald-400">일치율 100% (SID 9100002 매칭)</div>
+                        </div>
+                        <div class="p-2.5 rounded bg-slate-950/80 border border-slate-800 space-y-1 text-[11px] font-mono report-sub-box">
+                            <div class="text-slate-400 font-bold font-sans">Suricata 8.0.6 EVE JSON Raw 로그 증적:</div>
+                            <pre id="rep-modal-eve-raw" class="bg-slate-900 p-2 rounded text-[10px] text-slate-300 overflow-x-auto max-h-24">로그 로딩 중...</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. AI Hypothesis & XAI Features -->
+                <div class="space-y-1.5">
+                    <h4 class="font-bold text-white text-xs border-l-2 border-rose-600 pl-2">4. AI Copilot &amp; XAI 가설 검증 결과 (Hypothesis &amp; Explainability)</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-[11px]">
+                        <div class="p-2.5 rounded bg-slate-950/80 border border-slate-800 space-y-1 report-sub-box">
+                            <div class="font-bold text-slate-300">경쟁 가설 분석 (ACH) 결론:</div>
+                            <div id="rep-modal-ach-verdict" class="text-emerald-300 font-bold">가설 1 입증 (Web SQLi / Log4j RCE)</div>
+                            <div class="text-slate-400 mt-1">입증: <span id="rep-modal-proven-hyp" class="text-slate-200">-</span></div>
+                            <div class="text-slate-400">기각: <span id="rep-modal-refuted-hyp" class="text-slate-400">-</span></div>
+                        </div>
+                        <div class="p-2.5 rounded bg-slate-950/80 border border-slate-800 space-y-1 report-sub-box">
+                            <div class="font-bold text-slate-300">XAI 주요 특징 기여도 (SHAP Radar):</div>
+                            <div id="rep-modal-xai-list" class="space-y-1 mt-1">
+                                <!-- XAI Features dynamically inserted -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. SOAR Containment & Remediation -->
+                <div class="space-y-1.5">
+                    <h4 class="font-bold text-white text-xs border-l-2 border-rose-600 pl-2">5. SOAR 능동 격리 및 재발 방지 권고 (Response &amp; Recommendations)</h4>
+                    <div class="p-2.5 rounded bg-slate-950/80 border border-slate-800 space-y-1.5 text-[11px] report-sub-box">
+                        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800/80 pb-1 font-mono">
+                            <div>적용 방화벽 룰: <code id="rep-modal-soar-rule" class="text-rose-400 font-bold">nft add rule inet filter forward ip saddr 10.77.20.20 drop</code></div>
+                            <div>TTL: <span id="rep-modal-soar-ttl" class="text-amber-300 font-bold">3600s</span> &bull; 롤백안전: <span class="text-emerald-400 font-bold">가동 중</span></div>
+                        </div>
+                        <div class="space-y-1 pt-1">
+                            <div class="font-bold text-slate-300">근본 원인 (Root Cause):</div>
+                            <p id="rep-modal-root-cause" class="text-slate-400 leading-relaxed">원인 로딩 중...</p>
+                            <div class="font-bold text-slate-300 mt-2">단기 긴급 조치 권고:</div>
+                            <ul id="rep-modal-actions-list" class="list-disc list-inside text-slate-300 space-y-0.5">
+                                <!-- Actions dynamically inserted -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="flex items-center justify-between border-t border-slate-800 px-5 py-3 bg-slate-950/80 text-xs">
+                <div class="text-[11px] text-slate-400 flex items-center gap-1.5 font-sans">
+                    <span>🛡️</span> <span>KISA/NIST SP 800-61 Rev.2 표준 규격 A4 출력 지원</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="closeIncidentReportModal()" class="px-3 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 transition cursor-pointer">
+                        닫기
+                    </button>
+                    <button onclick="downloadIncidentReportMarkdown()" class="px-3 py-1.5 rounded bg-indigo-700 hover:bg-indigo-600 text-white font-bold transition flex items-center gap-1 cursor-pointer shadow">
+                        <span>📥</span> 마크다운 다운로드 (.md)
+                    </button>
+                    <button onclick="printIncidentReport()" class="px-4 py-1.5 rounded bg-amber-600 hover:bg-amber-500 text-white font-bold transition flex items-center gap-1 cursor-pointer shadow">
+                        <span>🖨️</span> 인쇄 및 PDF 저장
                     </button>
                 </div>
             </div>
@@ -3671,9 +3851,14 @@
                                 <span class="text-[10px] px-2 py-0.5 rounded font-bold ${inc.highest_severity === 'CRITICAL' ? 'sev-critical' : 'sev-high'}">${inc.highest_severity}</span>
                                 <span class="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700 font-mono">${inc.activity_status || 'SUSPICIOUS_ATTEMPT'}</span>
                             </div>
-                            <button onclick="triggerInvestigation('${inc.incident_id}', '${inc.src_ip}')" class="px-2.5 py-1 text-xs bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded transition flex items-center gap-1 shadow">
-                                <span>🤖</span> AI 심층 조사 시작
-                            </button>
+                            <div class="flex items-center gap-2">
+                                <button onclick="openIncidentReportModal('${inc.incident_id}', '${inc.src_ip}')" class="px-2.5 py-1 text-xs bg-amber-600 hover:bg-amber-500 text-white font-bold rounded transition flex items-center gap-1 shadow cursor-pointer" title="공식 침해사고 조사 및 대응 보고서 (KISA/NIST)">
+                                    <span>📄</span> 공식 조사 보고서
+                                </button>
+                                <button onclick="triggerInvestigation('${inc.incident_id}', '${inc.src_ip}')" class="px-2.5 py-1 text-xs bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded transition flex items-center gap-1 shadow cursor-pointer">
+                                    <span>🤖</span> AI 심층 조사 시작
+                                </button>
+                            </div>
                         </div>
                         <div class="text-slate-300 text-xs">${inc.verdict}</div>
                         <div class="flex flex-wrap items-center gap-3 text-[11px] text-slate-400">
@@ -3838,6 +4023,8 @@
             setModalStepState(3, 'waiting');
             setModalStepState(4, 'waiting');
             document.getElementById('inv-btn-view-result').classList.add('hidden');
+            const invRepBtn = document.getElementById('inv-btn-view-report');
+            if (invRepBtn) invRepBtn.classList.add('hidden');
             document.getElementById('inv-progress-bar').style.width = '15%';
             document.getElementById('inv-progress-pct').textContent = '15%';
             document.getElementById('inv-progress-label').textContent = '증적 수집 및 도구 실행 중...';
@@ -3859,6 +4046,7 @@
                     document.getElementById('inv-progress-pct').textContent = '100%';
                     document.getElementById('inv-progress-label').textContent = '조사 및 인간 승인 큐 등록 완료';
                     document.getElementById('inv-btn-view-result').classList.remove('hidden');
+                    if (invRepBtn) invRepBtn.classList.remove('hidden');
 
                     showToast(`✅ [${incidentId}] AI 분석 완료!`, 'emerald');
                     fetchActionProposals();
@@ -6385,6 +6573,158 @@
             } else {
                 alert('PCAP 카빙 엔진 모달을 열 수 없습니다.');
             }
+        }
+
+        /* ============================================================================== */
+        /* Official SOC Incident Investigation & Response Report (과제 1)                */
+        /* ============================================================================== */
+        let currentReportIncidentId = 'IR-06';
+        let currentReportData = null;
+
+        async function openIncidentReportModal(incidentId = 'IR-06', srcIp = '10.77.20.20') {
+            currentReportIncidentId = incidentId;
+            const modal = document.getElementById('incidentReportModal');
+            if (modal) modal.classList.remove('hidden');
+
+            try {
+                const res = await fetch(`/api/incidents/${encodeURIComponent(incidentId)}/report?scenario=MULTI`);
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                const data = await res.json();
+                currentReportData = data;
+
+                // Bind Header
+                const docNumEl = document.getElementById('rep-modal-doc-num');
+                const classEl = document.getElementById('rep-modal-classification');
+                const titleEl = document.getElementById('rep-modal-title');
+                const actorEl = document.getElementById('rep-modal-actor-ip');
+                const victimEl = document.getElementById('rep-modal-victim-ip');
+                const dateEl = document.getElementById('rep-modal-date');
+                const verdictEl = document.getElementById('rep-modal-verdict');
+                const sevEl = document.getElementById('rep-modal-severity');
+
+                if (docNumEl) docNumEl.innerText = data.metadata.doc_number;
+                if (classEl) classEl.innerText = data.metadata.classification;
+                if (titleEl) titleEl.innerText = data.executive_summary.incident_title;
+                if (actorEl) actorEl.innerText = data.executive_summary.threat_actor_ip;
+                if (victimEl) victimEl.innerText = data.executive_summary.target_asset_ip;
+                if (dateEl) dateEl.innerText = data.metadata.generated_at;
+                if (verdictEl) verdictEl.innerText = `${data.executive_summary.verdict} (위협 입증)`;
+                if (sevEl) sevEl.innerText = data.executive_summary.severity;
+
+                // 1. Executive Summary
+                const sumEl = document.getElementById('rep-modal-summary');
+                const mttdEl = document.getElementById('rep-modal-mttd');
+                const mttrEl = document.getElementById('rep-modal-mttr');
+                if (sumEl) sumEl.innerText = data.executive_summary.summary_ko;
+                if (mttdEl) mttdEl.innerText = `${data.executive_summary.mttd} (실시간 탐지)`;
+                if (mttrEl) mttrEl.innerText = `${data.executive_summary.mttr} (SOAR 자동화)`;
+
+                // 2. Kill Chain Stages
+                const stagesTbody = document.getElementById('rep-modal-stages-body');
+                if (stagesTbody && data.kill_chain_stages) {
+                    stagesTbody.innerHTML = data.kill_chain_stages.map(s => `
+                        <tr class="hover:bg-slate-800/40">
+                            <td class="p-1.5 font-bold text-amber-400">${s.stage_num}단계</td>
+                            <td class="p-1.5">${s.mitre_technique}</td>
+                            <td class="p-1.5 text-indigo-300">SID ${s.suricata_sid}</td>
+                            <td class="p-1.5 font-bold text-white">${s.signature}</td>
+                            <td class="p-1.5 text-slate-300">${s.observed_behavior}</td>
+                        </tr>
+                    `).join('');
+                }
+
+                // 3. Forensic Evidence
+                const fiveTupleEl = document.getElementById('rep-modal-5tuple');
+                const pcapHashEl = document.getElementById('rep-modal-pcap-hash');
+                const snortEl = document.getElementById('rep-modal-snort');
+                const eveRawEl = document.getElementById('rep-modal-eve-raw');
+
+                if (fiveTupleEl) {
+                    const ft = data.forensic_evidence.five_tuple || {};
+                    fiveTupleEl.innerText = `${ft.proto || 'TCP'} ${ft.src_ip || '10.77.20.20'}:${ft.src_port || 49152} -> ${ft.dst_ip || '10.77.30.20'}:${ft.dst_port || 80} (${data.forensic_evidence.packet_count || 184} packets)`;
+                }
+                if (pcapHashEl) pcapHashEl.innerText = `SHA256: ${data.forensic_evidence.pcap_hash_sha256}`;
+                if (snortEl) snortEl.innerText = data.forensic_evidence.snort_cross_check;
+                if (eveRawEl) eveRawEl.innerText = JSON.stringify(data.forensic_evidence.eve_json_snippet, null, 2);
+
+                // 4. AI Hypothesis & XAI
+                const achEl = document.getElementById('rep-modal-ach-verdict');
+                const provenEl = document.getElementById('rep-modal-proven-hyp');
+                const refutedEl = document.getElementById('rep-modal-refuted-hyp');
+                const xaiList = document.getElementById('rep-modal-xai-list');
+
+                if (achEl) achEl.innerText = `${data.ai_and_xai.ach_verdict} (신뢰도: ${data.ai_and_xai.confidence_score}%)`;
+                if (provenEl) provenEl.innerText = data.ai_and_xai.proven_hypothesis;
+                if (refutedEl) refutedEl.innerText = data.ai_and_xai.refuted_hypothesis;
+
+                if (xaiList && data.ai_and_xai.xai_top_features) {
+                    xaiList.innerHTML = data.ai_and_xai.xai_top_features.map(f => `
+                        <div class="flex items-center justify-between text-[11px] p-1 rounded bg-slate-900/60 border border-slate-800">
+                            <span class="text-slate-300 font-sans">${f.feature}</span>
+                            <span class="font-bold text-rose-400 font-mono">${f.importance}%</span>
+                        </div>
+                    `).join('');
+                }
+
+                // 5. SOAR Containment & Root Cause
+                const soarRuleEl = document.getElementById('rep-modal-soar-rule');
+                const soarTtlEl = document.getElementById('rep-modal-soar-ttl');
+                const rootCauseEl = document.getElementById('rep-modal-root-cause');
+                const actionsList = document.getElementById('rep-modal-actions-list');
+
+                if (soarRuleEl) soarRuleEl.innerText = data.soar_containment.applied_rule;
+                if (soarTtlEl) soarTtlEl.innerText = `${data.soar_containment.ttl_seconds}s`;
+                if (rootCauseEl) rootCauseEl.innerText = data.root_cause_and_remediation.root_cause_analysis;
+
+                if (actionsList && data.root_cause_and_remediation.short_term_actions) {
+                    actionsList.innerHTML = data.root_cause_and_remediation.short_term_actions.map(a => `<li>${a}</li>`).join('');
+                }
+            } catch (err) {
+                console.error('Error fetching incident report:', err);
+                alert('침해사고 조사 보고서 데이터를 불러오는 중 오류가 발생했습니다: ' + err.message);
+            }
+        }
+
+        function closeIncidentReportModal() {
+            const modal = document.getElementById('incidentReportModal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function printIncidentReport() {
+            const url = `/api/incidents/${encodeURIComponent(currentReportIncidentId)}/report/print?scenario=MULTI`;
+            const win = window.open(url, '_blank');
+            if (win) {
+                win.focus();
+            } else {
+                window.location.href = url;
+            }
+        }
+
+        async function downloadIncidentReportMarkdown() {
+            try {
+                const res = await fetch(`/api/incidents/${encodeURIComponent(currentReportIncidentId)}/report/markdown?scenario=MULTI`);
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                const text = await res.text();
+                const blob = new Blob([text], { type: 'text/markdown;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `incident_report_${currentReportIncidentId}.md`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                showActionToast(`📄 ${currentReportIncidentId} 침해사고 조사 보고서(.md)가 다운로드되었습니다.`);
+            } catch (err) {
+                alert('마크다운 보고서 다운로드 실패: ' + err.message);
+            }
+        }
+
+        function openCurrentInvestigationReport() {
+            const incId = activeIncidentId || 'IR-06';
+            const srcIpEl = document.getElementById('inv-modal-src-ip');
+            const srcIp = srcIpEl ? srcIpEl.textContent : '10.77.20.20';
+            openIncidentReportModal(incId, srcIp);
         }
 
         // Initialize on Load
