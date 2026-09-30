@@ -13,6 +13,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from dashboard.pcap_carver import pcap_carver_engine
+from dashboard.xai_engine import xai_engine
 
 from analyzer.ai.actions.executor import ActionExecutor
 from analyzer.ai.approvals.repository import ApprovalRepository
@@ -319,6 +320,30 @@ def get_localization_dictionary():
         "action_types": ACTION_TYPE_MAP,
         "execution_modes": EXECUTION_MODE_MAP,
     }
+
+
+class XAIExplainRequest(BaseModel):
+    scenario: str | None = None
+    signature: str | None = None
+    query: str | None = None
+    sid: int | str | None = None
+    src_ip: str | None = None
+    dest_ip: str | None = None
+    dest_port: int | str | None = None
+
+
+@app.post("/api/ai/xai/explain")
+def get_xai_explanation(req: XAIExplainRequest):
+    """Compute Explainable AI (XAI) 5-dimensional threat feature contribution scores."""
+    result = xai_engine.explain_threat(req.model_dump())
+    return result
+
+
+@app.get("/api/ai/xai/default/{scenario}")
+def get_default_xai_scenario(scenario: str):
+    """Get predefined XAI feature radar model for known scenario."""
+    result = xai_engine.explain_threat({"scenario": scenario})
+    return result
 
 
 @app.post("/api/ai/interpret")
@@ -655,7 +680,8 @@ def list_dual_action_requests(status: DualApprovalStatus | None = None):
 def get_soc_report(report_type: str):
     summary = get_dashboard_summary_telemetry()
     incidents = get_current_incidents()
-    active_inc = incidents[0].model_dump() if incidents else {}
+    canonical_inc = next((i.model_dump() for i in incidents if i.src_ip == "10.77.20.20"), None)
+    active_inc = canonical_inc or (incidents[0].model_dump() if incidents else {})
 
     if report_type == "executive":
         return {
