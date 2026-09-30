@@ -32,6 +32,10 @@ docs/04-deployment/13_OPERATION_PLAYBOOK.md (★ 135개 챕터, 25대 매트릭�
       ▼
 [ v2.0 통합 최종 평가 및 검증 보고서 ]
 docs/05-testing/14_FINAL_EVALUATION_REPORT.md (★ 142개 챕터, 12대 다이어그램, 30대 매트릭스)
+      │
+      ▼
+[ v2.0 최종 기술 포트폴리오 보고서 ]
+15_PORTFOLIO_REPORT.md (★ 29개 챕터, 15대 다이어그램, 전 생애주기 총괄)
 ```
 
 ---
@@ -40,6 +44,8 @@ docs/05-testing/14_FINAL_EVALUATION_REPORT.md (★ 142개 챕터, 12대 다이�
 
 | 문서 ID | 문서명 | 버전 / 성격 | 설명 및 링크 |
 |---|---|:---:|---|
+| `15_PORTFOLIO_REPORT` | **AegisAI 최종 기술 포트폴리오 보고서** | `v2.0 Master Portfolio` | [15_PORTFOLIO_REPORT.md](../../15_PORTFOLIO_REPORT.md)<br>★ 29개 챕터, 15대 다이어그램, 핵심 매트릭스, 4대 장애 해결 사례, 증적 체인, 전 생애주기 총괄 |
+| `14_FINAL_EVALUATION_REPORT` | **AegisAI 통합 최종 평가 및 검증 보고서** | `v2.0 Final Eval` | [14_FINAL_EVALUATION_REPORT.md](./14_FINAL_EVALUATION_REPORT.md)<br>142개 챕터, 8대 평가영역, 12대 다이어그램, 30대 필수 매트릭스, 41대 체크리스트, 최종 검증 베이스라인 동결 |
 | `09_AI_EVALUATION_PLAN` | **AegisAI AI 보안 기능 평가 및 성능검증 계획서** | `v2.0 Eval Master` | [09_AI_EVALUATION_PLAN.md](./09_AI_EVALUATION_PLAN.md)<br>160개 챕터, 3대 도메인, 10대 평가대상(`EVT-*`), 6대 데이터셋(`DS-*`), 14대 메트릭(`MET-*`), 7대 무관용 결함(`CRIT-FAIL-*`), 6대 MVP 시나리오, 17대 매트릭스(A~Q) |
 | `11_TEST_PLAN` | **AegisAI 통합 시스템 시험 및 검증 계획서** | `v2.0 Test Master` | [11_TEST_PLAN.md](./11_TEST_PLAN.md)<br>175개 챕터, 35개 핵심 TC, 14대 다이어그램, 7대 무관용 결함 CI 게이트, 6대 E2E 시나리오, 24대 매트릭스(A~X) |
 | `12_AI_RED_TEAM_SCENARIOS` | **AegisAI AI 보안 레드팀 공격 시나리오 및 적대적 검증 계획서** | `v2.0 Red Team Master` | [12_AI_RED_TEAM_SCENARIOS.md](./12_AI_RED_TEAM_SCENARIOS.md)<br>180개 챕터, 51개 세부 공격 시나리오, 7대 심층 시나리오, 16대 다이어그램, 24대 필수 매트릭스(A~X) |

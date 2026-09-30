@@ -17,6 +17,11 @@
 
 ---
 
+> 🚀 **[AegisAI v2.0 최종 기술 포트폴리오 보고서 (15_PORTFOLIO_REPORT.md)](./15_PORTFOLIO_REPORT.md)**  
+> *기존 SOC의 탐지·SIEM 기반을 유지하면서 AI를 보안 분석에 활용하고, 동시에 AI 자체의 Prompt·Data·RAG·Agent·Response 공격면을 같은 SOC에서 탐지·통제하는 통합 보안관제 플랫폼의 전 생애주기 엔지니어링 포트폴리오.*
+
+---
+
 ## 📌 Executive Summary (프로젝트 개요)
 
 **Aegis SOC Detection & Monitoring Lab**은 단순한 보안 툴 설치 실습을 넘어, 실제 대규모 엔터프라이즈 SOC(보안관제센터) 환경의 보안 아키텍처와 엔드투엔드(End-to-End) 침해사고 대응 라이프사이클을 입증하기 위해 구축된 **실증형 보안관제 엔지니어링 프로젝트**입니다.
