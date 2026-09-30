@@ -8,6 +8,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class'
+        };
+    </script>
     <!-- Chart.js for high density telemetry charts -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- D3 & TopoJSON for High-Precision Tactical Geo-Threat Vector Map -->
@@ -52,6 +57,7 @@
         .soc-table th { padding: 6px 10px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; color: #94a3b8; background: #131d2e; border-bottom: 1px solid #1e293b; }
         .soc-table td { padding: 5px 10px; font-size: 11px; border-bottom: 1px solid #141f33; }
         .soc-table tr:hover { background-color: #162238; }
+        .soc-sub-header { background-color: #0f1624; border-bottom: 1px solid rgba(30, 41, 59, 0.8); }
 
         /* Pulse animation for live indicators */
         @keyframes livePulse {
@@ -179,6 +185,98 @@
             background-color: #ffffff !important;
             border-bottom: 1px solid #e2e8f0 !important;
             box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.05) !important;
+            color: #0f172a !important;
+        }
+
+        body.theme-light-pristine .soc-sub-header {
+            background-color: #f1f5f9 !important;
+            border-bottom: 1px solid #e2e8f0 !important;
+            color: #1e293b !important;
+        }
+
+        body.theme-light-pristine .soc-sub-header .text-slate-500,
+        body.theme-light-pristine .soc-sub-header .text-slate-600,
+        body.theme-light-pristine .soc-sub-header .text-slate-400 {
+            color: #64748b !important;
+        }
+
+        body.theme-light-pristine .soc-sub-header #breadcrumb-main {
+            color: #0284c7 !important;
+            font-weight: 700 !important;
+        }
+
+        body.theme-light-pristine .soc-sub-header #breadcrumb-sub {
+            color: #0f172a !important;
+            font-weight: 600 !important;
+        }
+
+        body.theme-light-pristine .soc-sub-header button {
+            background-color: #ffffff !important;
+            border: 1px solid #cbd5e1 !important;
+            color: #334155 !important;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+        }
+
+        body.theme-light-pristine .soc-sub-header button:hover {
+            background-color: #f8fafc !important;
+        }
+
+        body.theme-light-pristine .soc-sub-header .bg-emerald-950 {
+            background-color: #ecfdf5 !important;
+            color: #047857 !important;
+            border-color: #a7f3d0 !important;
+            font-weight: 600 !important;
+        }
+
+        body.theme-light-pristine .soc-sub-header .bg-indigo-950 {
+            background-color: #eef2ff !important;
+            color: #4338ca !important;
+            border-color: #c7d2fe !important;
+            font-weight: 600 !important;
+        }
+
+        body.theme-light-pristine .soc-sub-header .bg-cyan-950 {
+            background-color: #ecfeff !important;
+            color: #0e7490 !important;
+            border-color: #a5f3fc !important;
+            font-weight: 600 !important;
+        }
+
+        body.theme-light-pristine header .bg-slate-800 {
+            background-color: #f8fafc !important;
+            border: 1px solid #cbd5e1 !important;
+            color: #334155 !important;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+        }
+
+        body.theme-light-pristine header .bg-slate-800:hover {
+            background-color: #f1f5f9 !important;
+            border-color: #94a3b8 !important;
+        }
+
+        body.theme-light-pristine header a[href*="5602"] {
+            color: #b45309 !important;
+            border-color: #fde68a !important;
+            background-color: #fffbeb !important;
+        }
+
+        body.theme-light-pristine header a[href*="5601"] {
+            color: #0e7490 !important;
+            border-color: #a5f3fc !important;
+            background-color: #ecfeff !important;
+        }
+
+        body.theme-light-pristine header a[href="/threat-matrix"] {
+            background: linear-gradient(to right, #eff6ff, #dbeafe) !important;
+            color: #1d4ed8 !important;
+            border-color: #bfdbfe !important;
+            font-weight: 700 !important;
+        }
+
+        body.theme-light-pristine #btn-theme-toggle {
+            background-color: #eff6ff !important;
+            border-color: #bfdbfe !important;
+            color: #1d4ed8 !important;
         }
 
         body.theme-light-pristine .soc-sidebar {
@@ -200,10 +298,33 @@
         }
 
         body.theme-light-pristine .soc-panel-header {
-            background-color: #fcfdfe !important;
+            background-color: #f8fafc !important;
             border-bottom: 1px solid #e2e8f0 !important;
             color: #0f172a !important;
             font-weight: 700 !important;
+        }
+
+        body.theme-light-pristine .soc-panel-header span,
+        body.theme-light-pristine .soc-panel-header b,
+        body.theme-light-pristine .soc-panel-header div {
+            color: #0f172a;
+        }
+
+        body.theme-light-pristine .soc-panel-header .text-slate-900 {
+            color: #0f172a !important;
+        }
+
+        body.theme-light-pristine .soc-panel-header .text-slate-400 {
+            color: #64748b !important;
+        }
+
+        body.theme-light-pristine .soc-panel-header .text-slate-500 {
+            color: #475569 !important;
+        }
+
+        body.theme-light-pristine .soc-panel-header .text-sky-700,
+        body.theme-light-pristine .soc-panel-header .text-cyan-700 {
+            color: #0369a1 !important;
         }
 
         body.theme-light-pristine .soc-table th {
@@ -222,17 +343,23 @@
             background-color: #f0f7ff !important;
         }
 
-        body.theme-light-pristine .text-slate-400,
-        body.theme-light-pristine .text-slate-500 {
-            color: #64748b !important;
+        body.theme-light-pristine .text-slate-50,
+        body.theme-light-pristine .text-slate-100,
+        body.theme-light-pristine .text-slate-200,
+        body.theme-light-pristine .text-white {
+            color: #0f172a !important;
         }
 
         body.theme-light-pristine .text-slate-300 {
+            color: #334155 !important;
+        }
+
+        body.theme-light-pristine .text-slate-400 {
             color: #475569 !important;
         }
 
-        body.theme-light-pristine .text-white {
-            color: #0f172a !important;
+        body.theme-light-pristine .text-slate-500 {
+            color: #64748b !important;
         }
 
         body.theme-light-pristine .bg-slate-900,
@@ -265,6 +392,68 @@
         body.theme-light-pristine .border-slate-800,
         body.theme-light-pristine .border-slate-700 {
             border-color: #e2e8f0 !important;
+        }
+
+        /* Obsidian Graph Light Theme Controls & Inspector */
+        body.theme-light-pristine #graph-search-input {
+            background-color: #ffffff !important;
+            border-color: #cbd5e1 !important;
+            color: #0f172a !important;
+        }
+        body.theme-light-pristine #graph-search-input::placeholder {
+            color: #94a3b8 !important;
+        }
+        body.theme-light-pristine #btn-trace-path {
+            background-color: #fef2f2 !important;
+            color: #b91c1c !important;
+            border-color: #fecaca !important;
+        }
+        body.theme-light-pristine #btn-toggle-freeze {
+            background-color: #ffffff !important;
+            color: #334155 !important;
+            border-color: #cbd5e1 !important;
+        }
+        body.theme-light-pristine #graph-entity-inspector {
+            color: #0f172a !important;
+        }
+        body.theme-light-pristine #inspector-title {
+            color: #0f172a !important;
+            font-weight: 700 !important;
+        }
+        body.theme-light-pristine #insp-node-name {
+            color: #0f172a !important;
+        }
+        body.theme-light-pristine #insp-node-role {
+            color: #475569 !important;
+        }
+        body.theme-light-pristine #graph-inspector-container {
+            background-color: #f8fafc !important;
+            border-left: 1px solid #e2e8f0 !important;
+        }
+        body.theme-light-pristine #graph-inspector-container #inspector-body > div {
+            background-color: #ffffff !important;
+            border: 1px solid #e2e8f0 !important;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
+        }
+        body.theme-light-pristine #graph-inspector-container #insp-connections button {
+            background-color: #ffffff !important;
+            border: 1px solid #cbd5e1 !important;
+            color: #1e293b !important;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+        }
+        body.theme-light-pristine #graph-inspector-container #insp-connections button:hover {
+            background-color: #f1f5f9 !important;
+            border-color: #94a3b8 !important;
+        }
+        body.theme-light-pristine #insp-connections button {
+            background-color: #ffffff !important;
+            border-color: #cbd5e1 !important;
+            color: #1e293b !important;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+        }
+        body.theme-light-pristine #insp-connections button:hover {
+            background-color: #f1f5f9 !important;
+            border-color: #94a3b8 !important;
         }
 
         /* High Readability Severity Pills (Datadog Style) */
@@ -438,7 +627,7 @@
     </header>
 
     <!-- Sub-header Breadcrumb & Secondary Actions Bar (Matching Reference Image 1) -->
-    <div class="bg-[#0f1624] border-b border-slate-800/80 px-4 py-1.5 flex items-center justify-between text-xs font-mono">
+    <div class="soc-sub-header px-4 py-1.5 flex items-center justify-between text-xs font-mono">
         <div class="flex items-center gap-2">
             <span class="text-slate-500">System Path:</span>
             <span id="breadcrumb-main" class="text-sky-400 font-semibold">Dashboard</span>
@@ -703,7 +892,7 @@
                         </div>
 
                         <!-- Right: Deep Entity Inspector & Correlation Panel (4 cols) -->
-                        <div class="xl:col-span-4 p-3.5 flex flex-col justify-between bg-slate-50/40 dark:bg-slate-900/40 font-mono">
+                        <div id="graph-inspector-container" class="xl:col-span-4 p-3.5 flex flex-col justify-between bg-slate-50/40 dark:bg-slate-900/40 font-mono">
                             <div id="graph-entity-inspector">
                                 <!-- Dynamic Content injected via JS; Initial Overview State below -->
                                 <div class="text-[11px] font-bold text-slate-800 dark:text-slate-200 mb-2 flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-1.5">
@@ -3901,6 +4090,15 @@
 
         function togglePristineTheme() {
             const isLight = document.body.classList.toggle('theme-light-pristine');
+            if (isLight) {
+                document.documentElement.classList.remove('dark');
+                document.documentElement.classList.add('light');
+                document.body.classList.remove('dark');
+            } else {
+                document.documentElement.classList.add('dark');
+                document.documentElement.classList.remove('light');
+                document.body.classList.add('dark');
+            }
             localStorage.setItem('aegis_theme_mode', isLight ? 'light' : 'dark');
             const icon = document.getElementById('theme-toggle-icon');
             const label = document.getElementById('theme-toggle-label');
@@ -3915,6 +4113,9 @@
             const saved = localStorage.getItem('aegis_theme_mode');
             if (saved === 'light' || !saved) {
                 document.body.classList.add('theme-light-pristine');
+                document.documentElement.classList.remove('dark');
+                document.documentElement.classList.add('light');
+                document.body.classList.remove('dark');
                 const icon = document.getElementById('theme-toggle-icon');
                 const label = document.getElementById('theme-toggle-label');
                 if (icon && label) {
@@ -3923,6 +4124,9 @@
                 }
             } else {
                 document.body.classList.remove('theme-light-pristine');
+                document.documentElement.classList.add('dark');
+                document.documentElement.classList.remove('light');
+                document.body.classList.add('dark');
                 const icon = document.getElementById('theme-toggle-icon');
                 const label = document.getElementById('theme-toggle-label');
                 if (icon && label) {
