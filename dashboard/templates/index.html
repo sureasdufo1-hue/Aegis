@@ -456,6 +456,26 @@
             border-color: #c4bbb0 !important;
         }
 
+        /* Threat Replay Bar Warm Ivory Styles */
+        body.theme-light-pristine #threat-replay-bar {
+            background-color: #fffefa !important;
+            border-color: #e7e2d6 !important;
+            color: #1c1917 !important;
+        }
+        body.theme-light-pristine #replay-story-banner {
+            background-color: #f7f3ea !important;
+            border-color: #e6dfd2 !important;
+        }
+        body.theme-light-pristine #threat-replay-bar button:not(#btn-replay-toggle):not([id^="replay-speed-"].bg-sky-600) {
+            background-color: #fffefa !important;
+            border-color: #dcd5c8 !important;
+            color: #292524 !important;
+        }
+        body.theme-light-pristine #threat-replay-bar button:not(#btn-replay-toggle):hover {
+            background-color: #f4eee3 !important;
+            border-color: #c4bbb0 !important;
+        }
+
         /* High Readability Severity Pills (Warm Toned) */
         body.theme-light-pristine .sev-critical {
             color: #991b1b !important;
@@ -887,6 +907,67 @@
                                 <!-- Floating Quick Controls inside SVG -->
                                 <div class="absolute bottom-2 left-2 flex items-center gap-1 bg-white/90 dark:bg-slate-800/90 backdrop-blur px-2 py-1 rounded shadow-sm border border-slate-200 dark:border-slate-700 text-[10px] font-mono text-slate-500">
                                     <span>🖱️ 휠: 줌(확대/축소) | 드래그: 이동/노드이동 | 클릭: 개체 추적</span>
+                                </div>
+                            </div>
+
+                            <!-- 🎛️ 시계열 공격 타임랩스 재생기 (Threat Replay Controller Bar) -->
+                            <div id="threat-replay-bar" class="mt-2.5 p-2 rounded bg-slate-100/90 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 font-mono text-xs flex flex-col gap-1.5 shadow-sm">
+                                <div class="flex items-center justify-between flex-wrap gap-2">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1">
+                                            <span>⏱️</span>
+                                            <span>공격 타임랩스 재생기</span>
+                                        </span>
+                                        <span id="replay-phase-badge" class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-300 dark:border-amber-800">
+                                            Phase 0: 정찰 & 웹 프로브 (T+00:00)
+                                        </span>
+                                    </div>
+                                    <div class="flex items-center gap-1.5">
+                                        <button onclick="prevReplayStep()" id="btn-replay-prev" class="px-2 py-0.5 rounded bg-white hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 text-[11px] font-semibold transition cursor-pointer" title="이전 단계">
+                                            ⏮ 이전
+                                        </button>
+                                        <button onclick="toggleThreatReplay()" id="btn-replay-toggle" class="px-2.5 py-0.5 rounded bg-sky-600 hover:bg-sky-500 text-white font-bold text-[11px] shadow-sm transition flex items-center gap-1 cursor-pointer">
+                                            <span id="replay-play-icon">▶</span>
+                                            <span id="replay-play-label">재생</span>
+                                        </button>
+                                        <button onclick="nextReplayStep()" id="btn-replay-next" class="px-2 py-0.5 rounded bg-white hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 text-[11px] font-semibold transition cursor-pointer" title="다음 단계">
+                                            다음 ⏭
+                                        </button>
+                                        <button onclick="resetThreatReplay()" id="btn-replay-reset" class="px-2 py-0.5 rounded bg-white hover:bg-slate-50 text-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 text-[11px] transition cursor-pointer" title="타임라인 초기화">
+                                            🔄 리셋
+                                        </button>
+                                        <!-- Speed Selector -->
+                                        <div class="inline-flex rounded border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 p-0.5 text-[10px]">
+                                            <button onclick="setReplaySpeed(1)" id="replay-speed-1" class="px-1.5 py-0.2 rounded bg-sky-600 text-white font-bold cursor-pointer">1x</button>
+                                            <button onclick="setReplaySpeed(2)" id="replay-speed-2" class="px-1.5 py-0.2 rounded text-slate-500 hover:text-slate-800 dark:hover:text-white cursor-pointer">2x</button>
+                                            <button onclick="setReplaySpeed(4)" id="replay-speed-4" class="px-1.5 py-0.2 rounded text-slate-500 hover:text-slate-800 dark:hover:text-white cursor-pointer">4x</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Slider and Timeline Points -->
+                                <div class="px-1 py-1">
+                                    <input type="range" id="threat-replay-slider" min="0" max="3" step="1" value="0" oninput="seekThreatReplay(parseInt(this.value))" class="w-full accent-sky-500 cursor-pointer h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg">
+                                    <div class="flex justify-between text-[9px] text-slate-500 dark:text-slate-400 mt-1 px-0.5 font-mono">
+                                        <span class="cursor-pointer hover:underline" onclick="seekThreatReplay(0)">T+00:00 (정찰)</span>
+                                        <span class="cursor-pointer hover:underline" onclick="seekThreatReplay(1)">T+00:45 (무차별 대입)</span>
+                                        <span class="cursor-pointer hover:underline" onclick="seekThreatReplay(2)">T+01:30 (RCE/명령실행)</span>
+                                        <span class="cursor-pointer hover:underline" onclick="seekThreatReplay(3)">T+02:15 (HITL 차단완료)</span>
+                                    </div>
+                                </div>
+
+                                <!-- Live Story Banner (Event Details at this timestamp) -->
+                                <div id="replay-story-banner" class="px-2.5 py-1.5 rounded bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-[11px] flex items-center justify-between flex-wrap gap-1">
+                                    <div class="flex items-center gap-2">
+                                        <span id="replay-story-indicator" class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                                        <span id="replay-story-desc" class="font-medium text-slate-700 dark:text-slate-200">
+                                            외부 공격자(10.77.20.50)가 포트 스캔 및 웹 디렉토리/PHP 취약점 탐색을 수행함
+                                        </span>
+                                    </div>
+                                    <div class="flex items-center gap-1.5 text-[10px]">
+                                        <span id="replay-story-sid" class="px-1.5 py-0.5 rounded bg-purple-100 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300 font-bold border border-purple-200 dark:border-purple-800">SID: 1000005</span>
+                                        <span id="replay-story-mitre" class="px-1.5 py-0.5 rounded bg-yellow-100 text-yellow-800 dark:bg-yellow-950/60 dark:text-yellow-300 font-bold border border-yellow-200 dark:border-yellow-800">T1046</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -4601,6 +4682,280 @@
                 cyberGraphSvg.transition().duration(500).call(cyberGraphZoom.transform, d3.zoomIdentity);
             }
         }
+
+        /* ============================================================================== */
+        /* Threat Replay Time-lapse Engine (시계열 위협 타임랩스 재생기) */
+        /* ============================================================================== */
+        const threatReplayTimeline = [
+            {
+                step: 0,
+                timeOffset: "T+00:00",
+                phaseName: "Phase 0: 정찰 & 웹 프로브 (Recon)",
+                badgeClass: "bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-300 dark:border-amber-800",
+                indicatorClass: "bg-amber-500 animate-pulse",
+                story: "외부 공격자(10.77.20.50)가 포트 스캔 및 웹 디렉토리/PHP 취약점 탐색을 수행하여 Suricata에 감지됨",
+                sid: "SID: 1000005",
+                mitre: "T1046 (Discovery)",
+                focusNode: "rule_1000005",
+                activeNodes: ["attacker", "gateway", "victim", "sensor", "rule_1000005", "mitre_t1046"],
+                activeLinks: [
+                    { s: "attacker", t: "gateway" },
+                    { s: "victim", t: "sensor" },
+                    { s: "sensor", t: "rule_1000005" },
+                    { s: "rule_1000005", t: "mitre_t1046" }
+                ],
+                marchingLinks: [
+                    { s: "attacker", t: "gateway" }
+                ]
+            },
+            {
+                step: 1,
+                timeOffset: "T+00:45",
+                phaseName: "Phase 1: SSH 무차별 대입 공격 (Brute Force)",
+                badgeClass: "bg-orange-100 text-orange-800 dark:bg-orange-950/60 dark:text-orange-300 border border-orange-300 dark:border-orange-800",
+                indicatorClass: "bg-orange-500 animate-pulse",
+                story: "공격자가 내부 서버(10.77.30.100:22)로 고빈도 SSH 무차별 대입 패킷을 집중 전송하여 Suricata 경보가 폭증함",
+                sid: "SID: 1000003",
+                mitre: "T1110.001 (Brute Force)",
+                focusNode: "rule_1000003",
+                activeNodes: ["attacker", "gateway", "victim", "sensor", "rule_1000005", "mitre_t1046", "rule_1000003", "mitre_t1110"],
+                activeLinks: [
+                    { s: "attacker", t: "gateway" },
+                    { s: "gateway", t: "victim" },
+                    { s: "victim", t: "sensor" },
+                    { s: "sensor", t: "rule_1000005" },
+                    { s: "sensor", t: "rule_1000003" },
+                    { s: "rule_1000003", t: "mitre_t1110" }
+                ],
+                marchingLinks: [
+                    { s: "attacker", t: "gateway" },
+                    { s: "gateway", t: "victim" }
+                ]
+            },
+            {
+                step: 2,
+                timeOffset: "T+01:30",
+                phaseName: "Phase 2: RCE 명령실행 & SIEM 상관분석 (Exploit)",
+                badgeClass: "bg-red-100 text-red-800 dark:bg-red-950/60 dark:text-red-300 border border-red-300 dark:border-red-800",
+                indicatorClass: "bg-red-500 animate-ping",
+                story: "RCE 시도(id check)가 포착되어 킬체인 상태머신이 CONFIRMED_COMPROMISE로 승격되고 Wazuh SIEM에 긴급 인덱싱됨",
+                sid: "SID: 1000001",
+                mitre: "T1059 (Execution)",
+                focusNode: "siem",
+                activeNodes: ["attacker", "gateway", "victim", "sensor", "rule_1000005", "mitre_t1046", "rule_1000003", "mitre_t1110", "rule_1000001", "siem"],
+                activeLinks: [
+                    { s: "attacker", t: "gateway" },
+                    { s: "gateway", t: "victim" },
+                    { s: "victim", t: "sensor" },
+                    { s: "sensor", t: "rule_1000005" },
+                    { s: "sensor", t: "rule_1000003" },
+                    { s: "sensor", t: "rule_1000001" },
+                    { s: "sensor", t: "siem" },
+                    { s: "rule_1000003", t: "mitre_t1110" }
+                ],
+                marchingLinks: [
+                    { s: "attacker", t: "gateway" },
+                    { s: "gateway", t: "victim" },
+                    { s: "sensor", t: "siem" }
+                ]
+            },
+            {
+                step: 3,
+                timeOffset: "T+02:15",
+                phaseName: "Phase 3: HITL 정책 승인 & 능동 격리 (Quarantined)",
+                badgeClass: "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800",
+                indicatorClass: "bg-emerald-500",
+                story: "SOC 분석관이 1-Click HITL 승인(APR-90738766-238)을 완료하여 Gateway nftables에 DROP 정책이 즉시 집행됨",
+                sid: "APR-90738766-238",
+                mitre: "Active Containment",
+                focusNode: "ticket_apr",
+                activeNodes: ["attacker", "gateway", "victim", "sensor", "rule_1000005", "mitre_t1046", "rule_1000003", "mitre_t1110", "rule_1000001", "siem", "ticket_apr"],
+                activeLinks: [
+                    { s: "attacker", t: "gateway" },
+                    { s: "gateway", t: "victim" },
+                    { s: "victim", t: "sensor" },
+                    { s: "sensor", t: "rule_1000005" },
+                    { s: "sensor", t: "rule_1000003" },
+                    { s: "sensor", t: "rule_1000001" },
+                    { s: "sensor", t: "siem" },
+                    { s: "rule_1000003", t: "mitre_t1110" },
+                    { s: "attacker", t: "ticket_apr" },
+                    { s: "gateway", t: "ticket_apr" },
+                    { s: "ticket_apr", t: "siem" }
+                ],
+                marchingLinks: [
+                    { s: "attacker", t: "ticket_apr" },
+                    { s: "gateway", t: "ticket_apr" }
+                ]
+            }
+        ];
+
+        let currentReplayStep = 0;
+        let isReplayPlaying = false;
+        let replayTimer = null;
+        let replaySpeed = 1;
+
+        function seekThreatReplay(stepIndex) {
+            currentReplayStep = Math.max(0, Math.min(stepIndex, threatReplayTimeline.length - 1));
+            const item = threatReplayTimeline[currentReplayStep];
+
+            // 1. Update Slider UI
+            const slider = document.getElementById('threat-replay-slider');
+            if (slider) slider.value = currentReplayStep;
+
+            // 2. Update Header Badge
+            const badge = document.getElementById('replay-phase-badge');
+            if (badge) {
+                badge.className = `px-2 py-0.5 rounded text-[10px] font-bold ${item.badgeClass}`;
+                badge.innerText = `${item.phaseName} (${item.timeOffset})`;
+            }
+
+            // 3. Update Story Banner
+            const descEl = document.getElementById('replay-story-desc');
+            const sidEl = document.getElementById('replay-story-sid');
+            const mitreEl = document.getElementById('replay-story-mitre');
+            const indEl = document.getElementById('replay-story-indicator');
+            if (descEl) descEl.innerText = item.story;
+            if (sidEl) sidEl.innerText = item.sid;
+            if (mitreEl) mitreEl.innerText = item.mitre;
+            if (indEl) indEl.className = `w-2 h-2 rounded-full ${item.indicatorClass}`;
+
+            // 4. Synchronize Visuals on D3 Cyber Neural Graph
+            applyReplayVisuals(currentReplayStep);
+        }
+
+        function applyReplayVisuals(stepIndex) {
+            if (!cyberGraphG) return;
+            const item = threatReplayTimeline[stepIndex];
+            const activeNodeSet = new Set(item.activeNodes);
+
+            const isLinkActive = (l) => {
+                const sId = typeof l.source === 'object' ? l.source.id : l.source;
+                const tId = typeof l.target === 'object' ? l.target.id : l.target;
+                return item.activeLinks.some(al => (al.s === sId && al.t === tId) || (al.s === tId && al.t === sId));
+            };
+
+            const isLinkMarching = (l) => {
+                const sId = typeof l.source === 'object' ? l.source.id : l.source;
+                const tId = typeof l.target === 'object' ? l.target.id : l.target;
+                return item.marchingLinks.some(ml => (ml.s === sId && ml.t === tId) || (ml.s === tId && ml.t === sId));
+            };
+
+            // Update Nodes
+            cyberGraphG.selectAll(".graph-node").each(function(d) {
+                const isActive = activeNodeSet.has(d.id);
+                const isFocus = d.id === item.focusNode;
+                d3.select(this)
+                    .classed("graph-dimmed", !isActive)
+                    .classed("graph-highlighted", isFocus);
+            });
+
+            // Update Links
+            cyberGraphG.selectAll(".graph-link").each(function(l) {
+                const active = isLinkActive(l);
+                const marching = isLinkMarching(l);
+                d3.select(this)
+                    .classed("attack-path-animated", marching)
+                    .classed("graph-dimmed", !active)
+                    .attr("stroke-opacity", active ? (marching ? 1 : 0.75) : 0.08)
+                    .attr("stroke-width", marching ? (l.width * 1.5) : l.width);
+            });
+
+            // Update Link Labels
+            cyberGraphG.selectAll(".graph-link-label").each(function(l) {
+                const active = isLinkActive(l);
+                d3.select(this).style("opacity", active ? 1 : 0.08);
+            });
+
+            // Auto-focus on primary entity in inspector
+            const primaryNode = cyberGraphData.nodes.find(n => n.id === item.focusNode);
+            if (primaryNode) {
+                const connectedSet = new Set();
+                item.activeLinks.forEach(al => {
+                    if (al.s === primaryNode.id) connectedSet.add(al.t);
+                    if (al.t === primaryNode.id) connectedSet.add(al.s);
+                });
+                updateEntityInspector(primaryNode, connectedSet);
+            }
+        }
+
+        function toggleThreatReplay() {
+            if (isReplayPlaying) {
+                pauseThreatReplay();
+            } else {
+                playThreatReplay();
+            }
+        }
+
+        function playThreatReplay() {
+            isReplayPlaying = true;
+            const icon = document.getElementById('replay-play-icon');
+            const label = document.getElementById('replay-play-label');
+            const btn = document.getElementById('btn-replay-toggle');
+            if (icon) icon.innerText = '⏸';
+            if (label) label.innerText = '정지';
+            if (btn) btn.className = 'px-2.5 py-0.5 rounded bg-amber-600 hover:bg-amber-500 text-white font-bold text-[11px] shadow-sm transition flex items-center gap-1 cursor-pointer';
+
+            clearInterval(replayTimer);
+            const intervalMs = Math.round(2400 / replaySpeed);
+            replayTimer = setInterval(() => {
+                if (currentReplayStep >= threatReplayTimeline.length - 1) {
+                    currentReplayStep = 0;
+                } else {
+                    currentReplayStep++;
+                }
+                seekThreatReplay(currentReplayStep);
+            }, intervalMs);
+        }
+
+        function pauseThreatReplay() {
+            isReplayPlaying = false;
+            clearInterval(replayTimer);
+            replayTimer = null;
+            const icon = document.getElementById('replay-play-icon');
+            const label = document.getElementById('replay-play-label');
+            const btn = document.getElementById('btn-replay-toggle');
+            if (icon) icon.innerText = '▶';
+            if (label) label.innerText = '재생';
+            if (btn) btn.className = 'px-2.5 py-0.5 rounded bg-sky-600 hover:bg-sky-500 text-white font-bold text-[11px] shadow-sm transition flex items-center gap-1 cursor-pointer';
+        }
+
+        function nextReplayStep() {
+            pauseThreatReplay();
+            seekThreatReplay((currentReplayStep + 1) % threatReplayTimeline.length);
+        }
+
+        function prevReplayStep() {
+            pauseThreatReplay();
+            seekThreatReplay((currentReplayStep - 1 + threatReplayTimeline.length) % threatReplayTimeline.length);
+        }
+
+        function resetThreatReplay() {
+            pauseThreatReplay();
+            seekThreatReplay(0);
+            resetGraphSelection();
+            if (typeof showToast === 'function') {
+                showToast('🔄 타임랩스 재생기가 초기 시점(T+00:00)으로 리셋되었습니다.', 'info');
+            }
+        }
+
+        function setReplaySpeed(rate) {
+            replaySpeed = rate;
+            [1, 2, 4].forEach(r => {
+                const btn = document.getElementById(`replay-speed-${r}`);
+                if (btn) {
+                    if (r === rate) {
+                        btn.className = 'px-1.5 py-0.2 rounded bg-sky-600 text-white font-bold cursor-pointer';
+                    } else {
+                        btn.className = 'px-1.5 py-0.2 rounded text-slate-500 hover:text-slate-800 dark:hover:text-white cursor-pointer';
+                    }
+                }
+            });
+            if (isReplayPlaying) {
+                playThreatReplay();
+            }
+        }
+
 
         // Initialize on Load
         window.addEventListener('DOMContentLoaded', () => {

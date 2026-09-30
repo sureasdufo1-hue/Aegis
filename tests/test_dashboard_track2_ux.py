@@ -112,3 +112,46 @@ def test_threat_matrix_page_and_navigation():
     assert "Holographic Shield & AI Core" in res_index.text
 
 
+def test_threat_replay_slider_ui_elements():
+    """Verify Task 3-1: Cyber Kill Chain Time-lapse Threat Replay Slider and Controller Bar."""
+    res = client.get("/")
+    assert res.status_code == 200
+    html = res.text
+
+    # 1. Controller Bar and Identity
+    assert 'id="threat-replay-bar"' in html
+    assert "공격 타임랩스 재생기" in html
+    assert 'id="replay-phase-badge"' in html
+    assert "Phase 0: 정찰 & 웹 프로브" in html
+
+    # 2. Controls: Play/Pause, Next/Prev, Reset, Speeds
+    assert 'id="btn-replay-toggle"' in html
+    assert 'id="replay-play-icon"' in html
+    assert 'id="replay-play-label"' in html
+    assert 'id="btn-replay-prev"' in html
+    assert 'id="btn-replay-next"' in html
+    assert 'id="btn-replay-reset"' in html
+    assert 'id="replay-speed-1"' in html
+    assert 'id="replay-speed-2"' in html
+    assert 'id="replay-speed-4"' in html
+
+    # 3. Interactive Range Slider
+    assert 'id="threat-replay-slider"' in html
+    assert 'min="0" max="3" step="1"' in html
+    assert 'oninput="seekThreatReplay(parseInt(this.value))"' in html
+
+    # 4. Live Story Banner
+    assert 'id="replay-story-banner"' in html
+    assert 'id="replay-story-desc"' in html
+    assert 'id="replay-story-sid"' in html
+    assert 'id="replay-story-mitre"' in html
+    assert 'id="replay-story-indicator"' in html
+
+    # 5. JavaScript Replay Engine and Timeline Model
+    assert "threatReplayTimeline" in html
+    assert "seekThreatReplay" in html
+    assert "toggleThreatReplay" in html
+    assert "applyReplayVisuals" in html
+    assert "APR-90738766-238" in html
+
+
