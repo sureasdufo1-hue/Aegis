@@ -8,9 +8,11 @@ from typing import Any
 
 from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
+
+from dashboard.pcap_carver import pcap_carver_engine
 
 from analyzer.ai.actions.executor import ActionExecutor
 from analyzer.ai.approvals.repository import ApprovalRepository
@@ -237,6 +239,65 @@ async def manual_dispatch_incident(req: ManualDispatchRequest):
     if not target_inc:
         raise HTTPException(status_code=404, detail=f"Incident '{req.incident_id}' not found")
     result = await notification_dispatcher.dispatch_incident(target_inc, force=req.force)
+    return result
+
+
+# -------------------------------------------------------------
+# PCAP Evidence, Session Carving & Forensic API Endpoints
+# -------------------------------------------------------------
+
+@app.get("/api/pcap/list")
+def list_pcap_scenarios():
+    """List verified attack scenario PCAP files with SHA-256 integrity."""
+    return pcap_carver_engine.list_scenarios()
+
+
+@app.get("/api/pcap/download/{filename}")
+def download_pcap_file(filename: str):
+    """Download verified PCAP file with strict Path Traversal guard and X-PCAP-SHA256 header."""
+    try:
+        safe_path = pcap_carver_engine.get_safe_path(filename)
+        sha256_hash = pcap_carver_engine.calculate_sha256(safe_path)
+        return FileResponse(
+            path=safe_path,
+            media_type="application/vnd.tcpdump.pcap",
+            filename=safe_path.name,
+            headers={
+                "X-PCAP-SHA256": sha256_hash,
+                "Content-Disposition": f'attachment; filename="{safe_path.name}"',
+            },
+        )
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail=f"PCAP file '{filename}' not found.")
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.get("/api/pcap/inspect/{filename}")
+def inspect_pcap_file(filename: str, max_packets: int = 50):
+    """Parse packet headers and frame summaries with Wireshark-compatible hex dumps."""
+    try:
+        return pcap_carver_engine.inspect_pcap(filename, max_packets=max_packets)
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail=f"PCAP file '{filename}' not found.")
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+class PcapCarveRequest(BaseModel):
+    scenario: str | None = None
+    query: str | None = None
+    signature: str | None = None
+    sid: int | str | None = None
+    src_ip: str | None = None
+    dest_ip: str | None = None
+    dest_port: int | str | None = None
+
+
+@app.post("/api/pcap/carve")
+def carve_pcap_session(req: PcapCarveRequest):
+    """Carve session packet evidence based on 5-Tuple, signature, or scenario."""
+    result = pcap_carver_engine.carve_by_query(req.model_dump())
     return result
 
 

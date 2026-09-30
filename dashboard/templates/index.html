@@ -476,6 +476,22 @@
             border-color: #c4bbb0 !important;
         }
 
+        /* PCAP Forensic Modal Warm Ivory Styles */
+        body.theme-light-pristine #pcapForensicModal > div {
+            background-color: #fffefa !important;
+            border-color: #e7e2d6 !important;
+            color: #1c1917 !important;
+        }
+        body.theme-light-pristine #pcapForensicModal table thead {
+            background-color: #f6f2e9 !important;
+            border-color: #e7e2d6 !important;
+            color: #57534e !important;
+        }
+        body.theme-light-pristine #pcapForensicModal table td {
+            color: #1c1917 !important;
+            border-color: #f4efe6 !important;
+        }
+
         /* High Readability Severity Pills (Warm Toned) */
         body.theme-light-pristine .sev-critical {
             color: #991b1b !important;
@@ -1031,12 +1047,17 @@
                             </div>
 
                             <!-- Bottom Action Button in Inspector -->
-                            <div class="mt-3 pt-2 border-t border-slate-200 dark:border-slate-800 flex items-center gap-2">
-                                <button id="insp-action-btn" onclick="openApprovalModal()" class="flex-1 py-1.5 px-2.5 rounded bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-[11px] shadow-sm transition-colors flex items-center justify-center gap-1.5">
-                                    <span>🛡️ 대응 승인 큐 열기</span>
-                                </button>
-                                <button onclick="resetGraphSelection()" class="py-1.5 px-2.5 rounded border border-slate-200 dark:border-slate-700 bg-white hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-[11px]">
-                                    <span>선택 해제</span>
+                            <div class="mt-3 pt-2 border-t border-slate-200 dark:border-slate-800 flex flex-col gap-1.5">
+                                <div class="flex items-center gap-2">
+                                    <button id="insp-action-btn" onclick="openApprovalModal()" class="flex-1 py-1.5 px-2.5 rounded bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-[11px] shadow-sm transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
+                                        <span>🛡️ 대응 승인 큐 열기</span>
+                                    </button>
+                                    <button onclick="resetGraphSelection()" class="py-1.5 px-2.5 rounded border border-slate-200 dark:border-slate-700 bg-white hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-[11px] cursor-pointer">
+                                        <span>선택 해제</span>
+                                    </button>
+                                </div>
+                                <button id="insp-pcap-btn" onclick="openPcapForActiveNode()" class="w-full py-1.5 px-2.5 rounded bg-amber-50 hover:bg-amber-100 text-amber-900 dark:bg-amber-950/40 dark:hover:bg-amber-900/60 dark:text-amber-300 border border-amber-300 dark:border-amber-800 font-bold text-[11px] transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow-sm">
+                                    <span>📦 세션 PCAP 증적 검사 & 다운로드 (SHA-256)</span>
                                 </button>
                             </div>
                         </div>
@@ -2069,6 +2090,110 @@
             <div id="modalBody" class="text-xs text-slate-300 max-h-96 overflow-y-auto space-y-3"></div>
             <div class="flex justify-end pt-2 border-t border-slate-800">
                 <button onclick="closeModal()" class="px-4 py-2 text-xs bg-slate-800 hover:bg-slate-700 text-white rounded-lg transition font-medium">닫기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================================== -->
+    <!-- PCAP Forensic Evidence Modal (Wireshark-in-Browser & Session Carver) -->
+    <!-- ============================================================================== -->
+    <div id="pcapForensicModal" class="hidden fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-3 font-mono">
+        <div class="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-2xl max-w-5xl w-full p-5 space-y-3.5 shadow-2xl relative max-h-[92vh] flex flex-col">
+            <!-- Modal Header -->
+            <div class="flex items-start justify-between border-b border-slate-200 dark:border-slate-800 pb-3 flex-shrink-0">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-amber-500 animate-pulse"></span>
+                        <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                            <span>🔬 PCAP 패킷 포렌식 증적 뷰어</span>
+                            <span class="text-slate-400 font-normal">|</span>
+                            <span class="text-amber-600 dark:text-amber-400 font-semibold">Wireshark-in-Browser & Session Carver</span>
+                        </h3>
+                    </div>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                        AGENTS.md Section 18 무결성 보증 증적 · 암호학적 SHA-256 검증 완료 · Layer 2/3/4/7 패킷 헤더 인스펙션
+                    </p>
+                </div>
+                <button onclick="closePcapForensicModal()" class="text-slate-400 hover:text-slate-700 dark:hover:text-white text-lg font-bold p-1 leading-none cursor-pointer" title="닫기">
+                    ✕
+                </button>
+            </div>
+
+            <!-- Metadata Strip & Scenario Selector -->
+            <div class="bg-slate-50 dark:bg-slate-950/80 p-3 rounded-xl border border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3 text-xs flex-shrink-0">
+                <div class="flex items-center gap-2 flex-wrap">
+                    <span class="text-slate-500 dark:text-slate-400 font-bold">시나리오 선택:</span>
+                    <select id="pcap-scenario-select" onchange="loadPcapScenario(this.value)" class="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded px-2.5 py-1 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-amber-500 cursor-pointer">
+                        <option value="PCAP-20260824-ATK-002-SQLI.pcap">SQL Injection (UNION SELECT) [T1190]</option>
+                        <option value="PCAP-20260824-ATK-005-BRUTEFORCE.pcap">SSH High-Frequency Brute Force [T1110.001]</option>
+                        <option value="PCAP-20260824-ATK-003-SCAN.pcap">Nmap Stealth NULL/XMAS/FIN Scan [T1046]</option>
+                        <option value="PCAP-20260824-ATK-004-LOG4J.pcap">Apache Log4j JNDI RCE Exploit [T1190]</option>
+                        <option value="PCAP-20260824-ATK-006-C2REVERSESHELL.pcap">Malware C2 DNS Tunnel & Reverse Shell [T1071]</option>
+                        <option value="PCAP-20260824-ATK-001-ICMP.pcap">ICMP Ping Flood & Diagnostic [T1498]</option>
+                    </select>
+                    <span id="pcap-meta-size" class="px-2 py-0.5 rounded bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-mono text-[11px] font-bold">607 B</span>
+                    <span id="pcap-meta-pkts" class="px-2 py-0.5 rounded bg-sky-100 text-sky-800 dark:bg-sky-950/60 dark:text-sky-300 font-mono text-[11px] font-bold">5 Packets</span>
+                </div>
+
+                <!-- SHA-256 Checksum Pill with Copy Button -->
+                <div class="flex items-center gap-1.5 bg-white dark:bg-slate-900 px-2.5 py-1 rounded border border-slate-300 dark:border-slate-700 text-[11px]">
+                    <span class="text-emerald-600 dark:text-emerald-400 font-bold">SHA-256:</span>
+                    <span id="pcap-meta-sha256" class="font-mono text-slate-600 dark:text-slate-300 truncate max-w-[200px] sm:max-w-xs">e65d9687f15ec0ce...</span>
+                    <button onclick="copyPcapSha256()" class="text-slate-400 hover:text-amber-500 ml-1 cursor-pointer" title="SHA-256 해시 복사">
+                        📋
+                    </button>
+                </div>
+            </div>
+
+            <!-- Main Wireshark Packet Table (Scrollable) -->
+            <div class="flex-1 overflow-hidden flex flex-col border border-slate-200 dark:border-slate-800 rounded-xl min-h-[300px]">
+                <!-- Packet List Grid (Top Half) -->
+                <div class="h-44 overflow-y-auto bg-white dark:bg-slate-950/60 text-xs">
+                    <table class="w-full text-left border-collapse font-mono text-[11px]">
+                        <thead class="sticky top-0 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 font-bold select-none">
+                            <tr>
+                                <th class="py-1 px-2.5 w-12">No.</th>
+                                <th class="py-1 px-2 w-24">Time (s)</th>
+                                <th class="py-1 px-2 w-32">Source</th>
+                                <th class="py-1 px-2 w-32">Destination</th>
+                                <th class="py-1 px-2 w-20">Protocol</th>
+                                <th class="py-1 px-2 w-16">Length</th>
+                                <th class="py-1 px-2">Info</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pcap-packet-tbody" class="divide-y divide-slate-100 dark:divide-slate-800/60">
+                            <!-- Populated dynamically via JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Wireshark Classic Hex Dump / ASCII Payload Inspector (Bottom Half) -->
+                <div class="h-44 border-t border-slate-200 dark:border-slate-800 bg-[#0a0f19] p-2.5 overflow-y-auto flex flex-col justify-between font-mono">
+                    <div>
+                        <div class="flex items-center justify-between text-[10px] text-slate-400 mb-1 pb-1 border-b border-slate-800">
+                            <span class="font-bold text-slate-300">선택된 패킷 16진수 및 ASCII 덤프 (Packet Byte Stream)</span>
+                            <span id="pcap-selected-frame-label" class="text-amber-400 font-bold">Frame 1 (Length: 54 bytes)</span>
+                        </div>
+                        <pre id="pcap-hex-dump-view" class="text-[11px] leading-tight text-emerald-400 overflow-x-auto select-text font-mono">0000   00 15 5d 30 00 20 00 15  5d 20 00 20 08 00 45 00   ..]0. ..] . ..E.
+0010   00 28 00 01 00 00 40 06  34 0e 0a 4d 14 14 0a 4d   .(....@.4..M...M</pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Actions -->
+            <div class="flex items-center justify-between border-t border-slate-200 dark:border-slate-800 pt-3 flex-shrink-0 text-xs">
+                <div class="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                    <span>💡 패킷 행을 클릭하면 하단 콘솔에 Wireshark 원본 바이트 덤프가 렌더링됩니다.</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="downloadCurrentPcapFile()" id="btn-pcap-download" class="px-3 py-1.5 rounded bg-amber-600 hover:bg-amber-500 text-white font-bold transition flex items-center gap-1.5 shadow-sm cursor-pointer">
+                        <span>⬇️</span>
+                        <span>원본 PCAP 다운로드 (.pcap)</span>
+                    </button>
+                    <button onclick="closePcapForensicModal()" class="px-3 py-1.5 rounded bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-medium transition cursor-pointer">
+                        닫기 (Close)
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -3227,9 +3352,12 @@
                     <td class="text-red-400 font-bold">${a.src_ip}${a.src_port ? ':' + a.src_port : ''}</td>
                     <td class="text-sky-400">${a.dst_ip}${a.dst_port ? ':' + a.dst_port : ''}</td>
                     <td class="text-slate-400">${a.mitre_technique || '-'}</td>
-                    <td class="text-center">
-                        <button onclick="event.stopPropagation(); interpretAlertInline('${a.signature}', '${a.category}', '${a.severity}', '${a.mitre_technique || ''}')" class="px-2 py-0.5 text-[10px] bg-slate-800 hover:bg-slate-700 text-sky-300 border border-slate-700 rounded">
-                            해석 / 패킷
+                    <td class="text-center whitespace-nowrap space-x-1">
+                        <button onclick="event.stopPropagation(); openPcapForensicModal('${a.signature.replace(/'/g, "\\'")}', '${a.src_ip}', '${a.dst_ip}', ${a.dst_port || 80}, ${a.sid || 0})" class="px-1.5 py-0.5 text-[10px] font-bold bg-amber-100 hover:bg-amber-200 text-amber-900 dark:bg-amber-950/70 dark:hover:bg-amber-900/90 dark:text-amber-300 border border-amber-300 dark:border-amber-800 rounded transition cursor-pointer" title="5-Tuple 세션 PCAP 증적 카빙 및 Wireshark 뷰어 열기">
+                            📦 PCAP
+                        </button>
+                        <button onclick="event.stopPropagation(); interpretAlertInline('${a.signature.replace(/'/g, "\\'")}', '${a.category}', '${a.severity}', '${a.mitre_technique || ''}')" class="px-1.5 py-0.5 text-[10px] bg-slate-100 hover:bg-slate-200 text-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-sky-300 border border-slate-300 dark:border-slate-700 rounded cursor-pointer">
+                            AI 해석
                         </button>
                     </td>
                 </tr>
@@ -4954,6 +5082,181 @@
             if (isReplayPlaying) {
                 playThreatReplay();
             }
+        }
+
+        /* ============================================================================== */
+        /* PCAP Evidence Viewer & Session Carver Engine (Wireshark-in-Browser) */
+        /* ============================================================================== */
+        let currentPcapData = null;
+        let currentPcapFilename = "PCAP-20260824-ATK-002-SQLI.pcap";
+
+        async function openPcapForensicModal(signature = '', srcIp = '', dstIp = '', dstPort = 80, sid = 0) {
+            const modal = document.getElementById('pcapForensicModal');
+            if (!modal) return;
+            modal.classList.remove('hidden');
+
+            // If query parameters provided, perform automated carving
+            if (signature || srcIp || dstPort || sid) {
+                try {
+                    const carveRes = await fetch('/api/pcap/carve', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            signature: signature,
+                            src_ip: srcIp,
+                            dest_ip: dstIp,
+                            dest_port: dstPort,
+                            sid: sid
+                        })
+                    });
+                    if (carveRes.ok) {
+                        const carveData = await carveRes.json();
+                        if (carveData.carved_file) {
+                            currentPcapFilename = carveData.carved_file;
+                            const selectEl = document.getElementById('pcap-scenario-select');
+                            if (selectEl) selectEl.value = currentPcapFilename;
+                            renderPcapInspection(carveData);
+                            return;
+                        }
+                    }
+                } catch (err) {
+                    console.warn('Auto-carve query fallback to standard load:', err);
+                }
+            }
+
+            // Standard load
+            loadPcapScenario(currentPcapFilename);
+        }
+
+        async function loadPcapScenario(filename) {
+            currentPcapFilename = filename;
+            const selectEl = document.getElementById('pcap-scenario-select');
+            if (selectEl) selectEl.value = filename;
+
+            try {
+                const res = await fetch(`/api/pcap/inspect/${filename}?max_packets=50`);
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const data = await res.json();
+                renderPcapInspection(data);
+            } catch (err) {
+                console.error('Failed to load PCAP inspection:', err);
+                if (typeof showToast === 'function') {
+                    showToast(`⚠️ PCAP 패킷 로드 실패: ${err.message}`, 'error');
+                }
+            }
+        }
+
+        function renderPcapInspection(data) {
+            currentPcapData = data;
+
+            // 1. Meta Badges
+            const sizeEl = document.getElementById('pcap-meta-size');
+            const pktsEl = document.getElementById('pcap-meta-pkts');
+            const shaEl = document.getElementById('pcap-meta-sha256');
+
+            if (sizeEl) sizeEl.innerText = `${data.file_size_bytes || 0} B`;
+            if (pktsEl) pktsEl.innerText = `${data.packet_count || 0} Packets`;
+            if (shaEl) {
+                shaEl.innerText = (data.sha256 || '').slice(0, 24) + '...';
+                shaEl.title = data.sha256 || '';
+            }
+
+            // 2. Table Rows
+            const tbody = document.getElementById('pcap-packet-tbody');
+            if (!tbody) return;
+
+            const frames = data.frames || [];
+            if (frames.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="py-4 text-center text-slate-400">패킷 프레임이 없습니다.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = frames.map((f, idx) => `
+                <tr id="pcap-frame-row-${f.frame_no}" onclick="selectPacketFrame(${f.frame_no})" class="cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800/60 transition ${idx === 0 ? 'bg-amber-100/60 dark:bg-amber-950/40 text-amber-900 dark:text-amber-200' : ''}">
+                    <td class="py-1 px-2.5 font-bold">${f.frame_no}</td>
+                    <td class="py-1 px-2 text-slate-500 dark:text-slate-400">${f.rel_time}</td>
+                    <td class="py-1 px-2 text-red-600 dark:text-red-400 font-semibold">${f.src_ip}${f.src_port ? ':' + f.src_port : ''}</td>
+                    <td class="py-1 px-2 text-sky-600 dark:text-sky-400 font-semibold">${f.dst_ip}${f.dst_port ? ':' + f.dst_port : ''}</td>
+                    <td class="py-1 px-2"><span class="px-1.5 py-0.2 rounded font-bold text-[10px] ${f.protocol === 'TCP' ? 'bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300' : (f.protocol === 'HTTP' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300' : 'bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-300')}">${f.protocol}</span></td>
+                    <td class="py-1 px-2 text-slate-600 dark:text-slate-400">${f.length}</td>
+                    <td class="py-1 px-2 text-slate-700 dark:text-slate-300 truncate max-w-xs" title="${f.info}">${f.info}</td>
+                </tr>
+            `).join('');
+
+            // Select first frame by default
+            if (frames.length > 0) {
+                selectPacketFrame(frames[0].frame_no);
+            }
+        }
+
+        function selectPacketFrame(frameNo) {
+            if (!currentPcapData || !currentPcapData.frames) return;
+            const frame = currentPcapData.frames.find(f => f.frame_no === frameNo);
+            if (!frame) return;
+
+            // Highlight Row
+            const rows = document.querySelectorAll('#pcap-packet-tbody tr');
+            rows.forEach(r => r.classList.remove('bg-amber-100/60', 'dark:bg-amber-950/40', 'text-amber-900', 'dark:text-amber-200'));
+            const activeRow = document.getElementById(`pcap-frame-row-${frameNo}`);
+            if (activeRow) {
+                activeRow.classList.add('bg-amber-100/60', 'dark:bg-amber-950/40', 'text-amber-900', 'dark:text-amber-200');
+            }
+
+            // Update Label & Hex Dump View
+            const labelEl = document.getElementById('pcap-selected-frame-label');
+            const dumpEl = document.getElementById('pcap-hex-dump-view');
+
+            if (labelEl) {
+                labelEl.innerText = `Frame ${frame.frame_no} (${frame.protocol} | Length: ${frame.length} B | ${frame.src_ip} ➔ ${frame.dst_ip})`;
+            }
+            if (dumpEl) {
+                dumpEl.innerText = frame.hex_dump || '바이트 데이터가 없습니다.';
+            }
+        }
+
+        function downloadCurrentPcapFile() {
+            if (!currentPcapFilename) return;
+            window.location.href = `/api/pcap/download/${currentPcapFilename}`;
+            if (typeof showToast === 'function') {
+                showToast(`📥 PCAP 다운로드 시작: ${currentPcapFilename}`, 'info');
+            }
+        }
+
+        function copyPcapSha256() {
+            if (!currentPcapData || !currentPcapData.sha256) return;
+            navigator.clipboard.writeText(currentPcapData.sha256).then(() => {
+                if (typeof showToast === 'function') {
+                    showToast(`📋 SHA-256 해시가 클립보드에 복사되었습니다.`, 'success');
+                }
+            }).catch(err => {
+                prompt("SHA-256 해시:", currentPcapData.sha256);
+            });
+        }
+
+        function closePcapForensicModal() {
+            const modal = document.getElementById('pcapForensicModal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function openPcapForActiveNode() {
+            const activeId = activeGraphNodeId || 'attacker';
+            let scenario = 'SQLI';
+            if (activeId === 'attacker' || activeId === 'ticket_apr') {
+                scenario = 'BRUTEFORCE';
+            } else if (activeId === 'rule_1000003') {
+                scenario = 'BRUTEFORCE';
+            } else if (activeId === 'rule_1000005') {
+                scenario = 'SCAN';
+            } else if (activeId === 'rule_1000001') {
+                scenario = 'C2';
+            }
+            openPcapForensicModal('', '', '', 80, 0);
+            loadPcapScenario(
+                scenario === 'BRUTEFORCE' ? 'PCAP-20260824-ATK-005-BRUTEFORCE.pcap' :
+                scenario === 'SCAN' ? 'PCAP-20260824-ATK-003-SCAN.pcap' :
+                scenario === 'C2' ? 'PCAP-20260824-ATK-006-C2REVERSESHELL.pcap' :
+                'PCAP-20260824-ATK-002-SQLI.pcap'
+            );
         }
 
 
