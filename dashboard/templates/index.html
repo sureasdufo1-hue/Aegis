@@ -498,6 +498,23 @@
             border-color: #e7e2d6 !important;
         }
 
+        /* AI Hypothesis Section Warm Ivory */
+        body.theme-light-pristine #ai-hypothesis-section {
+            background-color: #fffefa !important;
+            border-color: #e7e2d6 !important;
+        }
+        body.theme-light-pristine #hypo-summary-banner {
+            background-color: #f6f2e9 !important;
+            border-color: #e7e2d6 !important;
+            color: #1c1917 !important;
+        }
+        body.theme-light-pristine .hypo-card {
+            background-color: #fffefa !important;
+            border-color: #e7e2d6 !important;
+            color: #1c1917 !important;
+        }
+
+
         /* High Readability Severity Pills (Warm Toned) */
         body.theme-light-pristine .sev-critical {
             color: #991b1b !important;
@@ -1809,6 +1826,55 @@
                     </div>
                 </section>
 
+                <!-- AI Security Hypothesis Generation & Multi-Source Verification Matrix (Phase 1-2 Pipeline) -->
+                <section id="ai-hypothesis-section" class="soc-panel rounded p-4 space-y-3 border-l-4 border-l-emerald-500">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-slate-800 pb-2">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-base">🔬</span>
+                                <h2 class="text-sm font-bold text-emerald-300 font-mono flex items-center gap-2">
+                                    <span>AI 보안 가설 수립 및 다중 소스 교차 검증 매트릭스 (Automated Security Hypothesis Matrix)</span>
+                                </h2>
+                                <span id="hypo-top-badge" class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-950 text-emerald-300 border border-emerald-800">
+                                    다단계 공격 가설 검증 완료
+                                </span>
+                            </div>
+                            <p class="text-xs text-slate-400 font-mono mt-0.5">
+                                Suricata EVE 로그, Gateway nftables 차단 기록, 타겟 PAM 인증 로그, PCAP 세션 포렌식을 교차 대조하여 다중 경쟁 가설을 과학적으로 입증/기각합니다.
+                            </p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs text-slate-400 font-mono">공격 시나리오:</span>
+                            <select id="hypo-scenario-select" onchange="loadSecurityHypotheses(this.value)" class="px-2.5 py-1 text-xs bg-slate-900 border border-slate-700 rounded text-slate-200 font-mono cursor-pointer">
+                                <option value="MULTI">IR-06 복합 다단계 킬체인 (SQLi + Log4j + C2 + BruteForce)</option>
+                                <option value="BRUTEFORCE">IR-02 SSH 무차별 대입 및 자격증명 탈취</option>
+                                <option value="SCAN">IR-01 Nmap SYN 포트 스캔 및 토폴로지 정찰</option>
+                                <option value="DOS">IR-05 TCP SYN 플러드 서비스 거부 공격</option>
+                            </select>
+                            <button onclick="refreshSecurityHypotheses()" class="px-3 py-1 text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded transition flex items-center gap-1 shadow cursor-pointer">
+                                <span>🔄</span> 가설 재검증
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Top Summary Conclusion Banner -->
+                    <div id="hypo-summary-banner" class="p-3 rounded bg-slate-900/90 border border-emerald-900/50 flex flex-col sm:flex-row sm:items-center justify-between gap-2 font-mono text-xs">
+                        <div class="flex items-center gap-2">
+                            <span class="text-emerald-400 font-bold">🎯 최종 판정 결론:</span>
+                            <span id="hypo-concluded-text" class="text-slate-200 font-semibold">가설 1 입증 (Web/Log4j 침투 탐지) &amp; 가설 2 기각 (C2 차단 성공)</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-[11px] text-slate-400">
+                            <span>대상 인시던트: <b id="hypo-target-inc" class="text-cyan-400">IR-06 (10.77.20.20 ➔ 10.77.30.20)</b></span>
+                            <span>판정 일시: <b id="hypo-timestamp" class="text-slate-300">2026-09-30 21:30:00 UTC</b></span>
+                        </div>
+                    </div>
+
+                    <!-- 3 Competing Hypothesis Cards Grid -->
+                    <div id="hypo-cards-grid" class="grid grid-cols-1 lg:grid-cols-3 gap-3 font-mono text-xs">
+                        <!-- Rendered dynamically by loadSecurityHypotheses() -->
+                    </div>
+                </section>
+
                 <!-- Human-in-the-Loop Approval Queue (Preserved IDs for existing tests) -->
                 <section class="soc-panel rounded p-4 space-y-3">
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-slate-800 pb-2">
@@ -2579,7 +2645,8 @@
             } else if (topMenu === 'ai') {
                 const el = document.getElementById('view-ai-analysis');
                 if (el) el.classList.remove('hidden');
-                setTimeout(() => { fetchActionProposals(); fetchIncidents(); }, 50);
+                setTimeout(() => { fetchActionProposals(); fetchIncidents(); loadSecurityHypotheses(); }, 50);
+
             } else if (topMenu === 'policy') {
                 const el = document.getElementById('view-policy');
                 if (el) el.classList.remove('hidden');
@@ -5426,6 +5493,181 @@
             if (reasonText) reasonText.innerText = reason;
         }
 
+        // =========================================================================
+        // AI Security Hypothesis Generation & Verification Pipeline
+        // =========================================================================
+        async function loadSecurityHypotheses(scenario = 'MULTI') {
+            const grid = document.getElementById('hypo-cards-grid');
+            const concludedText = document.getElementById('hypo-concluded-text');
+            const targetInc = document.getElementById('hypo-target-inc');
+            const timestampEl = document.getElementById('hypo-timestamp');
+            const topBadge = document.getElementById('hypo-top-badge');
+
+            if (!grid) return;
+
+            try {
+                const res = await fetch(`/api/ai/hypotheses/IR-06?scenario=${encodeURIComponent(scenario)}`);
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                const data = await res.json();
+
+                if (concludedText) concludedText.innerText = data.top_concluded_hypothesis || '가설 검증 완료';
+                if (targetInc) targetInc.innerText = `${data.incident_id} (${data.attacker_ip} ➔ ${data.target_ip})`;
+                if (timestampEl) timestampEl.innerText = data.generated_at;
+
+                if (topBadge) {
+                    topBadge.innerText = `${data.hypotheses.length}개 가설 교차 검증 완료`;
+                }
+
+                let html = '';
+                data.hypotheses.forEach(h => {
+                    let statusBadge = '';
+                    let borderClass = '';
+                    let barClass = '';
+                    let scoreColor = '';
+
+                    if (h.status === 'PROVEN') {
+                        statusBadge = '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">✅ 입증 (PROVEN)</span>';
+                        borderClass = 'border-emerald-500/70 shadow-emerald-500/10';
+                        barClass = 'bg-emerald-500';
+                        scoreColor = 'text-emerald-600 dark:text-emerald-400';
+                    } else if (h.status === 'REFUTED') {
+                        statusBadge = '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-300 dark:border-slate-700">❌ 기각 (REFUTED)</span>';
+                        borderClass = 'border-slate-300 dark:border-slate-700';
+                        barClass = 'bg-slate-500';
+                        scoreColor = 'text-slate-600 dark:text-slate-400';
+                    } else {
+                        statusBadge = '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border border-amber-300 dark:border-amber-800">🔍 조사 중 (INVESTIGATING)</span>';
+                        borderClass = 'border-amber-500/70 shadow-amber-500/10';
+                        barClass = 'bg-amber-500';
+                        scoreColor = 'text-amber-600 dark:text-amber-400';
+                    }
+
+                    let supportingHtml = '';
+                    if (h.supporting_evidences && h.supporting_evidences.length > 0) {
+                        supportingHtml = `
+                            <div class="space-y-1">
+                                <div class="text-[9px] font-bold text-emerald-700 dark:text-emerald-400 flex items-center gap-1">
+                                    <span>➕ 지지 증거 (${h.supporting_evidences.length}건):</span>
+                                </div>
+                                ${h.supporting_evidences.map(ev => `
+                                    <div class="p-1.5 rounded bg-emerald-50/60 dark:bg-emerald-950/30 border border-emerald-200/80 dark:border-emerald-900/60 text-[10px] space-y-0.5">
+                                        <div class="flex items-center justify-between font-bold text-emerald-800 dark:text-emerald-300">
+                                            <span>[${ev.source}]</span>
+                                            <span class="text-[9px] text-slate-500 dark:text-slate-400 font-mono">${ev.artifact_ref}</span>
+                                        </div>
+                                        <div class="text-slate-700 dark:text-slate-300 leading-tight">${ev.description}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `;
+                    }
+
+                    let refutingHtml = '';
+                    if (h.refuting_evidences && h.refuting_evidences.length > 0) {
+                        refutingHtml = `
+                            <div class="space-y-1">
+                                <div class="text-[9px] font-bold text-rose-700 dark:text-rose-400 flex items-center gap-1">
+                                    <span>➖ 반박 증거 (${h.refuting_evidences.length}건):</span>
+                                </div>
+                                ${h.refuting_evidences.map(ev => `
+                                    <div class="p-1.5 rounded bg-rose-50/60 dark:bg-rose-950/30 border border-rose-200/80 dark:border-rose-900/60 text-[10px] space-y-0.5">
+                                        <div class="flex items-center justify-between font-bold text-rose-800 dark:text-rose-300">
+                                            <span>[${ev.source}]</span>
+                                            <span class="text-[9px] text-slate-500 dark:text-slate-400 font-mono">${ev.artifact_ref}</span>
+                                        </div>
+                                        <div class="text-slate-700 dark:text-slate-300 leading-tight">${ev.description}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `;
+                    }
+
+                    html += `
+                        <div class="hypo-card p-3 rounded-lg border ${borderClass} bg-white dark:bg-slate-950 shadow-sm flex flex-col justify-between space-y-2.5">
+                            <div class="space-y-2">
+                                <div class="flex items-center justify-between gap-1 pb-1.5 border-b border-slate-100 dark:border-slate-800">
+                                    <span class="font-bold text-[11px] text-cyan-600 dark:text-cyan-400 font-mono">${h.id}</span>
+                                    <span class="text-[10px] font-semibold text-indigo-600 dark:text-indigo-400 truncate max-w-[140px]" title="${h.kill_chain_stage}">${h.kill_chain_stage}</span>
+                                    ${statusBadge}
+                                </div>
+
+                                <h3 class="font-bold text-xs text-slate-800 dark:text-slate-100 leading-snug">${h.title}</h3>
+
+                                <div class="space-y-1">
+                                    <div class="flex justify-between text-[10px] font-semibold">
+                                        <span class="text-slate-500 dark:text-slate-400">가설 신뢰도</span>
+                                        <span class="${scoreColor}">${h.confidence_score}%</span>
+                                    </div>
+                                    <div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                                        <div class="${barClass} h-1.5 rounded-full transition-all duration-500" style="width: ${h.confidence_score}%"></div>
+                                    </div>
+                                </div>
+
+                                <div class="p-2 rounded bg-slate-50 dark:bg-slate-900/70 border border-slate-100 dark:border-slate-800/80 text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">
+                                    <div class="text-[9px] font-bold text-slate-400 mb-0.5">핵심 판정 소명:</div>
+                                    ${h.primary_reason}
+                                </div>
+
+                                <div class="space-y-1.5">
+                                    ${supportingHtml}
+                                    ${refutingHtml}
+                                </div>
+                            </div>
+
+                            <div class="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+                                <div class="text-[10px] text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-900/60 p-1.5 rounded border border-slate-100 dark:border-slate-800">
+                                    <span class="font-bold text-slate-700 dark:text-slate-300">💡 권고:</span> ${h.recommended_action}
+                                </div>
+                                <button onclick="carvePcapForHypothesis('${h.id}', '${h.kill_chain_stage.replace(/'/g, "\\'")}', '${h.title.replace(/'/g, "\\'")}')" class="w-full py-1.5 px-2 rounded bg-amber-50 hover:bg-amber-100 text-amber-900 dark:bg-amber-950/60 dark:hover:bg-amber-900/80 dark:text-amber-300 border border-amber-300 dark:border-amber-800 font-bold text-[10px] transition flex items-center justify-center gap-1.5 cursor-pointer shadow-sm">
+                                    <span>🔎 관련 PCAP 세션 패킷 검증</span>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                grid.innerHTML = html;
+            } catch (e) {
+                console.error('Error loading hypotheses:', e);
+                grid.innerHTML = `<div class="col-span-3 p-4 text-center text-red-500">보안 가설을 로딩하는 중 오류가 발생했습니다: ${e.message}</div>`;
+            }
+        }
+
+        function refreshSecurityHypotheses() {
+            const sel = document.getElementById('hypo-scenario-select');
+            const val = sel ? sel.value : 'MULTI';
+            loadSecurityHypotheses(val);
+        }
+
+        function carvePcapForHypothesis(hypoId, stage, title) {
+            let sig = title;
+            let dstPort = 80;
+            let sid = 0;
+            const lower = (stage + ' ' + title).toLowerCase();
+            if (lower.includes('ssh') || lower.includes('credential') || lower.includes('brute')) {
+                sig = 'ET SCAN Potential SSH Scan';
+                dstPort = 22;
+                sid = 1000003;
+            } else if (lower.includes('nmap') || lower.includes('scan') || lower.includes('recon')) {
+                sig = 'Nmap SYN Stealth Scan';
+                dstPort = 80;
+                sid = 1000001;
+            } else if (lower.includes('dos') || lower.includes('flood') || lower.includes('impact')) {
+                sig = 'TCP SYN Flood Packet Anomaly';
+                dstPort = 80;
+                sid = 9000005;
+            } else if (lower.includes('log4j') || lower.includes('jndi')) {
+                sig = 'Apache Log4j jndi:ldap RCE';
+                dstPort = 8080;
+                sid = 9010002;
+            } else {
+                sig = 'ET WEB_SPECIFIC_APPS SQL Injection';
+                dstPort = 80;
+                sid = 9010001;
+            }
+            openPcapForensicModal(sig, '10.77.20.20', '10.77.30.20', dstPort, sid);
+        }
+
 
         // Initialize on Load
         window.addEventListener('DOMContentLoaded', () => {
@@ -5435,6 +5677,7 @@
             initCyberNeuralGraph();
             initWebSocket();
             refreshAllTelemetry();
+            loadSecurityHypotheses('MULTI');
 
             // Periodic Refresh every 10s
             setInterval(() => {
@@ -5442,6 +5685,7 @@
                 fetchAuditLogs();
             }, 10000);
         });
+
     </script>
 </body>
 </html>

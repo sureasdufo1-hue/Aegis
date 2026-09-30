@@ -14,6 +14,8 @@ from pydantic import BaseModel, Field
 
 from dashboard.pcap_carver import pcap_carver_engine
 from dashboard.xai_engine import xai_engine
+from dashboard.hypothesis_engine import hypothesis_engine
+
 
 from analyzer.ai.actions.executor import ActionExecutor
 from analyzer.ai.approvals.repository import ApprovalRepository
@@ -344,6 +346,38 @@ def get_default_xai_scenario(scenario: str):
     """Get predefined XAI feature radar model for known scenario."""
     result = xai_engine.explain_threat({"scenario": scenario})
     return result
+
+
+class HypothesisEvaluateRequest(BaseModel):
+    incident_id: str | None = "INC-20260922-001"
+    attacker_ip: str | None = "10.77.20.20"
+    target_ip: str | None = "10.77.30.20"
+    scenario: str | None = None
+
+
+@app.get("/api/ai/hypotheses/{incident_id}")
+def get_incident_hypotheses(
+    incident_id: str,
+    attacker_ip: str = "10.77.20.20",
+    target_ip: str = "10.77.30.20",
+    scenario: str | None = None,
+):
+    """Retrieve multi-source verified competing security hypotheses for an incident."""
+    report = hypothesis_engine.evaluate_incident(
+        incident_id=incident_id,
+        attacker_ip=attacker_ip,
+        target_ip=target_ip,
+        scenario=scenario,
+    )
+    return report.model_dump()
+
+
+@app.post("/api/ai/hypotheses/evaluate")
+def evaluate_security_hypotheses(req: HypothesisEvaluateRequest):
+    """Evaluate or re-verify security hypotheses with custom incident context."""
+    report = hypothesis_engine.evaluate_custom(req.model_dump())
+    return report.model_dump()
+
 
 
 @app.post("/api/ai/interpret")
