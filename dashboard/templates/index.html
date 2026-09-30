@@ -106,7 +106,100 @@
             .soc-panel-header { background: #f1f5f9 !important; border-bottom: 1px solid #cbd5e1 !important; color: #0f172a !important; }
             .text-white { color: #0f172a !important; }
             .text-slate-400, .text-slate-500 { color: #475569 !important; }
-            .bg-slate-950, .bg-slate-900, .bg-slate-800 { background: #f8fafc !important; border-color: #cbd5e1 !important; }
+        }
+
+        /* ============================================================================== */
+        /* Celestial Sky Glassmorphism Theme (C:\Users\user\Downloads\Codex 하늘 이미지 기반) */
+        /* ============================================================================== */
+        body.theme-sky-glass {
+            background: url('/static/sky_bg.png') no-repeat center center fixed !important;
+            background-size: cover !important;
+            color: #0f172a !important;
+        }
+
+        body.theme-sky-glass .soc-header {
+            background: rgba(255, 255, 255, 0.88) !important;
+            backdrop-filter: blur(20px) !important;
+            -webkit-backdrop-filter: blur(20px) !important;
+            border-bottom: 1px solid rgba(186, 230, 253, 0.8) !important;
+            box-shadow: 0 4px 25px rgba(37, 99, 235, 0.08) !important;
+        }
+
+        body.theme-sky-glass .soc-sidebar {
+            background: rgba(255, 255, 255, 0.82) !important;
+            backdrop-filter: blur(24px) !important;
+            -webkit-backdrop-filter: blur(24px) !important;
+            border-right: 1px solid rgba(186, 230, 253, 0.7) !important;
+            box-shadow: 2px 0 20px rgba(37, 99, 235, 0.06) !important;
+        }
+
+        body.theme-sky-glass .soc-workspace {
+            background: transparent !important;
+        }
+
+        body.theme-sky-glass .soc-panel {
+            background: rgba(255, 255, 255, 0.88) !important;
+            backdrop-filter: blur(20px) !important;
+            -webkit-backdrop-filter: blur(20px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.9) !important;
+            box-shadow: 0 10px 30px rgba(37, 99, 235, 0.09), 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+            color: #0f172a !important;
+        }
+
+        body.theme-sky-glass .soc-panel-header {
+            background: rgba(240, 249, 255, 0.92) !important;
+            border-bottom: 1px solid rgba(186, 230, 253, 0.7) !important;
+            color: #0f172a !important;
+        }
+
+        body.theme-sky-glass .soc-table th {
+            background: rgba(224, 242, 254, 0.9) !important;
+            color: #0369a1 !important;
+            border-bottom: 1px solid rgba(186, 230, 253, 0.8) !important;
+        }
+
+        body.theme-sky-glass .soc-table td {
+            border-bottom: 1px solid rgba(241, 245, 249, 0.9) !important;
+            color: #1e293b !important;
+        }
+
+        body.theme-sky-glass .soc-table tr:hover {
+            background: rgba(224, 242, 254, 0.45) !important;
+        }
+
+        body.theme-sky-glass .text-slate-400,
+        body.theme-sky-glass .text-slate-500,
+        body.theme-sky-glass .text-slate-300 {
+            color: #475569 !important;
+        }
+
+        body.theme-sky-glass .text-white {
+            color: #0f172a !important;
+        }
+
+        body.theme-sky-glass .bg-slate-900,
+        body.theme-sky-glass .bg-slate-950 {
+            background: rgba(255, 255, 255, 0.92) !important;
+            border-color: rgba(186, 230, 253, 0.7) !important;
+            color: #0f172a !important;
+        }
+
+        body.theme-sky-glass .bg-slate-800 {
+            background: rgba(240, 249, 255, 0.88) !important;
+            border-color: rgba(186, 230, 253, 0.7) !important;
+            color: #0f172a !important;
+        }
+
+        body.theme-sky-glass .nav-item-active {
+            background: rgba(14, 165, 233, 0.18) !important;
+            color: #0284c7 !important;
+            border-left: 3px solid #0284c7 !important;
+            font-weight: 700 !important;
+        }
+
+        body.theme-sky-glass .border-slate-800,
+        body.theme-sky-glass .border-slate-700 {
+            border-color: rgba(186, 230, 253, 0.6) !important;
         }
     </style>
 </head>
@@ -120,18 +213,18 @@
         <div class="flex items-center gap-4">
             <!-- Brand Logo -->
             <div class="flex items-center gap-2.5 cursor-pointer" onclick="switchView('dashboard', 'overview')">
-                <div class="w-8 h-8 rounded bg-gradient-to-tr from-sky-600 via-indigo-600 to-cyan-500 flex items-center justify-center font-black text-white text-xs shadow-md shadow-sky-950">
-                    SOC
+                <div class="w-9 h-9 rounded-lg bg-gradient-to-tr from-sky-500 via-blue-600 to-cyan-400 flex items-center justify-center font-black text-white text-sm shadow-md shadow-sky-500/30 border border-white/50">
+                    🛡️
                 </div>
                 <div>
-                    <div class="flex items-center gap-1.5">
-                        <span class="text-xs font-bold text-white tracking-tight">AEGIS CONSOLE</span>
-                        <span class="text-[9px] px-1.5 py-0.2 rounded bg-sky-500/20 text-sky-300 font-mono font-semibold border border-sky-500/30">
-                            v3.2 LIVE
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm font-extrabold tracking-tight">AegisAI</span>
+                        <span class="text-[9px] px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-700 font-bold border border-blue-400/40">
+                            AI for Security × Security for AI
                         </span>
                     </div>
-                    <div class="text-[10px] text-slate-400 font-mono leading-none">
-                        보안관제 센터 (Security Operations Center)
+                    <div class="text-[10px] text-slate-500 font-mono leading-none mt-0.5">
+                        Suricata 8.0.6 · Snort 3.12.2 · Wazuh 4.14.7 · AI 보안 7대 원칙 준수
                     </div>
                 </div>
             </div>
@@ -224,6 +317,12 @@
                 <span class="text-slate-600">|</span>
                 <span class="text-sky-400 font-semibold">SOC Analyst</span>
             </div>
+
+            <!-- Celestial Sky Glass Theme Toggle -->
+            <button onclick="toggleSkyTheme()" id="btn-theme-toggle" class="px-2.5 py-1 text-[11px] font-semibold bg-sky-500/20 hover:bg-sky-500/30 text-sky-700 dark:text-sky-300 border border-sky-400/40 rounded transition flex items-center gap-1 shadow-sm cursor-pointer" title="하늘(Sky Glass) / 야간(Dark) 테마 전환">
+                <span id="theme-toggle-icon">☀️</span>
+                <span id="theme-toggle-label" class="hidden sm:inline">Sky Theme</span>
+            </button>
 
             <!-- Refresh & External Telemetry Links -->
             <button onclick="refreshAllTelemetry()" class="px-2 py-1 text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded transition flex items-center gap-1" title="실시간 텔레메트리 갱신">
@@ -3582,8 +3681,42 @@
             showToast('텔레메트리 갱신 완료', 'emerald');
         }
 
+        function toggleSkyTheme() {
+            const isSky = document.body.classList.toggle('theme-sky-glass');
+            localStorage.setItem('aegis_theme', isSky ? 'sky' : 'dark');
+            const icon = document.getElementById('theme-toggle-icon');
+            const label = document.getElementById('theme-toggle-label');
+            if (icon && label) {
+                icon.innerText = isSky ? '☀️' : '🌙';
+                label.innerText = isSky ? 'Sky Theme' : 'Dark Theme';
+            }
+            showToast(isSky ? '☀️ Celestial Sky Glass 테마 활성화' : '🌙 Dark SOC 관제 테마 활성화', 'sky');
+        }
+
+        function initSkyTheme() {
+            const saved = localStorage.getItem('aegis_theme');
+            if (saved === 'sky' || !saved) {
+                document.body.classList.add('theme-sky-glass');
+                const icon = document.getElementById('theme-toggle-icon');
+                const label = document.getElementById('theme-toggle-label');
+                if (icon && label) {
+                    icon.innerText = '☀️';
+                    label.innerText = 'Sky Theme';
+                }
+            } else {
+                document.body.classList.remove('theme-sky-glass');
+                const icon = document.getElementById('theme-toggle-icon');
+                const label = document.getElementById('theme-toggle-label');
+                if (icon && label) {
+                    icon.innerText = '🌙';
+                    label.innerText = 'Dark Theme';
+                }
+            }
+        }
+
         // Initialize on Load
         window.addEventListener('DOMContentLoaded', () => {
+            initSkyTheme();
             switchView('dashboard', 'overview');
             initWorldThreatMap();
             initWebSocket();
