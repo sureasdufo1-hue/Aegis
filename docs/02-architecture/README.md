@@ -63,6 +63,10 @@ docs/05-testing/12_AI_RED_TEAM_SCENARIOS.md (180개 챕터, 24대 매트릭스)
       ▼
 [ v2.0 통합 SOC 운영·대응 플레이북 ]
 docs/04-deployment/13_OPERATION_PLAYBOOK.md (★ 135개 챕터, 25대 매트릭스)
+      │
+      ▼
+[ v2.0 통합 최종 평가 및 검증 보고서 ]
+docs/05-testing/14_FINAL_EVALUATION_REPORT.md (★ 142개 챕터, 12대 다이어그램, 30대 매트릭스)
 ```
 
 ---
