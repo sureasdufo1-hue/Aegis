@@ -97,6 +97,63 @@
             fill: none;
         }
 
+        /* Obsidian Cyber Neural Knowledge Graph Styles */
+        #cyber-neural-graph-container {
+            background-color: #0b1120;
+            background-image: radial-gradient(#1e293b 1px, transparent 1px);
+            background-size: 16px 16px;
+        }
+        @keyframes marchDash {
+            to { stroke-dashoffset: -30; }
+        }
+        .attack-path-animated {
+            stroke-dasharray: 6, 4 !important;
+            animation: marchDash 1.2s linear infinite !important;
+        }
+        .graph-dimmed {
+            opacity: 0.15 !important;
+            transition: opacity 0.25s ease-in-out;
+        }
+        .graph-highlighted {
+            opacity: 1 !important;
+            transition: opacity 0.25s ease-in-out;
+        }
+        .graph-node {
+            cursor: pointer;
+            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .graph-node:hover circle {
+            filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.9));
+        }
+        .graph-link {
+            transition: opacity 0.25s ease, stroke-width 0.2s ease;
+        }
+        .graph-link-label {
+            font-size: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            fill: #94a3b8;
+            pointer-events: none;
+        }
+        .node-label {
+            fill: #cbd5e1;
+            transition: fill 0.2s ease;
+            pointer-events: none;
+        }
+
+        body.theme-light-pristine #cyber-neural-graph-container {
+            background-color: #f8fafc !important;
+            background-image: radial-gradient(#cbd5e1 1.2px, transparent 1.2px) !important;
+            background-size: 16px 16px !important;
+        }
+        body.theme-light-pristine .node-label {
+            fill: #1e293b !important;
+            font-weight: 700 !important;
+        }
+        body.theme-light-pristine .graph-link-label {
+            fill: #475569 !important;
+            font-weight: 600 !important;
+        }
+
         /* Print and PDF Export Styles */
         @media print {
             body { background: #ffffff !important; color: #0f172a !important; }
@@ -580,126 +637,137 @@
                     <span id="metric-approvals">-</span>
                 </div>
 
-                <!-- 1.2 인공신경망 위협 추론 중심 허브 (Neural Threat Inference & XAI Hub) -->
+                <!-- 1.2 사이버 신경망 지식 그래프 (Cyber Neural Knowledge Graph // Obsidian Engine) -->
                 <section class="soc-panel rounded overflow-hidden shadow-sm">
-                    <div class="soc-panel-header px-4 py-2.5 flex items-center justify-between border-b border-slate-200 dark:border-slate-800">
+                    <div class="soc-panel-header px-4 py-2 flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 dark:border-slate-800">
                         <div class="flex items-center gap-2.5">
-                            <span class="w-2.5 h-2.5 rounded-full bg-blue-600 animate-pulse"></span>
+                            <span class="w-2.5 h-2.5 rounded-full bg-cyan-500 animate-pulse"></span>
                             <span class="text-xs font-extrabold font-mono tracking-tight text-slate-900 dark:text-white flex items-center gap-1.5">
-                                <span>🧠 인공신경망 위협 추론 허브</span>
+                                <span>🕸️ 사이버 신경망 지식 그래프</span>
                                 <span class="text-slate-400 font-normal">|</span>
-                                <span class="text-sky-700 dark:text-sky-300 font-semibold">Deep NIDS & XAI Multi-Layer Flow</span>
+                                <span class="text-cyan-700 dark:text-cyan-300 font-semibold">Obsidian-Style Interactive Threat Topology</span>
                             </span>
-                            <span class="text-[10px] px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200 font-bold font-mono">
-                                LIVE INFERENCE ACTIVE
+                            <span class="text-[10px] px-2 py-0.5 rounded-full bg-cyan-50 text-cyan-700 dark:bg-cyan-950/50 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-800 font-bold font-mono">
+                                D3 FORCE SIMULATION ACTIVE
                             </span>
                         </div>
-                        <div class="flex items-center gap-3 text-[11px] font-mono">
-                            <span class="text-slate-500">추론 레이턴시: <b class="text-blue-600 dark:text-blue-400">1.12ms</b></span>
-                            <span class="text-slate-300 dark:text-slate-700">|</span>
-                            <span class="text-slate-500">신경망 손실값(Loss): <b class="text-emerald-600 dark:text-emerald-400">0.0084</b></span>
-                            <span class="text-slate-300 dark:text-slate-700">|</span>
-                            <span class="text-slate-500">분류 정확도: <b class="text-slate-800 dark:text-slate-200">99.4%</b></span>
+                        
+                        <!-- Search & Controls toolbar -->
+                        <div class="flex items-center gap-2 text-xs font-mono">
+                            <div class="relative">
+                                <input type="text" id="graph-search-input" placeholder="IP, SID, TTP 검색..." class="text-[11px] px-2.5 py-1 pl-7 rounded border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 w-36 focus:w-48 transition-all focus:outline-none focus:ring-1 focus:ring-cyan-500">
+                                <span class="absolute left-2 top-1.5 text-[10px] text-slate-400">🔍</span>
+                            </div>
+                            <button id="btn-trace-path" onclick="traceAttackPath()" class="px-2.5 py-1 text-[11px] rounded bg-red-50 hover:bg-red-100 text-red-700 dark:bg-red-950/40 dark:hover:bg-red-900/60 dark:text-red-300 border border-red-200 dark:border-red-800 font-bold transition-colors flex items-center gap-1">
+                                <span>⚡ 침투 경로 추적</span>
+                            </button>
+                            <button id="btn-toggle-freeze" onclick="toggleGraphPhysics()" class="px-2.5 py-1 text-[11px] rounded bg-slate-100 hover:bg-slate-200 text-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 transition-colors flex items-center gap-1">
+                                <span id="freeze-icon">❄️</span> <span id="freeze-text">물리 고정</span>
+                            </button>
+                            <button onclick="resetGraphZoom()" class="px-2 py-1 text-[11px] rounded bg-slate-100 hover:bg-slate-200 text-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 transition-colors" title="화면 중앙 초기화">
+                                <span>🔄 뷰 리셋</span>
+                            </button>
                         </div>
                     </div>
 
-                    <!-- Main Neural Content: 65% Topology Canvas + 35% XAI & Model Metrics -->
+                    <!-- Main Grid: 8 Cols Interactive Obsidian Graph Canvas + 4 Cols Deep Entity Inspector -->
                     <div class="grid grid-cols-1 xl:grid-cols-12 gap-0 bg-white dark:bg-slate-950">
-                        <!-- Left: Deep Neural Network Interactive Canvas (8 cols) -->
-                        <div class="xl:col-span-8 p-3 flex flex-col border-b xl:border-b-0 xl:border-r border-slate-200 dark:border-slate-800">
-                            <div class="flex items-center justify-between mb-2">
-                                <div class="text-[11px] font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5 font-mono">
-                                    <span>🔬 4-Tier 시냅스 활성화 흐름 (Input ➔ Hidden 1 ➔ Hidden 2 ➔ Softmax)</span>
+                        <!-- Left: Interactive Obsidian D3 Force Graph (8 cols) -->
+                        <div class="xl:col-span-8 p-3 flex flex-col border-b xl:border-b-0 xl:border-r border-slate-200 dark:border-slate-800 relative">
+                            <!-- Legend pills bar -->
+                            <div class="flex items-center justify-between mb-2 flex-wrap gap-1 text-[10px] font-mono">
+                                <div class="text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                                    <span class="font-bold text-slate-700 dark:text-slate-200">노드 범례:</span>
+                                    <span>(노드를 클릭하면 연결된 개체 탐색 및 우측 상세 패널 열림)</span>
                                 </div>
-                                <div class="text-[10px] font-mono text-slate-500 flex items-center gap-2">
-                                    <span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-sky-500"></span>특징 전송</span>
-                                    <span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-blue-600"></span>활성 뉴런</span>
-                                    <span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-red-600"></span>위협 식별</span>
+                                <div class="flex items-center gap-1.5 flex-wrap">
+                                    <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-red-50 text-red-700 dark:bg-red-950/40 dark:text-red-300 border border-red-200 dark:border-red-800"><span class="w-1.5 h-1.5 rounded-full bg-red-600"></span>공격자</span>
+                                    <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300 border border-amber-200 dark:border-amber-800"><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>게이트웨이</span>
+                                    <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800"><span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>피해자/자산</span>
+                                    <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-sky-50 text-sky-700 dark:bg-sky-950/40 dark:text-sky-300 border border-sky-200 dark:border-sky-800"><span class="w-1.5 h-1.5 rounded-full bg-sky-500"></span>센서</span>
+                                    <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-purple-50 text-purple-700 dark:bg-purple-950/40 dark:text-purple-300 border border-purple-200 dark:border-purple-800"><span class="w-1.5 h-1.5 rounded-full bg-purple-500"></span>Suricata 룰</span>
+                                    <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-yellow-50 text-yellow-700 dark:bg-yellow-950/40 dark:text-yellow-300 border border-yellow-200 dark:border-yellow-800"><span class="w-1.5 h-1.5 rounded-full bg-yellow-500"></span>MITRE TTP</span>
+                                    <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-700"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>차단 승인 티켓</span>
                                 </div>
                             </div>
-                            <div class="w-full h-64 relative bg-slate-50/60 dark:bg-slate-900/60 rounded border border-slate-200/80 dark:border-slate-800 overflow-hidden flex items-center justify-center">
-                                <canvas id="neuralNetworkCanvas" class="w-full h-full block"></canvas>
+                            
+                            <!-- Graph SVG Container -->
+                            <div id="cyber-neural-graph-container" class="w-full h-80 relative bg-slate-50/70 dark:bg-slate-900/60 rounded border border-slate-200/80 dark:border-slate-800 overflow-hidden flex items-center justify-center cursor-grab active:cursor-grabbing select-none">
+                                <svg id="cyberNeuralGraphSvg" class="w-full h-full block"></svg>
+                                
+                                <!-- Floating Quick Controls inside SVG -->
+                                <div class="absolute bottom-2 left-2 flex items-center gap-1 bg-white/90 dark:bg-slate-800/90 backdrop-blur px-2 py-1 rounded shadow-sm border border-slate-200 dark:border-slate-700 text-[10px] font-mono text-slate-500">
+                                    <span>🖱️ 휠: 줌(확대/축소) | 드래그: 이동/노드이동 | 클릭: 개체 추적</span>
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Right: XAI Metrics & Top-3 Feature Importance (4 cols) -->
+                        <!-- Right: Deep Entity Inspector & Correlation Panel (4 cols) -->
                         <div class="xl:col-span-4 p-3.5 flex flex-col justify-between bg-slate-50/40 dark:bg-slate-900/40 font-mono">
-                            <div>
-                                <div class="text-[11px] font-bold text-slate-800 dark:text-slate-200 mb-2.5 flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-1.5">
-                                    <span>📊 실시간 분류 예측 (Softmax Probabilities)</span>
-                                    <span class="text-[9px] px-1.5 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200">LATEST EVENT</span>
+                            <div id="graph-entity-inspector">
+                                <!-- Dynamic Content injected via JS; Initial Overview State below -->
+                                <div class="text-[11px] font-bold text-slate-800 dark:text-slate-200 mb-2 flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-1.5">
+                                    <span class="flex items-center gap-1.5">
+                                        <span id="inspector-icon">🎯</span>
+                                        <span id="inspector-title">개체 검사기 (Entity Inspector)</span>
+                                    </span>
+                                    <span id="inspector-badge" class="text-[9px] px-1.5 py-0.5 rounded bg-cyan-50 text-cyan-700 dark:bg-cyan-950/50 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-800 font-bold">READY</span>
                                 </div>
 
-                                <!-- Softmax Progress Bars -->
-                                <div class="space-y-2 text-[11px]">
-                                    <div>
-                                        <div class="flex justify-between mb-0.5">
-                                            <span class="font-semibold text-slate-700 dark:text-slate-300">SSH BruteForce (침해 공격)</span>
-                                            <span id="prob-bruteforce" class="font-bold text-red-600">84.6%</span>
+                                <!-- Entity Primary Card -->
+                                <div id="inspector-body" class="space-y-2.5 text-[11px]">
+                                    <div class="p-2 rounded bg-white dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 shadow-sm">
+                                        <div class="text-[10px] text-slate-400 font-semibold mb-0.5">선택된 노드 / 개체 식별자</div>
+                                        <div id="insp-node-name" class="font-bold text-sm text-slate-800 dark:text-slate-100 flex items-center justify-between">
+                                            <span>10.77.20.50</span>
+                                            <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-red-100 text-red-700 dark:bg-red-950/50 dark:text-red-300">CRITICAL</span>
                                         </div>
-                                        <div class="w-full bg-slate-200 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
-                                            <div id="bar-bruteforce" class="bg-red-600 h-full rounded-full transition-all duration-500" style="width: 84.6%;"></div>
+                                        <div id="insp-node-role" class="text-[10px] text-slate-500 dark:text-slate-400 mt-1">외부 공격 발원지 (BruteForce / Scan 탐지)</div>
+                                    </div>
+
+                                    <!-- Key Telemetry Details -->
+                                    <div class="space-y-1 bg-white dark:bg-slate-800/60 p-2 rounded border border-slate-200 dark:border-slate-700 text-[10px]">
+                                        <div class="flex justify-between py-0.5 border-b border-slate-100 dark:border-slate-700/50">
+                                            <span class="text-slate-500">네트워크 구역:</span>
+                                            <span id="insp-zone" class="font-bold text-slate-700 dark:text-slate-300">ZONE-ATTACK (10.77.20.0/24)</span>
+                                        </div>
+                                        <div class="flex justify-between py-0.5 border-b border-slate-100 dark:border-slate-700/50">
+                                            <span class="text-slate-500">보안 격리 상태:</span>
+                                            <span id="insp-status" class="font-bold text-red-600 dark:text-red-400">ISOLATED (차단 완료)</span>
+                                        </div>
+                                        <div class="flex justify-between py-0.5 border-b border-slate-100 dark:border-slate-700/50">
+                                            <span class="text-slate-500">Suricata 알림 건수:</span>
+                                            <span id="insp-alerts" class="font-bold text-slate-800 dark:text-slate-200">24건 누적 (SID 1000003 외)</span>
+                                        </div>
+                                        <div class="flex justify-between py-0.5">
+                                            <span class="text-slate-500">연계 MITRE TTPs:</span>
+                                            <span id="insp-mitre" class="font-bold text-amber-600 dark:text-amber-400">T1110.001 (Password Guessing)</span>
                                         </div>
                                     </div>
+
+                                    <!-- 1-Hop Connected Entities list -->
                                     <div>
-                                        <div class="flex justify-between mb-0.5">
-                                            <span class="text-slate-600 dark:text-slate-400">PortScan (정찰 스캔)</span>
-                                            <span id="prob-portscan" class="text-slate-700 dark:text-slate-300">12.4%</span>
+                                        <div class="text-[10px] font-bold text-slate-600 dark:text-slate-400 mb-1 flex items-center justify-between">
+                                            <span>🔗 연관 개체 관계 (1-Hop Traversal)</span>
+                                            <span class="text-[9px] text-slate-400">클릭하여 해당 개체로 이동</span>
                                         </div>
-                                        <div class="w-full bg-slate-200 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
-                                            <div id="bar-portscan" class="bg-amber-500 h-full rounded-full transition-all duration-500" style="width: 12.4%;"></div>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="flex justify-between mb-0.5">
-                                            <span class="text-slate-600 dark:text-slate-400">Web Exploit (웹 취약점 탐색)</span>
-                                            <span id="prob-exploit" class="text-slate-700 dark:text-slate-300">1.8%</span>
-                                        </div>
-                                        <div class="w-full bg-slate-200 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
-                                            <div id="bar-exploit" class="bg-blue-500 h-full rounded-full transition-all duration-500" style="width: 1.8%;"></div>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="flex justify-between mb-0.5">
-                                            <span class="text-slate-600 dark:text-slate-400">Normal / Benign (정상 플로우)</span>
-                                            <span id="prob-normal" class="text-slate-700 dark:text-slate-300">0.9%</span>
-                                        </div>
-                                        <div class="w-full bg-slate-200 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
-                                            <div id="bar-normal" class="bg-emerald-500 h-full rounded-full transition-all duration-500" style="width: 0.9%;"></div>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="flex justify-between mb-0.5">
-                                            <span class="text-slate-600 dark:text-slate-400">C2 Exfiltration (비인가 유출)</span>
-                                            <span id="prob-c2" class="text-slate-700 dark:text-slate-300">0.3%</span>
-                                        </div>
-                                        <div class="w-full bg-slate-200 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
-                                            <div id="bar-c2" class="bg-purple-500 h-full rounded-full transition-all duration-500" style="width: 0.3%;"></div>
+                                        <div id="insp-connections" class="flex flex-wrap gap-1">
+                                            <button onclick="focusGraphNode('gateway')" class="px-1.5 py-0.5 rounded bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-[10px] border border-slate-200 dark:border-slate-700">➔ Gateway (10.77.10.1)</button>
+                                            <button onclick="focusGraphNode('victim')" class="px-1.5 py-0.5 rounded bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-[10px] border border-slate-200 dark:border-slate-700">➔ Victim (10.77.30.100)</button>
+                                            <button onclick="focusGraphNode('ticket_apr')" class="px-1.5 py-0.5 rounded bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 text-[10px] border border-emerald-200 dark:border-emerald-800">➔ Ticket (APR-90738766-238)</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- XAI Contributing Features -->
-                            <div class="mt-3 pt-2.5 border-t border-slate-200 dark:border-slate-800">
-                                <div class="text-[10px] font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center justify-between">
-                                    <span>🧠 설명가능성(XAI) 핵심 기여 피처</span>
-                                    <span class="text-slate-400">SHAP / Attention</span>
-                                </div>
-                                <div class="grid grid-cols-3 gap-1.5 text-center text-[10px]">
-                                    <div class="p-1.5 rounded bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-                                        <div class="text-slate-400 text-[9px]">SYN_Ratio</div>
-                                        <div class="font-bold text-red-600">+0.42</div>
-                                    </div>
-                                    <div class="p-1.5 rounded bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-                                        <div class="text-slate-400 text-[9px]">Dst_Entropy</div>
-                                        <div class="font-bold text-amber-600">+0.31</div>
-                                    </div>
-                                    <div class="p-1.5 rounded bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-                                        <div class="text-slate-400 text-[9px]">Burst_Rate</div>
-                                        <div class="font-bold text-blue-600">+0.27</div>
-                                    </div>
-                                </div>
+                            <!-- Bottom Action Button in Inspector -->
+                            <div class="mt-3 pt-2 border-t border-slate-200 dark:border-slate-800 flex items-center gap-2">
+                                <button id="insp-action-btn" onclick="openApprovalModal()" class="flex-1 py-1.5 px-2.5 rounded bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-[11px] shadow-sm transition-colors flex items-center justify-center gap-1.5">
+                                    <span>🛡️ 대응 승인 큐 열기</span>
+                                </button>
+                                <button onclick="resetGraphSelection()" class="py-1.5 px-2.5 rounded border border-slate-200 dark:border-slate-700 bg-white hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-[11px]">
+                                    <span>선택 해제</span>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -3864,149 +3932,470 @@
             }
         }
 
-        function initNeuralNetworkCanvas() {
-            const canvas = document.getElementById('neuralNetworkCanvas');
-            if (!canvas) return;
-            const ctx = canvas.getContext('2d');
-            if (!ctx) return;
+        let cyberGraphSim = null;
+        let cyberGraphSvg = null;
+        let cyberGraphG = null;
+        let cyberGraphZoom = null;
+        let isGraphFrozen = false;
+        let activeGraphNodeId = null;
 
-            function resize() {
-                canvas.width = canvas.parentElement.clientWidth || 600;
-                canvas.height = canvas.parentElement.clientHeight || 250;
-            }
-            resize();
-            window.addEventListener('resize', resize);
+        const cyberGraphData = {
+            nodes: [
+                { id: "attacker", label: "10.77.20.50", type: "attacker", name: "soc-attacker", zone: "ZONE-ATTACK (10.77.20.0/24)", risk: "CRITICAL (98)", status: "ISOLATED (차단 완료)", role: "외부 공격 발원지 (BruteForce / Scan 탐지)", alerts: "24건 누적 (SID 1000003 외)", mitre: "T1110.001, T1046", icon: "⚡", radius: 20, color: "#ef4444", x: 120, y: 160 },
+                { id: "gateway", label: "10.77.10.1", type: "gateway", name: "soc-gateway", zone: "SECURITY BOUNDARY", risk: "HIGH (75)", status: "NFTABLES ACTIVE", role: "L3 라우터 & 방화벽 보안 경계 (인터페이스 eth0/1/2)", alerts: "nftables drop 룰 적용", mitre: "경계 방어 통제 (Boundary Defense)", icon: "🛡️", radius: 18, color: "#f59e0b", x: 260, y: 140 },
+                { id: "victim", label: "10.77.30.100", type: "victim", name: "soc-victim", zone: "ZONE-VICTIM (10.77.30.0/24)", risk: "TARGETED (85)", status: "PROTECTED / ONLINE", role: "내부 주요 웹/인증 서버 자산 (SSH 22, HTTP 80)", alerts: "무차별 대입 및 포트 정찰 타겟", mitre: "T1110.001 표적", icon: "🎯", radius: 19, color: "#10b981", x: 400, y: 130 },
+                { id: "sensor", label: "soc-sensor", type: "sensor", name: "soc-sensor", zone: "ZONE-MGMT (10.77.10.20)", risk: "INFO", status: "PASSIVE CAPTURE", role: "Hyper-V 미러링 패킷 무손실 수집 (eth1 L3 IP 없음)", alerts: "초당 3,400+ 패킷 인스펙션", mitre: "Network Detection Sensor", icon: "👁️", radius: 16, color: "#0ea5e9", x: 380, y: 240 },
+                { id: "rule_1000003", label: "SID: 1000003", type: "rule", name: "ET SCAN Potential SSH Scan", zone: "SURICATA 8.0.6", risk: "CRITICAL", status: "FIRED (18회)", role: "SSH 무차별 대입 및 포트 정찰 탐지 시그니처", alerts: "18건 매칭 기록", mitre: "T1110.001 (Brute Force)", icon: "📜", radius: 15, color: "#a855f7", x: 520, y: 190 },
+                { id: "rule_1000001", label: "SID: 1000001", type: "rule", name: "GPL ATTACK_RESPONSE id check", zone: "SURICATA 8.0.6", risk: "HIGH", status: "FIRED (4회)", role: "원격 명령 실행 응답 확인 시그니처", alerts: "4건 매칭 기록", mitre: "T1059 (Command Execution)", icon: "📜", radius: 15, color: "#a855f7", x: 530, y: 250 },
+                { id: "rule_1000005", label: "SID: 1000005", type: "rule", name: "ET WEB_SPECIFIC_APPS PHP probe", zone: "SURICATA 8.0.6", risk: "MEDIUM", status: "FIRED (2회)", role: "웹 디렉터리 경로 스캔 및 취약점 프로브 탐지", alerts: "2건 매칭 기록", mitre: "T1046 (Network Discovery)", icon: "📜", radius: 15, color: "#a855f7", x: 500, y: 120 },
+                { id: "mitre_t1110", label: "T1110.001", type: "mitre", name: "Password Guessing", zone: "MITRE ATT&CK 19.2", risk: "TACTIC: Credential Access", status: "CONFIRMED", role: "SSH 계정 패스워드 무차별 대입 공격 기법", alerts: "공격 기법 매핑 완료", mitre: "T1110.001", icon: "🏷️", radius: 14, color: "#eab308", x: 640, y: 170 },
+                { id: "mitre_t1046", label: "T1046", type: "mitre", name: "Network Service Discovery", zone: "MITRE ATT&CK 19.2", risk: "TACTIC: Discovery", status: "CONFIRMED", role: "열린 포트 및 서비스 탐색 정찰 행위", alerts: "정찰 기법 매핑 완료", mitre: "T1046", icon: "🏷️", radius: 14, color: "#eab308", x: 630, y: 110 },
+                { id: "ticket_apr", label: "APR-90738766-238", type: "ticket", name: "차단 티켓: 10.77.20.50", zone: "HUMAN OVERSIGHT (HITL)", risk: "APPROVED / EXECUTED", status: "차단 집행 완료", role: "SecOps Admin (Kim) 승인 nftables Drop 집행", alerts: "신속 격리 집행 완료", mitre: "Active Containment", icon: "🔒", radius: 17, color: "#059669", x: 220, y: 250 },
+                { id: "siem", label: "soc-siem", type: "siem", name: "Wazuh 4.14.7 / ES", zone: "ZONE-MGMT (10.77.10.30)", risk: "INFO", status: "CLUSTER HEALTH GREEN", role: "EVE-JSON 수집 및 상관분석 인덱서 (611건 색인)", alerts: "실시간 이벤트 색인 및 상관분석", mitre: "SIEM & SOC Pipeline", icon: "📊", radius: 16, color: "#6366f1", x: 420, y: 290 }
+            ],
+            links: [
+                { source: "attacker", target: "gateway", label: "TRAVERSED", type: "attack_path", color: "#ef4444", width: 2.8 },
+                { source: "gateway", target: "victim", label: "TARGETED", type: "attack_path", color: "#ef4444", width: 2.8 },
+                { source: "victim", target: "sensor", label: "MIRRORED", type: "mirror", color: "#0ea5e9", width: 1.8 },
+                { source: "sensor", target: "rule_1000003", label: "TRIGGERED", type: "detect", color: "#a855f7", width: 1.6 },
+                { source: "sensor", target: "rule_1000001", label: "TRIGGERED", type: "detect", color: "#a855f7", width: 1.6 },
+                { source: "sensor", target: "rule_1000005", label: "TRIGGERED", type: "detect", color: "#a855f7", width: 1.6 },
+                { source: "rule_1000003", target: "mitre_t1110", label: "MAPPED_TO", type: "mitre_link", color: "#eab308", width: 1.5 },
+                { source: "rule_1000005", target: "mitre_t1046", label: "MAPPED_TO", type: "mitre_link", color: "#eab308", width: 1.5 },
+                { source: "attacker", target: "ticket_apr", label: "QUARANTINED_BY", type: "ticket_link", color: "#059669", width: 2.2 },
+                { source: "gateway", target: "ticket_apr", label: "ENFORCED_ON", type: "ticket_link", color: "#059669", width: 2.2 },
+                { source: "sensor", target: "siem", label: "INGESTED_TO", type: "telemetry", color: "#6366f1", width: 1.5 },
+                { source: "ticket_apr", target: "siem", label: "AUDITED_IN", type: "audit", color: "#64748b", width: 1.2 }
+            ]
+        };
 
-            const layers = [
-                { count: 6, labels: ['PktLen', 'PortEnt', 'SYNRat', 'IAT', 'Duration', 'ByteRate'], color: '#0284c7' },
-                { count: 8, labels: [], color: '#2563eb' },
-                { count: 6, labels: [], color: '#4f46e5' },
-                { count: 5, labels: ['Normal', 'PortScan', 'BruteForce', 'Exploit', 'C2'], color: '#dc2626' }
+        function initCyberNeuralGraph() {
+            const svgEl = document.getElementById('cyberNeuralGraphSvg');
+            if (!svgEl || typeof d3 === 'undefined') return;
+
+            cyberGraphSvg = d3.select(svgEl);
+            cyberGraphSvg.selectAll("*").remove();
+
+            const container = document.getElementById('cyber-neural-graph-container');
+            const width = container.clientWidth || 700;
+            const height = container.clientHeight || 320;
+
+            // 1. Defs for Arrowhead Markers
+            const defs = cyberGraphSvg.append("defs");
+            const markerColors = [
+                { id: "arrow-red", color: "#ef4444" },
+                { id: "arrow-cyan", color: "#0ea5e9" },
+                { id: "arrow-purple", color: "#a855f7" },
+                { id: "arrow-gold", color: "#eab308" },
+                { id: "arrow-emerald", color: "#059669" },
+                { id: "arrow-indigo", color: "#6366f1" },
+                { id: "arrow-slate", color: "#64748b" }
             ];
+            markerColors.forEach(m => {
+                defs.append("marker")
+                    .attr("id", m.id)
+                    .attr("viewBox", "0 -5 10 10")
+                    .attr("refX", 22)
+                    .attr("refY", 0)
+                    .attr("markerWidth", 5)
+                    .attr("markerHeight", 5)
+                    .attr("orient", "auto")
+                    .append("path")
+                    .attr("d", "M0,-5L10,0L0,5")
+                    .attr("fill", m.color);
+            });
 
-            let particles = [];
-            setInterval(() => {
-                if (canvas.offsetParent === null) return;
-                const startNode = Math.floor(Math.random() * layers[0].count);
-                const nextNode = Math.floor(Math.random() * layers[1].count);
-                particles.push({
-                    fromLayer: 0,
-                    toLayer: 1,
-                    fromNode: startNode,
-                    toNode: nextNode,
-                    progress: 0,
-                    speed: 0.025 + Math.random() * 0.02,
-                    color: Math.random() > 0.35 ? '#2563eb' : '#dc2626'
+            // 2. Main Zoomable Group Container
+            cyberGraphG = cyberGraphSvg.append("g").attr("id", "cyber-graph-main-g");
+
+            cyberGraphZoom = d3.zoom()
+                .scaleExtent([0.4, 3.5])
+                .on("zoom", (event) => {
+                    cyberGraphG.attr("transform", event.transform);
                 });
-            }, 120);
+            cyberGraphSvg.call(cyberGraphZoom);
 
-            function getNodePos(layerIdx, nodeIdx) {
-                const totalLayers = layers.length;
-                const paddingX = 54;
-                const paddingY = 24;
-                const x = paddingX + (layerIdx * (canvas.width - paddingX * 2) / (totalLayers - 1));
-                const totalNodes = layers[layerIdx].count;
-                const y = paddingY + (nodeIdx * (canvas.height - paddingY * 2) / Math.max(1, totalNodes - 1));
-                return { x, y };
-            }
-
-            function render() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                const isLight = document.body.classList.contains('theme-light-pristine');
-
-                // 1. Draw Synaptic Weights
-                for (let l = 0; l < layers.length - 1; l++) {
-                    const l1 = layers[l];
-                    const l2 = layers[l + 1];
-                    for (let n1 = 0; n1 < l1.count; n1++) {
-                        const p1 = getNodePos(l, n1);
-                        for (let n2 = 0; n2 < l2.count; n2++) {
-                            const p2 = getNodePos(l + 1, n2);
-                            ctx.beginPath();
-                            ctx.moveTo(p1.x, p1.y);
-                            ctx.lineTo(p2.x, p2.y);
-                            ctx.strokeStyle = isLight ? 'rgba(203, 213, 225, 0.45)' : 'rgba(30, 41, 59, 0.6)';
-                            ctx.lineWidth = 0.8;
-                            ctx.stroke();
-                        }
-                    }
+            // Click canvas background to reset selection
+            cyberGraphSvg.on("click", (event) => {
+                if (event.target === svgEl || event.target.tagName === 'svg') {
+                    resetGraphSelection();
                 }
+            });
 
-                // 2. Draw Traveling Forward Pulses
-                for (let i = particles.length - 1; i >= 0; i--) {
-                    const p = particles[i];
-                    p.progress += p.speed;
-                    const p1 = getNodePos(p.fromLayer, p.fromNode);
-                    const p2 = getNodePos(p.toLayer, p.toNode);
-                    const curX = p1.x + (p2.x - p1.x) * p.progress;
-                    const curY = p1.y + (p2.y - p1.y) * p.progress;
+            // 3. Force Simulation setup
+            cyberGraphSim = d3.forceSimulation(cyberGraphData.nodes)
+                .force("link", d3.forceLink(cyberGraphData.links).id(d => d.id).distance(d => d.type === 'attack_path' ? 100 : 75))
+                .force("charge", d3.forceManyBody().strength(-280))
+                .force("center", d3.forceCenter(width / 2, height / 2))
+                .force("collide", d3.forceCollide().radius(d => d.radius + 18));
 
-                    ctx.beginPath();
-                    ctx.arc(curX, curY, 2.8, 0, Math.PI * 2);
-                    ctx.fillStyle = p.color;
-                    ctx.shadowBlur = 6;
-                    ctx.shadowColor = p.color;
-                    ctx.fill();
-                    ctx.shadowBlur = 0;
-
-                    if (p.progress >= 1) {
-                        if (p.toLayer < layers.length - 1) {
-                            p.fromLayer = p.toLayer;
-                            p.fromNode = p.toNode;
-                            p.toLayer = p.toLayer + 1;
-                            p.toNode = Math.floor(Math.random() * layers[p.toLayer].count);
-                            p.progress = 0;
-                        } else {
-                            particles.splice(i, 1);
-                        }
-                    }
-                }
-
-                // 3. Draw Neurons
-                layers.forEach((layer, lIdx) => {
-                    for (let nIdx = 0; nIdx < layer.count; nIdx++) {
-                        const pos = getNodePos(lIdx, nIdx);
-                        ctx.beginPath();
-                        const isOutputThreat = (lIdx === layers.length - 1 && nIdx === 2);
-                        const radius = isOutputThreat ? 6.5 : (lIdx === 0 || lIdx === layers.length - 1 ? 5.5 : 4.5);
-                        ctx.arc(pos.x, pos.y, radius, 0, Math.PI * 2);
-
-                        if (isOutputThreat) {
-                            ctx.fillStyle = '#dc2626';
-                            ctx.shadowBlur = 8;
-                            ctx.shadowColor = '#dc2626';
-                        } else {
-                            ctx.fillStyle = isLight ? '#ffffff' : '#0f172a';
-                            ctx.shadowBlur = 0;
-                        }
-                        ctx.fill();
-
-                        ctx.lineWidth = 2;
-                        ctx.strokeStyle = isOutputThreat ? '#991b1b' : layer.color;
-                        ctx.stroke();
-                        ctx.shadowBlur = 0;
-
-                        if (layer.labels[nIdx]) {
-                            ctx.font = '9px "JetBrains Mono", monospace';
-                            ctx.fillStyle = isLight ? '#475569' : '#94a3b8';
-                            if (lIdx === 0) {
-                                ctx.textAlign = 'right';
-                                ctx.fillText(layer.labels[nIdx], pos.x - 9, pos.y + 3);
-                            } else if (lIdx === layers.length - 1) {
-                                ctx.textAlign = 'left';
-                                if (isOutputThreat) {
-                                    ctx.fillStyle = '#dc2626';
-                                    ctx.font = 'bold 9px "JetBrains Mono", monospace';
-                                }
-                                ctx.fillText(layer.labels[nIdx], pos.x + 9, pos.y + 3);
-                            }
-                        }
-                    }
+            // 4. Draw Links
+            const linkGroup = cyberGraphG.append("g").attr("class", "links");
+            const links = linkGroup.selectAll("line")
+                .data(cyberGraphData.links)
+                .join("line")
+                .attr("class", d => `graph-link ${d.type === 'attack_path' ? 'attack-path-link' : ''}`)
+                .attr("stroke", d => d.color)
+                .attr("stroke-width", d => d.width)
+                .attr("stroke-opacity", 0.65)
+                .attr("marker-end", d => {
+                    if (d.color === '#ef4444') return 'url(#arrow-red)';
+                    if (d.color === '#0ea5e9') return 'url(#arrow-cyan)';
+                    if (d.color === '#a855f7') return 'url(#arrow-purple)';
+                    if (d.color === '#eab308') return 'url(#arrow-gold)';
+                    if (d.color === '#059669') return 'url(#arrow-emerald)';
+                    if (d.color === '#6366f1') return 'url(#arrow-indigo)';
+                    return 'url(#arrow-slate)';
                 });
 
-                requestAnimationFrame(render);
+            // Link edge text labels (Obsidian style)
+            const linkLabels = linkGroup.selectAll("text")
+                .data(cyberGraphData.links)
+                .join("text")
+                .attr("class", "graph-link-label")
+                .attr("text-anchor", "middle")
+                .text(d => d.label);
+
+            // 5. Draw Nodes
+            const nodeGroup = cyberGraphG.append("g").attr("class", "nodes");
+            const nodes = nodeGroup.selectAll("g")
+                .data(cyberGraphData.nodes)
+                .join("g")
+                .attr("class", "graph-node")
+                .attr("data-id", d => d.id)
+                .call(d3.drag()
+                    .on("start", (event, d) => {
+                        if (!event.active && !isGraphFrozen) cyberGraphSim.alphaTarget(0.3).restart();
+                        d.fx = d.x;
+                        d.fy = d.y;
+                    })
+                    .on("drag", (event, d) => {
+                        d.fx = event.x;
+                        d.fy = event.y;
+                    })
+                    .on("end", (event, d) => {
+                        if (!event.active && !isGraphFrozen) cyberGraphSim.alphaTarget(0);
+                        if (!isGraphFrozen) {
+                            d.fx = null;
+                            d.fy = null;
+                        }
+                    })
+                )
+                .on("click", (event, d) => {
+                    event.stopPropagation();
+                    selectGraphNode(d);
+                })
+                .on("dblclick", (event, d) => {
+                    event.stopPropagation();
+                    d.fx = null;
+                    d.fy = null;
+                });
+
+            // Node Circle
+            nodes.append("circle")
+                .attr("r", d => d.radius)
+                .attr("fill", d => d.color)
+                .attr("fill-opacity", 0.22)
+                .attr("stroke", d => d.color)
+                .attr("stroke-width", 2.2);
+
+            // Node Icon (Emoji / Symbol)
+            nodes.append("text")
+                .attr("text-anchor", "middle")
+                .attr("dy", "0.35em")
+                .attr("font-size", "11px")
+                .attr("pointer-events", "none")
+                .text(d => d.icon);
+
+            // Node Text Label below circle
+            nodes.append("text")
+                .attr("class", "node-label")
+                .attr("text-anchor", "middle")
+                .attr("dy", d => d.radius + 13)
+                .attr("font-family", "'JetBrains Mono', monospace")
+                .attr("font-size", "10px")
+                .attr("font-weight", "600")
+                .text(d => d.label);
+
+            // 6. Simulation Tick
+            cyberGraphSim.on("tick", () => {
+                links
+                    .attr("x1", d => d.source.x)
+                    .attr("y1", d => d.source.y)
+                    .attr("x2", d => d.target.x)
+                    .attr("y2", d => d.target.y);
+
+                linkLabels
+                    .attr("x", d => (d.source.x + d.target.x) / 2)
+                    .attr("y", d => (d.source.y + d.target.y) / 2 - 3);
+
+                nodes
+                    .attr("transform", d => `translate(${d.x},${d.y})`);
+            });
+
+            // 7. Search Input Listener
+            const searchInput = document.getElementById('graph-search-input');
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    const q = e.target.value.trim().toLowerCase();
+                    if (!q) {
+                        resetGraphSelection();
+                        return;
+                    }
+                    const matched = cyberGraphData.nodes.find(n =>
+                        n.label.toLowerCase().includes(q) ||
+                        n.id.toLowerCase().includes(q) ||
+                        n.name.toLowerCase().includes(q) ||
+                        (n.mitre && n.mitre.toLowerCase().includes(q))
+                    );
+                    if (matched) {
+                        focusGraphNode(matched.id);
+                    }
+                });
             }
-            render();
+
+            // Select default node (Attacker) on initial load
+            const attackerNode = cyberGraphData.nodes.find(n => n.id === 'attacker');
+            if (attackerNode) {
+                selectGraphNode(attackerNode);
+            }
+        }
+
+        function selectGraphNode(node) {
+            activeGraphNodeId = node.id;
+
+            // 1. Calculate 1-hop connected neighbors
+            const connectedIds = new Set([node.id]);
+            cyberGraphData.links.forEach(l => {
+                const sId = typeof l.source === 'object' ? l.source.id : l.source;
+                const tId = typeof l.target === 'object' ? l.target.id : l.target;
+                if (sId === node.id) connectedIds.add(tId);
+                if (tId === node.id) connectedIds.add(sId);
+            });
+
+            // 2. Dim/Highlight Nodes
+            if (cyberGraphG) {
+                cyberGraphG.selectAll(".graph-node").each(function(d) {
+                    const el = d3.select(this);
+                    if (connectedIds.has(d.id)) {
+                        el.classed("graph-dimmed", false);
+                        el.classed("graph-highlighted", d.id === node.id);
+                    } else {
+                        el.classed("graph-dimmed", true);
+                        el.classed("graph-highlighted", false);
+                    }
+                });
+
+                // 3. Dim/Highlight Links
+                cyberGraphG.selectAll(".graph-link").each(function(l) {
+                    const sId = typeof l.source === 'object' ? l.source.id : l.source;
+                    const tId = typeof l.target === 'object' ? l.target.id : l.target;
+                    const isConn = (sId === node.id && connectedIds.has(tId)) || (tId === node.id && connectedIds.has(sId));
+                    d3.select(this)
+                        .classed("graph-dimmed", !isConn)
+                        .attr("stroke-opacity", isConn ? 0.95 : 0.15)
+                        .attr("stroke-width", isConn ? (l.width * 1.4) : l.width);
+                });
+
+                cyberGraphG.selectAll(".graph-link-label").each(function(l) {
+                    const sId = typeof l.source === 'object' ? l.source.id : l.source;
+                    const tId = typeof l.target === 'object' ? l.target.id : l.target;
+                    const isConn = (sId === node.id && connectedIds.has(tId)) || (tId === node.id && connectedIds.has(sId));
+                    d3.select(this).style("opacity", isConn ? 1 : 0.15);
+                });
+            }
+
+            // 4. Update Inspector
+            updateEntityInspector(node, connectedIds);
+        }
+
+        function updateEntityInspector(node, connectedIds) {
+            const iconEl = document.getElementById('inspector-icon');
+            const titleEl = document.getElementById('inspector-title');
+            const badgeEl = document.getElementById('inspector-badge');
+            const nameEl = document.getElementById('insp-node-name');
+            const roleEl = document.getElementById('insp-node-role');
+            const zoneEl = document.getElementById('insp-zone');
+            const statusEl = document.getElementById('insp-status');
+            const alertsEl = document.getElementById('insp-alerts');
+            const mitreEl = document.getElementById('insp-mitre');
+            const connEl = document.getElementById('insp-connections');
+            const actionBtn = document.getElementById('insp-action-btn');
+
+            if (iconEl) iconEl.innerText = node.icon || '🎯';
+            if (titleEl) titleEl.innerText = `${node.name} (${node.label})`;
+            if (badgeEl) {
+                badgeEl.innerText = node.type.toUpperCase();
+                badgeEl.style.borderColor = node.color;
+                badgeEl.style.color = node.color;
+            }
+
+            if (nameEl) {
+                nameEl.innerHTML = `
+                    <span>${node.label}</span>
+                    <span class="text-[10px] font-bold px-1.5 py-0.5 rounded" style="background:${node.color}22; color:${node.color}; border:1px solid ${node.color}66">${node.risk}</span>
+                `;
+            }
+
+            if (roleEl) roleEl.innerText = node.role;
+            if (zoneEl) zoneEl.innerText = node.zone;
+            if (statusEl) {
+                statusEl.innerText = node.status;
+                statusEl.style.color = node.color;
+            }
+            if (alertsEl) alertsEl.innerText = node.alerts || '-';
+            if (mitreEl) mitreEl.innerText = node.mitre || '-';
+
+            // Populate clickable connection pills
+            if (connEl) {
+                connEl.innerHTML = '';
+                cyberGraphData.nodes.forEach(n => {
+                    if (n.id !== node.id && connectedIds.has(n.id)) {
+                        const btn = document.createElement('button');
+                        btn.className = 'px-1.5 py-0.5 rounded bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-[10px] border border-slate-200 dark:border-slate-700 transition-colors flex items-center gap-1';
+                        btn.innerHTML = `➔ <span>${n.icon}</span> <b>${n.label}</b>`;
+                        btn.onclick = (e) => {
+                            e.stopPropagation();
+                            focusGraphNode(n.id);
+                        };
+                        connEl.appendChild(btn);
+                    }
+                });
+                if (connEl.children.length === 0) {
+                    connEl.innerHTML = '<span class="text-[10px] text-slate-400">직접 연결된 개체 없음</span>';
+                }
+            }
+
+            // Customize Action Button based on node role
+            if (actionBtn) {
+                if (node.id === 'attacker' || node.type === 'attacker') {
+                    actionBtn.innerHTML = '<span>🚨 공격자 즉시 격리 (nftables drop)</span>';
+                    actionBtn.className = 'flex-1 py-1.5 px-2.5 rounded bg-red-600 hover:bg-red-700 text-white font-bold text-[11px] shadow-sm transition-colors flex items-center justify-center gap-1.5';
+                    actionBtn.onclick = () => openApprovalModal();
+                } else if (node.id === 'ticket_apr') {
+                    actionBtn.innerHTML = '<span>📋 승인 감사 로그 조회</span>';
+                    actionBtn.className = 'flex-1 py-1.5 px-2.5 rounded bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] shadow-sm transition-colors flex items-center justify-center gap-1.5';
+                    actionBtn.onclick = () => switchView('audit', 'audit');
+                } else if (node.type === 'rule') {
+                    actionBtn.innerHTML = '<span>🔍 관련 이벤트 조회</span>';
+                    actionBtn.className = 'flex-1 py-1.5 px-2.5 rounded bg-purple-600 hover:bg-purple-700 text-white font-bold text-[11px] shadow-sm transition-colors flex items-center justify-center gap-1.5';
+                    actionBtn.onclick = () => switchView('events', 'events');
+                } else {
+                    actionBtn.innerHTML = '<span>🛡️ 대응 승인 큐 열기</span>';
+                    actionBtn.className = 'flex-1 py-1.5 px-2.5 rounded bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-[11px] shadow-sm transition-colors flex items-center justify-center gap-1.5';
+                    actionBtn.onclick = () => openApprovalModal();
+                }
+            }
+        }
+
+        function focusGraphNode(nodeId) {
+            const node = cyberGraphData.nodes.find(n => n.id === nodeId);
+            if (!node) return;
+
+            selectGraphNode(node);
+
+            if (cyberGraphSvg && cyberGraphZoom && node.x !== undefined) {
+                const svgNode = cyberGraphSvg.node();
+                const width = svgNode.clientWidth || 700;
+                const height = svgNode.clientHeight || 320;
+                const scale = 1.35;
+                const tx = width / 2 - node.x * scale;
+                const ty = height / 2 - node.y * scale;
+
+                cyberGraphSvg.transition().duration(600).call(
+                    cyberGraphZoom.transform,
+                    d3.zoomIdentity.translate(tx, ty).scale(scale)
+                );
+            }
+        }
+
+        function resetGraphSelection() {
+            activeGraphNodeId = null;
+            if (cyberGraphG) {
+                cyberGraphG.selectAll(".graph-node")
+                    .classed("graph-dimmed", false)
+                    .classed("graph-highlighted", false);
+                cyberGraphG.selectAll(".graph-link")
+                    .classed("graph-dimmed", false)
+                    .classed("attack-path-animated", false)
+                    .attr("stroke-opacity", 0.65)
+                    .attr("stroke-width", d => d.width);
+                cyberGraphG.selectAll(".graph-link-label")
+                    .style("opacity", 1);
+            }
+            const defaultNode = cyberGraphData.nodes.find(n => n.id === 'attacker');
+            if (defaultNode) {
+                updateEntityInspector(defaultNode, new Set(['gateway', 'victim', 'ticket_apr']));
+            }
+        }
+
+        function traceAttackPath() {
+            if (!cyberGraphG) return;
+
+            const pathNodeIds = new Set(['attacker', 'gateway', 'victim', 'ticket_apr']);
+
+            // 1. Highlight attack path links with animated marching lasers
+            cyberGraphG.selectAll(".graph-link").each(function(l) {
+                const sId = typeof l.source === 'object' ? l.source.id : l.source;
+                const tId = typeof l.target === 'object' ? l.target.id : l.target;
+                const isPath = pathNodeIds.has(sId) && pathNodeIds.has(tId);
+
+                d3.select(this)
+                    .classed("attack-path-animated", isPath)
+                    .classed("graph-dimmed", !isPath)
+                    .attr("stroke-opacity", isPath ? 1 : 0.12)
+                    .attr("stroke-width", isPath ? 3.5 : l.width);
+            });
+
+            // 2. Dim other nodes
+            cyberGraphG.selectAll(".graph-node").each(function(d) {
+                const isPath = pathNodeIds.has(d.id);
+                d3.select(this)
+                    .classed("graph-dimmed", !isPath)
+                    .classed("graph-highlighted", isPath);
+            });
+
+            // 3. Focus on Attacker
+            const attacker = cyberGraphData.nodes.find(n => n.id === 'attacker');
+            if (attacker) {
+                focusGraphNode('attacker');
+            }
+
+            if (typeof showToast === 'function') {
+                showToast('⚡ 침투 경로 추적 활성화: 10.77.20.50 ➔ 10.77.10.1 ➔ 10.77.30.100 (차단 완료)', 'warning');
+            }
+        }
+
+        function toggleGraphPhysics() {
+            isGraphFrozen = !isGraphFrozen;
+            const iconEl = document.getElementById('freeze-icon');
+            const textEl = document.getElementById('freeze-text');
+
+            if (isGraphFrozen) {
+                cyberGraphData.nodes.forEach(d => {
+                    d.fx = d.x;
+                    d.fy = d.y;
+                });
+                if (cyberGraphSim) cyberGraphSim.stop();
+                if (iconEl) iconEl.innerText = '🔥';
+                if (textEl) textEl.innerText = '물리 재개';
+                if (typeof showToast === 'function') showToast('❄️ 그래프 물리 시뮬레이션이 고정되었습니다.', 'info');
+            } else {
+                cyberGraphData.nodes.forEach(d => {
+                    d.fx = null;
+                    d.fy = null;
+                });
+                if (cyberGraphSim) cyberGraphSim.alpha(0.3).restart();
+                if (iconEl) iconEl.innerText = '❄️';
+                if (textEl) textEl.innerText = '물리 고정';
+                if (typeof showToast === 'function') showToast('🔥 그래프 물리 시뮬레이션이 재개되었습니다.', 'info');
+            }
+        }
+
+        function resetGraphZoom() {
+            if (cyberGraphSvg && cyberGraphZoom) {
+                cyberGraphSvg.transition().duration(500).call(cyberGraphZoom.transform, d3.zoomIdentity);
+            }
         }
 
         // Initialize on Load
@@ -4014,7 +4403,7 @@
             initPristineTheme();
             switchView('dashboard', 'overview');
             initWorldThreatMap();
-            initNeuralNetworkCanvas();
+            initCyberNeuralGraph();
             initWebSocket();
             refreshAllTelemetry();
 
