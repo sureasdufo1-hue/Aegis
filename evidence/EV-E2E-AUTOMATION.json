@@ -1,0 +1,43 @@
+{
+  "timestamp": "2026-09-30T01:13:17.626072+00:00",
+  "runner": "scripts/run_e2e_scenarios.py",
+  "scenarios_executed": 7,
+  "scenarios_passed": 7,
+  "results": [
+    {
+      "id": "E2E-01",
+      "name": "Reconnaissance & DoS Attack Mitigation",
+      "status": "PASS"
+    },
+    {
+      "id": "E2E-02",
+      "name": "Web Exploitation & ATT&CK Mapping",
+      "status": "PASS"
+    },
+    {
+      "id": "E2E-03",
+      "name": "SSH Brute Force Authentication",
+      "status": "PASS"
+    },
+    {
+      "id": "E2E-04",
+      "name": "Indirect Prompt Injection Isolation",
+      "status": "PASS"
+    },
+    {
+      "id": "E2E-05",
+      "name": "RAG Knowledge Integrity & Rollback",
+      "status": "PASS"
+    },
+    {
+      "id": "E2E-06",
+      "name": "Benign FP Diagnostic Suppression",
+      "status": "PASS"
+    },
+    {
+      "id": "E2E-07",
+      "name": "Emergency Kill Switch & Core SOC Survivability",
+      "status": "PASS"
+    }
+  ]
+}

@@ -47,4 +47,5 @@ target-version = "py311"
 testpaths = ["tests"]
 python_files = ["test_*.py"]
 pythonpath = ["."]
+addopts = "--basetemp=./.pytest_tmp -o tmp_path_retention_policy=none -o tmp_path_retention_count=0"
 

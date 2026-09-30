@@ -27,9 +27,17 @@ from analyzer.ai.localization import (
     SIGNATURE_MAP,
     SecurityEventInterpreter,
 )
+from analyzer.ai.approvals.dual_control import DualApprovalStatus, DualControlManager, UserRole
 from analyzer.ai.orchestrator import AIOrchestrator
 from analyzer.ai.policy.protected_assets import PROTECTED_IPS, PROTECTED_NETWORKS
-from analyzer.ai.schemas.actions import ApprovalStatus, ExecutionMode
+from analyzer.ai.schemas.actions import (
+    ActionType,
+    ApprovalStatus,
+    ExecutionMode,
+    PolicyValidationResult,
+    PolicyVerdict,
+    ProposedAction,
+)
 from analyzer.alerting.dispatcher import NotificationDispatcher
 from analyzer.detection.correlation_engine import CorrelationEngine, Incident
 from analyzer.models import NormalizedAlert, Severity
@@ -78,6 +86,7 @@ from analyzer.ai.providers.ollama_provider import OllamaProvider
 approval_repo = ApprovalRepository()
 action_executor = ActionExecutor(mode=ExecutionMode.DRY_RUN)
 notification_dispatcher = NotificationDispatcher()
+dual_control_manager = DualControlManager()
 
 llm_provider_env = os.getenv("LLM_PROVIDER", "mock").lower()
 if llm_provider_env in ("ollama", "live"):
@@ -455,6 +464,130 @@ def execute_action_proposal(approval_id: str):
         "output": output,
         "record": rec.model_dump(mode="json"),
     }
+
+
+# -------------------------------------------------------------
+# Dual-Control (Two-Person Approval) Protocol API Endpoints
+# -------------------------------------------------------------
+
+class DualProposeRequest(BaseModel):
+    incident_id: str
+    action_type: ActionType
+    target: str
+    rule_syntax_preview: str
+    rationale: str
+    ttl_minutes: int = Field(default=60, ge=1, le=1440)
+
+
+class DualFirstApproveRequest(BaseModel):
+    request_id: str
+    approver_id: str
+    role: UserRole = UserRole.L2_ANALYST
+    comment: str = "First approval verified by analyst"
+
+
+class DualSecondApproveRequest(BaseModel):
+    request_id: str
+    approver_id: str
+    role: UserRole = UserRole.L3_LEAD
+    comment: str = "Second approval verified by lead/manager"
+    auto_execute: bool = True
+
+
+@app.post("/api/v1/approval/dual/propose")
+def propose_dual_action(req: DualProposeRequest):
+    target_ip = req.target.split("/")[0].strip()
+    is_protected = target_ip in PROTECTED_IPS
+
+    if is_protected:
+        pol_res = PolicyValidationResult(
+            is_valid=False,
+            verdict=PolicyVerdict.DENIED_PROTECTED_ASSET,
+            target=req.target,
+            violations=[f"Target {req.target} is a critical protected asset."],
+            protected_asset_details="Protected Gateway/Host Asset",
+        )
+    else:
+        pol_res = PolicyValidationResult(
+            is_valid=True,
+            verdict=PolicyVerdict.ALLOWED,
+            target=req.target,
+        )
+
+    action = ProposedAction(
+        proposal_id=f"PROP-DUAL-{len(dual_control_manager.list_all())+1:03d}",
+        incident_id=req.incident_id,
+        action_type=req.action_type,
+        target=req.target,
+        rule_syntax_preview=req.rule_syntax_preview,
+        rationale=req.rationale,
+        duration_minutes=req.ttl_minutes,
+    )
+
+    rec = dual_control_manager.create_request(
+        incident_id=req.incident_id,
+        proposed_action=action,
+        policy_result=pol_res,
+    )
+    return {
+        "status": "success",
+        "request_id": rec.request_id,
+        "record": rec.model_dump(mode="json"),
+    }
+
+
+@app.post("/api/v1/approval/dual/first-approve")
+def first_approve_dual_action(req: DualFirstApproveRequest):
+    ok, res_or_err = dual_control_manager.first_approve(
+        request_id=req.request_id,
+        approver_id=req.approver_id,
+        role=req.role,
+        comment=req.comment,
+    )
+    if not ok:
+        return JSONResponse(status_code=400, content={"error": res_or_err})
+    return {
+        "status": "success",
+        "request_id": req.request_id,
+        "record": res_or_err.model_dump(mode="json"),
+    }
+
+
+@app.post("/api/v1/approval/dual/second-approve")
+def second_approve_dual_action(req: DualSecondApproveRequest):
+    ok, res_or_err = dual_control_manager.second_approve(
+        request_id=req.request_id,
+        approver_id=req.approver_id,
+        role=req.role,
+        comment=req.comment,
+    )
+    if not ok:
+        return JSONResponse(status_code=400, content={"error": res_or_err})
+
+    exec_output = None
+    if req.auto_execute:
+        _, exec_output = dual_control_manager.execute_approved(req.request_id, action_executor)
+
+    return {
+        "status": "success",
+        "request_id": req.request_id,
+        "record": dual_control_manager.get(req.request_id).model_dump(mode="json"),
+        "execution_output": exec_output,
+    }
+
+
+@app.get("/api/v1/approval/dual/status/{request_id}")
+def get_dual_action_status(request_id: str):
+    rec = dual_control_manager.get(request_id)
+    if not rec:
+        return JSONResponse(status_code=404, content={"error": f"Dual-control record '{request_id}' not found."})
+    return rec.model_dump(mode="json")
+
+
+@app.get("/api/v1/approval/dual/requests")
+def list_dual_action_requests(status: DualApprovalStatus | None = None):
+    records = dual_control_manager.list_all(status=status)
+    return [r.model_dump(mode="json") for r in records]
 
 
 @app.get("/api/reports/{report_type}")

@@ -1,5 +1,7 @@
 # M1·M2 통합 네트워크 인프라 기반 SOC 관제 시스템 구축 및 배포 매뉴얼
 
+> **폐기된 초안 / 실행 금지:** 이 문서에는 Lab↔M1·M2 주소의 1:1 치환, Transit SPAN으로 외부→DMZ Web 탐지 가능하다는 가정, 기본 비밀번호 설정, 미검증 단계의 PASS 선언이 포함되어 있다. 현장 작업은 [M1·M2 SOC 적용 및 재구축 매뉴얼](./M1M2_SOC_APPLICATION_RUNBOOK_2026.md)과 [DESIGN-ISSUE-001](../02-architecture/DESIGN-ISSUE-001-M1M2-SOC-INTEGRATION.md)을 기준으로 계획하고, ADR 승인 전에는 배포하지 않는다.
+
 ```
 ========================================================================================
              ENTERPRISE SOC DETECTION & INCIDENT MONITORING PLATFORM
