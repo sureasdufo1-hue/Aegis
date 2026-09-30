@@ -1,0 +1,32 @@
+{
+  "timestamp": "2026-08-25T22:26:16.663654+0000",
+  "flow_id": 2005463822723500,
+  "in_iface": "ens37",
+  "event_type": "alert",
+  "src_ip": "10.77.20.50",
+  "dest_ip": "10.77.30.100",
+  "proto": "ICMP",
+  "ip_v": 4,
+  "icmp_type": 8,
+  "icmp_code": 0,
+  "pkt_src": "wire/pcap",
+  "alert": {
+    "action": "allowed",
+    "gid": 1,
+    "signature_id": 1000001,
+    "rev": 2,
+    "signature": "LAB RED to BLUE ICMP Detection",
+    "category": "Attempted Information Leak",
+    "severity": 3
+  },
+  "direction": "to_server",
+  "flow": {
+    "pkts_toserver": 2,
+    "pkts_toclient": 1,
+    "bytes_toserver": 196,
+    "bytes_toclient": 98,
+    "start": "2026-08-25T22:26:15.663541+0000",
+    "src_ip": "10.77.20.50",
+    "dest_ip": "10.77.30.100"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "timestamp": "2026-09-30T02:21:06.689791+00:00",
+  "hypervisor": "VMware Workstation Pro",
+  "gateway": {
+    "hostname": "gateway",
+    "management_ip": "192.168.111.140",
+    "internal_ip": "10.77.10.1",
+    "interfaces": "lo               UNKNOWN        127.0.0.1/8 ::1/128 \nens33            UP             192.168.111.140/24 metric 100 fe80::20c:29ff:fe1f:df3c/64 \nens37            UP             10.77.10.1/24 fe80::20c:29ff:fe1f:df46/64",
+    "routing_table": "default via 192.168.111.2 dev ens33 proto dhcp src 192.168.111.140 metric 100 \n10.77.10.0/24 dev ens37 proto kernel scope link src 10.77.10.1 \n10.77.20.0/24 via 10.77.10.20 dev ens37 proto static \n10.77.30.0/24 via 10.77.10.20 dev ens37 proto static \n192.168.111.0/24 dev ens33 proto kernel scope link src 192.168.111.140 metric 100 \n192.168.111.2 dev ens33 proto dhcp scope link src 192.168.111.140 metric 100",
+    "ip_forward": "net.ipv4.ip_forward = 1"
+  },
+  "sensor": {
+    "hostname": "sensor",
+    "ip_management": "10.77.10.20",
+    "ip_attack_zone": "10.77.20.1",
+    "ip_victim_zone": "10.77.30.1",
+    "interfaces": "lo               UNKNOWN        127.0.0.1/8 ::1/128 \nens33            UP             10.77.10.20/24 fe80::20c:29ff:fe20:2aa3/64 \nens37            UP             10.77.20.1/24 fe80::20c:29ff:fe20:2aad/64 \nens38            UP             10.77.30.1/24 fe80::20c:29ff:fe20:2ab7/64",
+    "routing_table": "default via 10.77.10.1 dev ens33 proto static \n10.77.10.0/24 dev ens33 proto kernel scope link src 10.77.10.20 \n10.77.20.0/24 dev ens37 proto kernel scope link src 10.77.20.1 \n10.77.30.0/24 dev ens38 proto kernel scope link src 10.77.30.1",
+    "suricata_version": "This is Suricata version 8.0.6 RELEASE",
+    "suricata_status": "active",
+    "eve_json_lines": "51256 /var/log/suricata/eve.json"
+  },
+  "victim": {
+    "hostname": "victim",
+    "ip": "10.77.30.100",
+    "interfaces": "lo               UNKNOWN        127.0.0.1/8 ::1/128 \nens33            UP             10.77.30.100/24 fe80::20c:29ff:fe92:fa65/64",
+    "routing_table": "default via 10.77.30.1 dev ens33 proto static \n10.77.30.0/24 dev ens33 proto kernel scope link src 10.77.30.100",
+    "web_server_status": "HTTP/1.0 200 OK\r\nServer: SimpleHTTP/0.6 Python/3.12.3\r\nDate: Wed, 30 Sep 2026 02:21:05 GMT\r\nContent-type: text/html\r\nContent-Length: 27\r\nLast-Modified: Tue, 25 Aug 2026 06:04:45 GMT"
+  },
+  "attacker_target": {
+    "hostname": "soc-attacker",
+    "expected_ip": "10.77.20.50",
+    "mac_address": "00:0C:29:56:F4:4E",
+    "zone": "ZONE-ATTACK (10.77.20.0/24)"
+  }
+}

@@ -1,0 +1,173 @@
+{
+  "agent": {
+    "name": "sensor",
+    "id": "91097684-e47d-4561-8d65-7bdb82ef790e",
+    "type": "filebeat",
+    "ephemeral_id": "4da65a39-ad31-44d0-9c2f-5b40b5bc679c",
+    "version": "8.19.20"
+  },
+  "log": {
+    "file": {
+      "path": "/var/log/suricata/eve.json"
+    },
+    "offset": 17437
+  },
+  "destination": {
+    "address": "10.77.30.100",
+    "port": 80,
+    "bytes": 792,
+    "ip": "10.77.30.100",
+    "domain": "10.77.30.100",
+    "packets": 4
+  },
+  "rule": {
+    "name": "LAB RED to BLUE Suspicious HTTP Admin Probe",
+    "id": "1000005",
+    "category": "Web Application Attack"
+  },
+  "source": {
+    "address": "10.77.20.1",
+    "port": 57982,
+    "bytes": 357,
+    "ip": "10.77.20.1",
+    "packets": 4
+  },
+  "fileset": {
+    "name": "eve"
+  },
+  "message": "Web Application Attack",
+  "url": {
+    "path": "/admin-test",
+    "original": "/admin-test",
+    "domain": "10.77.30.100"
+  },
+  "tags": [
+    "suricata",
+    "_geoip_database_unavailable_GeoLite2-City.mmdb",
+    "_geoip_database_unavailable_GeoLite2-City.mmdb",
+    "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+    "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+  ],
+  "network": {
+    "community_id": "1:9AIOyqucb6hHRu03steaLkZhbiE=",
+    "protocol": "http",
+    "bytes": 1149,
+    "transport": "tcp",
+    "packets": 8,
+    "direction": "internal"
+  },
+  "input": {
+    "type": "log"
+  },
+  "@timestamp": "2026-09-30T03:07:44.108Z",
+  "ecs": {
+    "version": "1.12.0"
+  },
+  "related": {
+    "hosts": [
+      "10.77.30.100"
+    ],
+    "ip": [
+      "10.77.20.1",
+      "10.77.30.100"
+    ]
+  },
+  "service": {
+    "type": "suricata"
+  },
+  "host": {
+    "hostname": "sensor",
+    "os": {
+      "kernel": "6.8.0-139-generic",
+      "codename": "noble",
+      "name": "Ubuntu",
+      "family": "debian",
+      "type": "linux",
+      "version": "24.04.4 LTS (Noble Numbat)",
+      "platform": "ubuntu"
+    },
+    "containerized": false,
+    "ip": [
+      "10.77.10.20",
+      "fe80::20c:29ff:fe20:2aa3",
+      "10.77.20.1",
+      "fe80::20c:29ff:fe20:2aad",
+      "10.77.30.1",
+      "fe80::20c:29ff:fe20:2ab7"
+    ],
+    "name": "sensor",
+    "id": "5e784d3aae85479abc1b080bc474ddc1",
+    "mac": [
+      "00-0C-29-20-2A-A3",
+      "00-0C-29-20-2A-AD",
+      "00-0C-29-20-2A-B7"
+    ],
+    "architecture": "x86_64"
+  },
+  "http": {
+    "request": {
+      "method": "GET"
+    },
+    "response": {
+      "status_code": 404,
+      "body": {
+        "bytes": 0
+      }
+    }
+  },
+  "suricata": {
+    "eve": {
+      "tx_id": 0,
+      "ip_v": 4,
+      "in_iface": "ens38",
+      "event_type": "alert",
+      "alert": {
+        "rev": 2,
+        "signature_id": 1000005,
+        "gid": 1,
+        "signature": "LAB RED to BLUE Suspicious HTTP Admin Probe",
+        "category": "Web Application Attack"
+      },
+      "ts_progress": "request_complete",
+      "flow_id": "174062585988384",
+      "http": {
+        "protocol": "HTTP/1.1",
+        "http_content_type": "text/html"
+      },
+      "tc_progress": "response_body",
+      "flow": {
+        "src_ip": "10.77.20.1",
+        "src_port": 57982,
+        "dest_ip": "10.77.30.100",
+        "dest_port": 80
+      },
+      "pkt_src": "wire/pcap",
+      "direction": "to_server"
+    }
+  },
+  "event": {
+    "severity": 1,
+    "ingested": "2026-09-30T03:12:37.735997643Z",
+    "original": "{\"timestamp\":\"2026-09-30T03:07:44.108846+0000\",\"flow_id\":174062585988384,\"in_iface\":\"ens38\",\"event_type\":\"alert\",\"src_ip\":\"10.77.20.1\",\"src_port\":57982,\"dest_ip\":\"10.77.30.100\",\"dest_port\":80,\"proto\":\"TCP\",\"ip_v\":4,\"pkt_src\":\"wire/pcap\",\"tx_id\":0,\"alert\":{\"action\":\"allowed\",\"gid\":1,\"signature_id\":1000005,\"rev\":2,\"signature\":\"LAB RED to BLUE Suspicious HTTP Admin Probe\",\"category\":\"Web Application Attack\",\"severity\":1},\"ts_progress\":\"request_complete\",\"tc_progress\":\"response_body\",\"http\":{\"hostname\":\"10.77.30.100\",\"url\":\"/admin-test\",\"http_user_agent\":\"curl/8.5.0\",\"http_content_type\":\"text/html\",\"http_method\":\"GET\",\"protocol\":\"HTTP/1.1\",\"status\":404,\"length\":0},\"app_proto\":\"http\",\"direction\":\"to_server\",\"flow\":{\"pkts_toserver\":4,\"pkts_toclient\":4,\"bytes_toserver\":357,\"bytes_toclient\":792,\"start\":\"2026-09-30T03:07:44.106063+0000\",\"src_ip\":\"10.77.20.1\",\"dest_ip\":\"10.77.30.100\",\"src_port\":57982,\"dest_port\":80}}",
+    "created": "2026-09-30T03:12:25.149Z",
+    "kind": "alert",
+    "module": "suricata",
+    "start": "2026-09-30T03:07:44.106Z",
+    "category": [
+      "network",
+      "intrusion_detection"
+    ],
+    "type": [
+      "allowed"
+    ],
+    "dataset": "suricata.eve"
+  },
+  "user_agent": {
+    "original": "curl/8.5.0",
+    "name": "curl",
+    "device": {
+      "name": "Other"
+    },
+    "version": "8.5.0"
+  }
+}

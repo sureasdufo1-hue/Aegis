@@ -1,0 +1,48 @@
+{
+  "timestamp": "2026-09-30T03:07:44.108846+0000",
+  "flow_id": 174062585988384,
+  "in_iface": "ens38",
+  "event_type": "alert",
+  "src_ip": "10.77.20.1",
+  "src_port": 57982,
+  "dest_ip": "10.77.30.100",
+  "dest_port": 80,
+  "proto": "TCP",
+  "ip_v": 4,
+  "pkt_src": "wire/pcap",
+  "tx_id": 0,
+  "alert": {
+    "action": "allowed",
+    "gid": 1,
+    "signature_id": 1000005,
+    "rev": 2,
+    "signature": "LAB RED to BLUE Suspicious HTTP Admin Probe",
+    "category": "Web Application Attack",
+    "severity": 1
+  },
+  "ts_progress": "request_complete",
+  "tc_progress": "response_body",
+  "http": {
+    "hostname": "10.77.30.100",
+    "url": "/admin-test",
+    "http_user_agent": "curl/8.5.0",
+    "http_content_type": "text/html",
+    "http_method": "GET",
+    "protocol": "HTTP/1.1",
+    "status": 404,
+    "length": 0
+  },
+  "app_proto": "http",
+  "direction": "to_server",
+  "flow": {
+    "pkts_toserver": 4,
+    "pkts_toclient": 4,
+    "bytes_toserver": 357,
+    "bytes_toclient": 792,
+    "start": "2026-09-30T03:07:44.106063+0000",
+    "src_ip": "10.77.20.1",
+    "dest_ip": "10.77.30.100",
+    "src_port": 57982,
+    "dest_port": 80
+  }
+}

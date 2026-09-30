@@ -1,0 +1,200 @@
+{
+  "1000005": {
+    "timestamp": "2026-09-30T03:07:44.108846+0000",
+    "flow_id": 174062585988384,
+    "in_iface": "ens38",
+    "event_type": "alert",
+    "src_ip": "10.77.20.1",
+    "src_port": 57982,
+    "dest_ip": "10.77.30.100",
+    "dest_port": 80,
+    "proto": "TCP",
+    "ip_v": 4,
+    "pkt_src": "wire/pcap",
+    "tx_id": 0,
+    "alert": {
+      "action": "allowed",
+      "gid": 1,
+      "signature_id": 1000005,
+      "rev": 2,
+      "signature": "LAB RED to BLUE Suspicious HTTP Admin Probe",
+      "category": "Web Application Attack",
+      "severity": 1
+    },
+    "ts_progress": "request_complete",
+    "tc_progress": "response_body",
+    "http": {
+      "hostname": "10.77.30.100",
+      "url": "/admin-test",
+      "http_user_agent": "curl/8.5.0",
+      "http_content_type": "text/html",
+      "http_method": "GET",
+      "protocol": "HTTP/1.1",
+      "status": 404,
+      "length": 0
+    },
+    "app_proto": "http",
+    "direction": "to_server",
+    "flow": {
+      "pkts_toserver": 4,
+      "pkts_toclient": 4,
+      "bytes_toserver": 357,
+      "bytes_toclient": 792,
+      "start": "2026-09-30T03:07:44.106063+0000",
+      "src_ip": "10.77.20.1",
+      "dest_ip": "10.77.30.100",
+      "src_port": 57982,
+      "dest_port": 80
+    }
+  },
+  "2034636": {
+    "timestamp": "2026-09-30T03:07:44.109523+0000",
+    "flow_id": 174062585988384,
+    "in_iface": "ens38",
+    "event_type": "alert",
+    "src_ip": "10.77.30.100",
+    "src_port": 80,
+    "dest_ip": "10.77.20.1",
+    "dest_port": 57982,
+    "proto": "TCP",
+    "ip_v": 4,
+    "pkt_src": "wire/pcap",
+    "tx_id": 0,
+    "alert": {
+      "action": "allowed",
+      "gid": 1,
+      "signature_id": 2034636,
+      "rev": 2,
+      "signature": "ET INFO Python SimpleHTTP ServerBanner",
+      "category": "Misc activity",
+      "severity": 3,
+      "metadata": {
+        "affected_product": [
+          "Windows_XP_Vista_7_8_10_Server_32_64_Bit"
+        ],
+        "attack_target": [
+          "Client_Endpoint"
+        ],
+        "confidence": [
+          "High"
+        ],
+        "created_at": [
+          "2021_12_08"
+        ],
+        "deployment": [
+          "Perimeter"
+        ],
+        "signature_severity": [
+          "Minor"
+        ],
+        "tag": [
+          "Description_Generated_By_Proofpoint_Nexus"
+        ],
+        "updated_at": [
+          "2021_12_08"
+        ]
+      }
+    },
+    "ts_progress": "request_complete",
+    "tc_progress": "response_complete",
+    "http": {
+      "hostname": "10.77.30.100",
+      "url": "/admin-test",
+      "http_user_agent": "curl/8.5.0",
+      "http_content_type": "text/html",
+      "http_method": "GET",
+      "protocol": "HTTP/1.1",
+      "status": 404,
+      "length": 335
+    },
+    "files": [
+      {
+        "filename": "/admin-test",
+        "gaps": false,
+        "state": "CLOSED",
+        "stored": false,
+        "size": 335,
+        "tx_id": 0
+      }
+    ],
+    "app_proto": "http",
+    "direction": "to_client",
+    "flow": {
+      "pkts_toserver": 5,
+      "pkts_toclient": 5,
+      "bytes_toserver": 423,
+      "bytes_toclient": 858,
+      "start": "2026-09-30T03:07:44.106063+0000",
+      "src_ip": "10.77.20.1",
+      "dest_ip": "10.77.30.100",
+      "src_port": 57982,
+      "dest_port": 80
+    }
+  },
+  "1000001": {
+    "timestamp": "2026-09-30T03:08:14.765009+0000",
+    "flow_id": 1436407911471829,
+    "in_iface": "ens38",
+    "event_type": "alert",
+    "src_ip": "10.77.20.1",
+    "dest_ip": "10.77.30.100",
+    "proto": "ICMP",
+    "ip_v": 4,
+    "icmp_type": 8,
+    "icmp_code": 0,
+    "pkt_src": "wire/pcap",
+    "alert": {
+      "action": "allowed",
+      "gid": 1,
+      "signature_id": 1000001,
+      "rev": 2,
+      "signature": "LAB RED to BLUE ICMP Detection",
+      "category": "Attempted Information Leak",
+      "severity": 3
+    },
+    "direction": "to_server",
+    "flow": {
+      "pkts_toserver": 2,
+      "pkts_toclient": 1,
+      "bytes_toserver": 196,
+      "bytes_toclient": 98,
+      "start": "2026-09-30T03:08:13.727655+0000",
+      "src_ip": "10.77.20.1",
+      "dest_ip": "10.77.30.100"
+    }
+  },
+  "1000002": {
+    "timestamp": "2026-09-30T03:08:14.898836+0000",
+    "flow_id": 1890149812810854,
+    "in_iface": "ens38",
+    "event_type": "alert",
+    "src_ip": "10.77.20.1",
+    "src_port": 57411,
+    "dest_ip": "10.77.30.100",
+    "dest_port": 22,
+    "proto": "TCP",
+    "ip_v": 4,
+    "pkt_src": "wire/pcap",
+    "alert": {
+      "action": "allowed",
+      "gid": 1,
+      "signature_id": 1000002,
+      "rev": 2,
+      "signature": "LAB RED to BLUE SSH Connection Attempt",
+      "category": "Generic Protocol Command Decode",
+      "severity": 3
+    },
+    "direction": "to_server",
+    "flow": {
+      "pkts_toserver": 1,
+      "pkts_toclient": 0,
+      "bytes_toserver": 74,
+      "bytes_toclient": 0,
+      "start": "2026-09-30T03:08:14.898836+0000",
+      "src_ip": "10.77.20.1",
+      "dest_ip": "10.77.30.100",
+      "src_port": 57411,
+      "dest_port": 22
+    }
+  }
+}

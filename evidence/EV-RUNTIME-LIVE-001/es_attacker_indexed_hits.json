@@ -1,0 +1,727 @@
+[
+  {
+    "_index": ".ds-filebeat-8.19.20-2026.09.30-000002",
+    "_id": "PitZ8KABC-hcIXaAIeOi",
+    "_score": null,
+    "_source": {
+      "agent": {
+        "name": "sensor",
+        "id": "91097684-e47d-4561-8d65-7bdb82ef790e",
+        "ephemeral_id": "4da65a39-ad31-44d0-9c2f-5b40b5bc679c",
+        "type": "filebeat",
+        "version": "8.19.20"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/suricata/eve.json"
+        },
+        "offset": 1272288
+      },
+      "destination": {
+        "address": "10.77.30.100",
+        "port": 22,
+        "bytes": 0,
+        "ip": "10.77.30.100",
+        "packets": 0
+      },
+      "rule": {
+        "name": "LAB RED to BLUE TCP Port Scan Detection",
+        "id": "1000004",
+        "category": "Attempted Information Leak"
+      },
+      "source": {
+        "address": "10.77.20.50",
+        "port": 43070,
+        "bytes": 74,
+        "ip": "10.77.20.50",
+        "packets": 1
+      },
+      "fileset": {
+        "name": "eve"
+      },
+      "message": "Attempted Information Leak",
+      "network": {
+        "community_id": "1:rsiQTNRQ4IJJ+ygYIjzpVjHUG+I=",
+        "bytes": 74,
+        "transport": "tcp",
+        "packets": 1,
+        "direction": "internal"
+      },
+      "tags": [
+        "suricata",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "input": {
+        "type": "log"
+      },
+      "@timestamp": "2026-09-30T03:26:07.111Z",
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "related": {
+        "ip": [
+          "10.77.20.50",
+          "10.77.30.100"
+        ]
+      },
+      "service": {
+        "type": "suricata"
+      },
+      "host": {
+        "hostname": "sensor",
+        "os": {
+          "kernel": "6.8.0-139-generic",
+          "codename": "noble",
+          "name": "Ubuntu",
+          "family": "debian",
+          "type": "linux",
+          "version": "24.04.4 LTS (Noble Numbat)",
+          "platform": "ubuntu"
+        },
+        "ip": [
+          "10.77.10.20",
+          "fe80::20c:29ff:fe20:2aa3",
+          "10.77.20.1",
+          "fe80::20c:29ff:fe20:2aad",
+          "10.77.30.1",
+          "fe80::20c:29ff:fe20:2ab7"
+        ],
+        "containerized": false,
+        "name": "sensor",
+        "id": "5e784d3aae85479abc1b080bc474ddc1",
+        "mac": [
+          "00-0C-29-20-2A-A3",
+          "00-0C-29-20-2A-AD",
+          "00-0C-29-20-2A-B7"
+        ],
+        "architecture": "x86_64"
+      },
+      "suricata": {
+        "eve": {
+          "in_iface": "ens37",
+          "event_type": "alert",
+          "alert": {
+            "signature_id": 1000004,
+            "rev": 2,
+            "gid": 1,
+            "signature": "LAB RED to BLUE TCP Port Scan Detection",
+            "category": "Attempted Information Leak"
+          },
+          "flow_id": "2169680380550535",
+          "pkt_src": "wire/pcap",
+          "flow": {
+            "src_ip": "10.77.20.50",
+            "src_port": 43070,
+            "dest_ip": "10.77.30.100",
+            "dest_port": 22
+          },
+          "direction": "to_server",
+          "ip_v": 4
+        }
+      },
+      "event": {
+        "severity": 2,
+        "ingested": "2026-09-30T03:26:08.282371637Z",
+        "original": "{\"timestamp\":\"2026-09-30T03:26:07.111952+0000\",\"flow_id\":2169680380550535,\"in_iface\":\"ens37\",\"event_type\":\"alert\",\"src_ip\":\"10.77.20.50\",\"src_port\":43070,\"dest_ip\":\"10.77.30.100\",\"dest_port\":22,\"proto\":\"TCP\",\"ip_v\":4,\"pkt_src\":\"wire/pcap\",\"alert\":{\"action\":\"allowed\",\"gid\":1,\"signature_id\":1000004,\"rev\":2,\"signature\":\"LAB RED to BLUE TCP Port Scan Detection\",\"category\":\"Attempted Information Leak\",\"severity\":2},\"direction\":\"to_server\",\"flow\":{\"pkts_toserver\":1,\"pkts_toclient\":0,\"bytes_toserver\":74,\"bytes_toclient\":0,\"start\":\"2026-09-30T03:26:07.111952+0000\",\"src_ip\":\"10.77.20.50\",\"dest_ip\":\"10.77.30.100\",\"src_port\":43070,\"dest_port\":22}}",
+        "created": "2026-09-30T03:26:07.314Z",
+        "kind": "alert",
+        "module": "suricata",
+        "start": "2026-09-30T03:26:07.111Z",
+        "category": [
+          "network",
+          "intrusion_detection"
+        ],
+        "type": [
+          "allowed"
+        ],
+        "dataset": "suricata.eve"
+      }
+    },
+    "sort": [
+      1790738767111
+    ]
+  },
+  {
+    "_index": ".ds-filebeat-8.19.20-2026.09.30-000002",
+    "_id": "PytZ8KABC-hcIXaAIeOi",
+    "_score": null,
+    "_source": {
+      "agent": {
+        "name": "sensor",
+        "id": "91097684-e47d-4561-8d65-7bdb82ef790e",
+        "ephemeral_id": "4da65a39-ad31-44d0-9c2f-5b40b5bc679c",
+        "type": "filebeat",
+        "version": "8.19.20"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/suricata/eve.json"
+        },
+        "offset": 1272933
+      },
+      "destination": {
+        "address": "10.77.30.100",
+        "port": 22,
+        "bytes": 0,
+        "ip": "10.77.30.100",
+        "packets": 0
+      },
+      "rule": {
+        "name": "LAB RED to BLUE SSH Connection Attempt",
+        "id": "1000002",
+        "category": "Generic Protocol Command Decode"
+      },
+      "source": {
+        "address": "10.77.20.50",
+        "port": 43070,
+        "bytes": 74,
+        "ip": "10.77.20.50",
+        "packets": 1
+      },
+      "fileset": {
+        "name": "eve"
+      },
+      "message": "Generic Protocol Command Decode",
+      "tags": [
+        "suricata",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "network": {
+        "community_id": "1:rsiQTNRQ4IJJ+ygYIjzpVjHUG+I=",
+        "bytes": 74,
+        "transport": "tcp",
+        "packets": 1,
+        "direction": "internal"
+      },
+      "input": {
+        "type": "log"
+      },
+      "@timestamp": "2026-09-30T03:26:07.111Z",
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "related": {
+        "ip": [
+          "10.77.20.50",
+          "10.77.30.100"
+        ]
+      },
+      "service": {
+        "type": "suricata"
+      },
+      "host": {
+        "hostname": "sensor",
+        "os": {
+          "kernel": "6.8.0-139-generic",
+          "codename": "noble",
+          "name": "Ubuntu",
+          "family": "debian",
+          "type": "linux",
+          "version": "24.04.4 LTS (Noble Numbat)",
+          "platform": "ubuntu"
+        },
+        "ip": [
+          "10.77.10.20",
+          "fe80::20c:29ff:fe20:2aa3",
+          "10.77.20.1",
+          "fe80::20c:29ff:fe20:2aad",
+          "10.77.30.1",
+          "fe80::20c:29ff:fe20:2ab7"
+        ],
+        "containerized": false,
+        "name": "sensor",
+        "id": "5e784d3aae85479abc1b080bc474ddc1",
+        "mac": [
+          "00-0C-29-20-2A-A3",
+          "00-0C-29-20-2A-AD",
+          "00-0C-29-20-2A-B7"
+        ],
+        "architecture": "x86_64"
+      },
+      "suricata": {
+        "eve": {
+          "in_iface": "ens37",
+          "event_type": "alert",
+          "alert": {
+            "signature_id": 1000002,
+            "rev": 2,
+            "gid": 1,
+            "signature": "LAB RED to BLUE SSH Connection Attempt",
+            "category": "Generic Protocol Command Decode"
+          },
+          "flow_id": "2169680380550535",
+          "flow": {
+            "src_ip": "10.77.20.50",
+            "src_port": 43070,
+            "dest_ip": "10.77.30.100",
+            "dest_port": 22
+          },
+          "pkt_src": "wire/pcap",
+          "ip_v": 4,
+          "direction": "to_server"
+        }
+      },
+      "event": {
+        "severity": 3,
+        "ingested": "2026-09-30T03:26:08.283486322Z",
+        "original": "{\"timestamp\":\"2026-09-30T03:26:07.111952+0000\",\"flow_id\":2169680380550535,\"in_iface\":\"ens37\",\"event_type\":\"alert\",\"src_ip\":\"10.77.20.50\",\"src_port\":43070,\"dest_ip\":\"10.77.30.100\",\"dest_port\":22,\"proto\":\"TCP\",\"ip_v\":4,\"pkt_src\":\"wire/pcap\",\"alert\":{\"action\":\"allowed\",\"gid\":1,\"signature_id\":1000002,\"rev\":2,\"signature\":\"LAB RED to BLUE SSH Connection Attempt\",\"category\":\"Generic Protocol Command Decode\",\"severity\":3},\"direction\":\"to_server\",\"flow\":{\"pkts_toserver\":1,\"pkts_toclient\":0,\"bytes_toserver\":74,\"bytes_toclient\":0,\"start\":\"2026-09-30T03:26:07.111952+0000\",\"src_ip\":\"10.77.20.50\",\"dest_ip\":\"10.77.30.100\",\"src_port\":43070,\"dest_port\":22}}",
+        "created": "2026-09-30T03:26:07.314Z",
+        "kind": "alert",
+        "module": "suricata",
+        "start": "2026-09-30T03:26:07.111Z",
+        "category": [
+          "network",
+          "intrusion_detection"
+        ],
+        "type": [
+          "allowed"
+        ],
+        "dataset": "suricata.eve"
+      }
+    },
+    "sort": [
+      1790738767111
+    ]
+  },
+  {
+    "_index": ".ds-filebeat-8.19.20-2026.09.30-000002",
+    "_id": "QCtZ8KABC-hcIXaAIeOi",
+    "_score": null,
+    "_source": {
+      "agent": {
+        "name": "sensor",
+        "id": "91097684-e47d-4561-8d65-7bdb82ef790e",
+        "ephemeral_id": "4da65a39-ad31-44d0-9c2f-5b40b5bc679c",
+        "type": "filebeat",
+        "version": "8.19.20"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/suricata/eve.json"
+        },
+        "offset": 1273582
+      },
+      "destination": {
+        "address": "10.77.30.100",
+        "port": 22,
+        "bytes": 0,
+        "ip": "10.77.30.100",
+        "packets": 0
+      },
+      "rule": {
+        "name": "LAB RED to BLUE SSH Brute Force Attempt",
+        "id": "1000003",
+        "category": "Attempted Administrator Privilege Gain"
+      },
+      "source": {
+        "address": "10.77.20.50",
+        "port": 43070,
+        "bytes": 74,
+        "ip": "10.77.20.50",
+        "packets": 1
+      },
+      "fileset": {
+        "name": "eve"
+      },
+      "message": "Attempted Administrator Privilege Gain",
+      "tags": [
+        "suricata",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "network": {
+        "community_id": "1:rsiQTNRQ4IJJ+ygYIjzpVjHUG+I=",
+        "bytes": 74,
+        "transport": "tcp",
+        "packets": 1,
+        "direction": "internal"
+      },
+      "input": {
+        "type": "log"
+      },
+      "@timestamp": "2026-09-30T03:26:07.111Z",
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "related": {
+        "ip": [
+          "10.77.20.50",
+          "10.77.30.100"
+        ]
+      },
+      "service": {
+        "type": "suricata"
+      },
+      "host": {
+        "hostname": "sensor",
+        "os": {
+          "kernel": "6.8.0-139-generic",
+          "codename": "noble",
+          "name": "Ubuntu",
+          "type": "linux",
+          "family": "debian",
+          "version": "24.04.4 LTS (Noble Numbat)",
+          "platform": "ubuntu"
+        },
+        "containerized": false,
+        "ip": [
+          "10.77.10.20",
+          "fe80::20c:29ff:fe20:2aa3",
+          "10.77.20.1",
+          "fe80::20c:29ff:fe20:2aad",
+          "10.77.30.1",
+          "fe80::20c:29ff:fe20:2ab7"
+        ],
+        "name": "sensor",
+        "id": "5e784d3aae85479abc1b080bc474ddc1",
+        "mac": [
+          "00-0C-29-20-2A-A3",
+          "00-0C-29-20-2A-AD",
+          "00-0C-29-20-2A-B7"
+        ],
+        "architecture": "x86_64"
+      },
+      "suricata": {
+        "eve": {
+          "in_iface": "ens38",
+          "event_type": "alert",
+          "alert": {
+            "rev": 2,
+            "signature_id": 1000003,
+            "gid": 1,
+            "signature": "LAB RED to BLUE SSH Brute Force Attempt",
+            "category": "Attempted Administrator Privilege Gain"
+          },
+          "flow_id": "2169772687578013",
+          "flow": {
+            "src_ip": "10.77.20.50",
+            "src_port": 43070,
+            "dest_ip": "10.77.30.100",
+            "dest_port": 22
+          },
+          "pkt_src": "wire/pcap",
+          "ip_v": 4,
+          "direction": "to_server"
+        }
+      },
+      "event": {
+        "severity": 1,
+        "ingested": "2026-09-30T03:26:08.285636299Z",
+        "original": "{\"timestamp\":\"2026-09-30T03:26:07.111973+0000\",\"flow_id\":2169772687578013,\"in_iface\":\"ens38\",\"event_type\":\"alert\",\"src_ip\":\"10.77.20.50\",\"src_port\":43070,\"dest_ip\":\"10.77.30.100\",\"dest_port\":22,\"proto\":\"TCP\",\"ip_v\":4,\"pkt_src\":\"wire/pcap\",\"alert\":{\"action\":\"allowed\",\"gid\":1,\"signature_id\":1000003,\"rev\":2,\"signature\":\"LAB RED to BLUE SSH Brute Force Attempt\",\"category\":\"Attempted Administrator Privilege Gain\",\"severity\":1},\"direction\":\"to_server\",\"flow\":{\"pkts_toserver\":1,\"pkts_toclient\":0,\"bytes_toserver\":74,\"bytes_toclient\":0,\"start\":\"2026-09-30T03:26:07.111973+0000\",\"src_ip\":\"10.77.20.50\",\"dest_ip\":\"10.77.30.100\",\"src_port\":43070,\"dest_port\":22}}",
+        "created": "2026-09-30T03:26:07.314Z",
+        "kind": "alert",
+        "module": "suricata",
+        "start": "2026-09-30T03:26:07.111Z",
+        "category": [
+          "network",
+          "intrusion_detection"
+        ],
+        "type": [
+          "allowed"
+        ],
+        "dataset": "suricata.eve"
+      }
+    },
+    "sort": [
+      1790738767111
+    ]
+  },
+  {
+    "_index": ".ds-filebeat-8.19.20-2026.09.30-000002",
+    "_id": "QStZ8KABC-hcIXaAIeOi",
+    "_score": null,
+    "_source": {
+      "agent": {
+        "name": "sensor",
+        "id": "91097684-e47d-4561-8d65-7bdb82ef790e",
+        "type": "filebeat",
+        "ephemeral_id": "4da65a39-ad31-44d0-9c2f-5b40b5bc679c",
+        "version": "8.19.20"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/suricata/eve.json"
+        },
+        "offset": 1274239
+      },
+      "destination": {
+        "address": "10.77.30.100",
+        "port": 22,
+        "bytes": 0,
+        "ip": "10.77.30.100",
+        "packets": 0
+      },
+      "rule": {
+        "name": "LAB RED to BLUE SSH Connection Attempt",
+        "id": "1000002",
+        "category": "Generic Protocol Command Decode"
+      },
+      "source": {
+        "address": "10.77.20.50",
+        "port": 43070,
+        "bytes": 74,
+        "ip": "10.77.20.50",
+        "packets": 1
+      },
+      "fileset": {
+        "name": "eve"
+      },
+      "message": "Generic Protocol Command Decode",
+      "tags": [
+        "suricata",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "network": {
+        "community_id": "1:rsiQTNRQ4IJJ+ygYIjzpVjHUG+I=",
+        "bytes": 74,
+        "transport": "tcp",
+        "packets": 1,
+        "direction": "internal"
+      },
+      "input": {
+        "type": "log"
+      },
+      "@timestamp": "2026-09-30T03:26:07.111Z",
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "related": {
+        "ip": [
+          "10.77.20.50",
+          "10.77.30.100"
+        ]
+      },
+      "service": {
+        "type": "suricata"
+      },
+      "host": {
+        "hostname": "sensor",
+        "os": {
+          "kernel": "6.8.0-139-generic",
+          "codename": "noble",
+          "name": "Ubuntu",
+          "family": "debian",
+          "type": "linux",
+          "version": "24.04.4 LTS (Noble Numbat)",
+          "platform": "ubuntu"
+        },
+        "ip": [
+          "10.77.10.20",
+          "fe80::20c:29ff:fe20:2aa3",
+          "10.77.20.1",
+          "fe80::20c:29ff:fe20:2aad",
+          "10.77.30.1",
+          "fe80::20c:29ff:fe20:2ab7"
+        ],
+        "containerized": false,
+        "name": "sensor",
+        "id": "5e784d3aae85479abc1b080bc474ddc1",
+        "mac": [
+          "00-0C-29-20-2A-A3",
+          "00-0C-29-20-2A-AD",
+          "00-0C-29-20-2A-B7"
+        ],
+        "architecture": "x86_64"
+      },
+      "suricata": {
+        "eve": {
+          "in_iface": "ens38",
+          "event_type": "alert",
+          "alert": {
+            "signature_id": 1000002,
+            "rev": 2,
+            "gid": 1,
+            "signature": "LAB RED to BLUE SSH Connection Attempt",
+            "category": "Generic Protocol Command Decode"
+          },
+          "flow_id": "2169772687578013",
+          "pkt_src": "wire/pcap",
+          "flow": {
+            "src_ip": "10.77.20.50",
+            "src_port": 43070,
+            "dest_ip": "10.77.30.100",
+            "dest_port": 22
+          },
+          "ip_v": 4,
+          "direction": "to_server"
+        }
+      },
+      "event": {
+        "severity": 3,
+        "ingested": "2026-09-30T03:26:08.286982633Z",
+        "original": "{\"timestamp\":\"2026-09-30T03:26:07.111973+0000\",\"flow_id\":2169772687578013,\"in_iface\":\"ens38\",\"event_type\":\"alert\",\"src_ip\":\"10.77.20.50\",\"src_port\":43070,\"dest_ip\":\"10.77.30.100\",\"dest_port\":22,\"proto\":\"TCP\",\"ip_v\":4,\"pkt_src\":\"wire/pcap\",\"alert\":{\"action\":\"allowed\",\"gid\":1,\"signature_id\":1000002,\"rev\":2,\"signature\":\"LAB RED to BLUE SSH Connection Attempt\",\"category\":\"Generic Protocol Command Decode\",\"severity\":3},\"direction\":\"to_server\",\"flow\":{\"pkts_toserver\":1,\"pkts_toclient\":0,\"bytes_toserver\":74,\"bytes_toclient\":0,\"start\":\"2026-09-30T03:26:07.111973+0000\",\"src_ip\":\"10.77.20.50\",\"dest_ip\":\"10.77.30.100\",\"src_port\":43070,\"dest_port\":22}}",
+        "created": "2026-09-30T03:26:07.314Z",
+        "kind": "alert",
+        "module": "suricata",
+        "start": "2026-09-30T03:26:07.111Z",
+        "category": [
+          "network",
+          "intrusion_detection"
+        ],
+        "type": [
+          "allowed"
+        ],
+        "dataset": "suricata.eve"
+      }
+    },
+    "sort": [
+      1790738767111
+    ]
+  },
+  {
+    "_index": ".ds-filebeat-8.19.20-2026.09.30-000002",
+    "_id": "PCtZ8KABC-hcIXaAIeOi",
+    "_score": null,
+    "_source": {
+      "agent": {
+        "name": "sensor",
+        "id": "91097684-e47d-4561-8d65-7bdb82ef790e",
+        "ephemeral_id": "4da65a39-ad31-44d0-9c2f-5b40b5bc679c",
+        "type": "filebeat",
+        "version": "8.19.20"
+      },
+      "log": {
+        "file": {
+          "path": "/var/log/suricata/eve.json"
+        },
+        "offset": 1270990
+      },
+      "destination": {
+        "address": "10.77.30.100",
+        "port": 22,
+        "bytes": 0,
+        "ip": "10.77.30.100",
+        "packets": 0
+      },
+      "rule": {
+        "name": "LAB RED to BLUE SSH Connection Attempt",
+        "id": "1000002",
+        "category": "Generic Protocol Command Decode"
+      },
+      "source": {
+        "address": "10.77.20.50",
+        "port": 43058,
+        "bytes": 74,
+        "ip": "10.77.20.50",
+        "packets": 1
+      },
+      "fileset": {
+        "name": "eve"
+      },
+      "message": "Generic Protocol Command Decode",
+      "network": {
+        "community_id": "1:m33GUakC1A/L1i8bTnG4hZdlzSE=",
+        "bytes": 74,
+        "transport": "tcp",
+        "packets": 1,
+        "direction": "internal"
+      },
+      "tags": [
+        "suricata",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-City.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb",
+        "_geoip_database_unavailable_GeoLite2-ASN.mmdb"
+      ],
+      "input": {
+        "type": "log"
+      },
+      "@timestamp": "2026-09-30T03:26:06.880Z",
+      "ecs": {
+        "version": "1.12.0"
+      },
+      "related": {
+        "ip": [
+          "10.77.20.50",
+          "10.77.30.100"
+        ]
+      },
+      "service": {
+        "type": "suricata"
+      },
+      "host": {
+        "hostname": "sensor",
+        "os": {
+          "kernel": "6.8.0-139-generic",
+          "codename": "noble",
+          "name": "Ubuntu",
+          "family": "debian",
+          "type": "linux",
+          "version": "24.04.4 LTS (Noble Numbat)",
+          "platform": "ubuntu"
+        },
+        "containerized": false,
+        "ip": [
+          "10.77.10.20",
+          "fe80::20c:29ff:fe20:2aa3",
+          "10.77.20.1",
+          "fe80::20c:29ff:fe20:2aad",
+          "10.77.30.1",
+          "fe80::20c:29ff:fe20:2ab7"
+        ],
+        "name": "sensor",
+        "id": "5e784d3aae85479abc1b080bc474ddc1",
+        "mac": [
+          "00-0C-29-20-2A-A3",
+          "00-0C-29-20-2A-AD",
+          "00-0C-29-20-2A-B7"
+        ],
+        "architecture": "x86_64"
+      },
+      "suricata": {
+        "eve": {
+          "in_iface": "ens38",
+          "event_type": "alert",
+          "alert": {
+            "rev": 2,
+            "signature_id": 1000002,
+            "gid": 1,
+            "signature": "LAB RED to BLUE SSH Connection Attempt",
+            "category": "Generic Protocol Command Decode"
+          },
+          "flow_id": "1810827717722430",
+          "flow": {
+            "src_ip": "10.77.20.50",
+            "src_port": 43058,
+            "dest_ip": "10.77.30.100",
+            "dest_port": 22
+          },
+          "pkt_src": "wire/pcap",
+          "ip_v": 4,
+          "direction": "to_server"
+        }
+      },
+      "event": {
+        "severity": 3,
+        "ingested": "2026-09-30T03:26:08.279313975Z",
+        "original": "{\"timestamp\":\"2026-09-30T03:26:06.880368+0000\",\"flow_id\":1810827717722430,\"in_iface\":\"ens38\",\"event_type\":\"alert\",\"src_ip\":\"10.77.20.50\",\"src_port\":43058,\"dest_ip\":\"10.77.30.100\",\"dest_port\":22,\"proto\":\"TCP\",\"ip_v\":4,\"pkt_src\":\"wire/pcap\",\"alert\":{\"action\":\"allowed\",\"gid\":1,\"signature_id\":1000002,\"rev\":2,\"signature\":\"LAB RED to BLUE SSH Connection Attempt\",\"category\":\"Generic Protocol Command Decode\",\"severity\":3},\"direction\":\"to_server\",\"flow\":{\"pkts_toserver\":1,\"pkts_toclient\":0,\"bytes_toserver\":74,\"bytes_toclient\":0,\"start\":\"2026-09-30T03:26:06.880368+0000\",\"src_ip\":\"10.77.20.50\",\"dest_ip\":\"10.77.30.100\",\"src_port\":43058,\"dest_port\":22}}",
+        "created": "2026-09-30T03:26:07.313Z",
+        "kind": "alert",
+        "module": "suricata",
+        "start": "2026-09-30T03:26:06.880Z",
+        "category": [
+          "network",
+          "intrusion_detection"
+        ],
+        "type": [
+          "allowed"
+        ],
+        "dataset": "suricata.eve"
+      }
+    },
+    "sort": [
+      1790738766880
+    ]
+  }
+]

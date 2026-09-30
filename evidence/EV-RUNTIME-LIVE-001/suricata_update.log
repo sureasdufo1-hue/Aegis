@@ -1,0 +1,14 @@
+Suricata Multi-Interface Update Started at 2026-09-30T02:23:43.239204+00:00
+Backup created: /etc/suricata/suricata.yaml.bak_live
+Modification output: SUCCESS_UPDATED
+Running configuration validation: suricata -T
+suricata -T stdout:
+i: suricata: This is Suricata version 8.0.6 RELEASE running in SYSTEM mode
+W: detect: rule 1000003: SYN-only to port(s) 22:22 w/o direction specified, disabling for toclient direction
+W: detect: rule 1000002: SYN-only to port(s) 22:22 w/o direction specified, disabling for toclient direction
+i: suricata: Configuration provided was successfully loaded. Exiting.
+
+suricata -T stderr:
+[sudo] password for sensor: 
+VALIDATION PASSED (suricata -T). Restarting suricata service...
+Suricata service status after restart: active
