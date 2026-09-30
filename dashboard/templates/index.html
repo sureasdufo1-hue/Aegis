@@ -526,6 +526,35 @@
             color: #1c1917 !important;
         }
 
+        /* MITRE Matrix Section Warm Ivory */
+        body.theme-light-pristine #mitre-matrix-section {
+            background-color: #fffefa !important;
+            border-color: #e7e2d6 !important;
+        }
+        body.theme-light-pristine .mitre-col {
+            background-color: #f6f2e9 !important;
+            border-color: #e7e2d6 !important;
+        }
+        body.theme-light-pristine .mitre-tile-zero {
+            background-color: #fffefa !important;
+            border-color: #e7e2d6 !important;
+            color: #57534e !important;
+        }
+        body.theme-light-pristine #mitreTechniqueModal > div {
+            background-color: #fffefa !important;
+            border-color: #e7e2d6 !important;
+            color: #1c1917 !important;
+        }
+        body.theme-light-pristine #mitreTechniqueModal h3 {
+            color: #1c1917 !important;
+        }
+        body.theme-light-pristine #mitreTechniqueModal .bg-slate-950 {
+            background-color: #f6f2e9 !important;
+            border-color: #e7e2d6 !important;
+            color: #292524 !important;
+        }
+
+
 
 
         /* High Readability Severity Pills (Warm Toned) */
@@ -1372,6 +1401,55 @@
                             <span>🛡️ 위협 분석 현황 (Threat Analysis Overview)</span>
                         </h2>
                         <span class="text-xs text-slate-400 font-mono">기준: 최근 1시간 집계</span>
+                    </div>
+
+                    <!-- MITRE ATT&CK 14-Tactics Enterprise Matrix Navigator & Heatmap (Phase 4-2) -->
+                    <div id="mitre-matrix-section" class="soc-panel rounded p-3 space-y-3 border-l-4 border-l-amber-500 mb-4 font-mono">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-slate-800 pb-2">
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-base">🗺️</span>
+                                    <h3 class="text-sm font-bold text-amber-300 flex items-center gap-2">
+                                        <span>MITRE ATT&CK v19.2 엔터프라이즈 매트릭스 &amp; 실시간 탐지 히트맵</span>
+                                    </h3>
+                                    <span id="mitre-badge-coverage" class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-950 text-amber-300 border border-amber-800">
+                                        커버리지: 100% (14/14 Tactics)
+                                    </span>
+                                </div>
+                                <p class="text-xs text-slate-400 mt-0.5">
+                                    Suricata 및 Snort 실시간 탐지 이벤트를 14개 킬체인 전술별로 분류하여 공격 핫스팟(Hotspot)을 히트맵으로 시각화합니다.
+                                </p>
+                            </div>
+                            <div class="flex items-center gap-2 text-xs">
+                                <span id="mitre-badge-active-threats" class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-950 text-rose-300 border border-rose-800 animate-pulse">
+                                    7개 기법 활성 공격 감지
+                                </span>
+                                <span id="mitre-badge-total-detections" class="px-2 py-0.5 rounded text-[10px] bg-slate-800 text-slate-300 border border-slate-700">
+                                    총 탐지: 15,873건
+                                </span>
+                                <button onclick="fetchMitreMatrix()" class="px-2.5 py-1 text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 rounded border border-slate-700 transition cursor-pointer">
+                                    <span>🔄</span> 새로고침
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 14-Tactics Matrix Horizontal Scroll Grid -->
+                        <div class="overflow-x-auto pb-2">
+                            <div id="mitre-tactics-grid" class="flex gap-2 min-w-[1400px]">
+                                <!-- Dynamically generated 14 tactic columns and technique cards -->
+                            </div>
+                        </div>
+
+                        <!-- Interactive Legend & Status Filter -->
+                        <div class="flex flex-wrap items-center justify-between text-[11px] pt-1 border-t border-slate-800/80 text-slate-400">
+                            <div class="flex items-center gap-3">
+                                <span class="font-bold text-slate-300">히트맵 범례:</span>
+                                <span class="flex items-center gap-1"><span class="w-3 h-3 rounded bg-rose-600"></span> 5+ Hits (집중 공격)</span>
+                                <span class="flex items-center gap-1"><span class="w-3 h-3 rounded bg-amber-500"></span> 1~4 Hits (관찰 위협)</span>
+                                <span class="flex items-center gap-1"><span class="w-3 h-3 rounded bg-slate-800 border border-slate-700"></span> 0 Hit (미탐지 기법)</span>
+                            </div>
+                            <span class="text-[10px] text-slate-400">💡 카드를 클릭하면 상세 공격 기법, 연계 Suricata SID, 1-Click PCAP 카빙 조회가 열립니다.</span>
+                        </div>
                     </div>
 
                     <!-- Threat Timeline Chart -->
@@ -2585,6 +2663,79 @@
         </div>
     </div>
 
+    <!-- MITRE ATT&CK Technique Inspector Modal (과제 4-2) -->
+    <div id="mitreTechniqueModal" class="hidden fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-4 font-mono">
+        <div class="bg-slate-900 border border-slate-700/80 rounded-xl shadow-2xl max-w-2xl w-full p-5 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <div class="flex items-center gap-2">
+                    <span id="mitre-modal-tech-id" class="px-2.5 py-1 rounded bg-indigo-950/80 border border-indigo-700 text-indigo-300 font-bold text-xs">T1190</span>
+                    <h3 id="mitre-modal-tech-name" class="text-sm font-bold text-white">Exploit Public-Facing Application</h3>
+                </div>
+                <button onclick="closeTechniqueDetailModal()" class="text-slate-400 hover:text-white text-lg cursor-pointer">&times;</button>
+            </div>
+
+            <div class="space-y-3 text-xs">
+                <!-- Status Badges row -->
+                <div class="flex flex-wrap items-center gap-2">
+                    <span id="mitre-modal-tactic" class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700 text-[11px] font-semibold">전술: Initial Access (TA0001)</span>
+                    <span id="mitre-modal-severity" class="px-2 py-0.5 rounded text-[11px] font-bold">CRITICAL</span>
+                    <span id="mitre-modal-hit-count" class="px-2 py-0.5 rounded text-[11px] font-bold">12건 탐지</span>
+                    <span id="mitre-modal-active-status" class="px-2 py-0.5 rounded text-[11px] font-bold">활성 공격 감지</span>
+                </div>
+
+                <!-- Description -->
+                <div>
+                    <label class="block text-slate-400 mb-1 font-semibold">공격 기법 설명 (Technique Description)</label>
+                    <p id="mitre-modal-description" class="text-xs text-slate-300 leading-relaxed bg-slate-950 p-3 rounded border border-slate-800">
+                        설명 내용 로딩 중...
+                    </p>
+                </div>
+
+                <!-- Mapped SIDs -->
+                <div>
+                    <label class="block text-slate-400 mb-1 font-semibold">연계 Suricata / Snort 탐지 룰 (Mapped SIDs)</label>
+                    <div id="mitre-modal-mapped-sids" class="flex flex-wrap gap-1.5 p-2 bg-slate-950 rounded border border-slate-800 min-h-[36px] items-center">
+                        <!-- SID Badges inserted dynamically -->
+                    </div>
+                </div>
+
+                <!-- Detection Stats & Last Seen -->
+                <div class="grid grid-cols-2 gap-3 bg-slate-950 p-2.5 rounded border border-slate-800 text-[11px]">
+                    <div>
+                        <span class="text-slate-500">최근 탐지 시각 (Last Seen):</span>
+                        <div id="mitre-modal-last-seen" class="font-bold text-slate-200 mt-0.5">-</div>
+                    </div>
+                    <div>
+                        <span class="text-slate-500">매핑 탐지 룰 수 (Rule Count):</span>
+                        <div id="mitre-modal-rule-count" class="font-bold text-slate-200 mt-0.5">0개 룰</div>
+                    </div>
+                </div>
+
+                <!-- Mitigation & Tuning Guidance -->
+                <div>
+                    <label class="block text-slate-400 mb-1 font-semibold">방어 및 권고 조치 (Mitigation & Tuning Guidance)</label>
+                    <div id="mitre-modal-mitigation" class="text-xs text-amber-200 bg-amber-950/30 p-2.5 rounded border border-amber-900/60 leading-relaxed">
+                        권고 조치 로딩 중...
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between pt-3 border-t border-slate-800 text-xs">
+                <div class="text-[11px] text-slate-400 flex items-center gap-1">
+                    <span>⚡</span> <span>MITRE ATT&CK v19.2 연계 5-Tuple PCAP 카빙 지원</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="closeTechniqueDetailModal()" class="px-3 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 transition cursor-pointer">
+                        닫기
+                    </button>
+                    <button id="mitre-modal-pcap-btn" onclick="triggerMitrePcapCarving()" class="px-4 py-1.5 rounded bg-indigo-600 hover:bg-indigo-500 text-white font-bold transition flex items-center gap-1.5 cursor-pointer shadow">
+                        <span>🔎</span> 1-Click 관련 PCAP 세션 패킷 검증
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Toast Notification Container -->
     <div id="toast-container" class="fixed top-16 right-6 z-50 space-y-2 pointer-events-none"></div>
 
@@ -2760,7 +2911,7 @@
                 } else if (subMenu === 'threat_overview') {
                     const el = document.getElementById('view-threat-overview');
                     if (el) el.classList.remove('hidden');
-                    setTimeout(() => { renderThreatOverviewChart(); }, 50);
+                    setTimeout(() => { renderThreatOverviewChart(); fetchMitreMatrix(); }, 50);
                 } else if (subMenu === 'interfaces') {
                     const el = document.getElementById('view-interfaces');
                     if (el) el.classList.remove('hidden');
@@ -6026,6 +6177,215 @@
             }
         }
 
+        /* ============================================================================== */
+        /* MITRE ATT&CK Matrix Heatmap & Dynamic Highlighting (과제 4-2)                 */
+        /* ============================================================================== */
+        let currentMitreTechnique = null;
+
+        async function fetchMitreMatrix() {
+            try {
+                const res = await fetch('/api/threats/mitre/matrix');
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                const data = await res.json();
+
+                // Update summary badges
+                const coverageEl = document.getElementById('mitre-badge-coverage');
+                if (coverageEl) {
+                    coverageEl.innerText = `커버리지: ${data.coverage_percentage}% (${data.tactics.length}/14 Tactics)`;
+                }
+                const activeEl = document.getElementById('mitre-badge-active-threats');
+                if (activeEl) {
+                    activeEl.innerText = `${data.active_threat_techniques}개 기법 활성 공격 감지`;
+                    if (data.active_threat_techniques > 0) {
+                        activeEl.className = 'px-2 py-0.5 rounded text-[10px] font-bold bg-rose-950 text-rose-300 border border-rose-800 animate-pulse';
+                    } else {
+                        activeEl.className = 'px-2 py-0.5 rounded text-[10px] font-bold bg-slate-800 text-slate-400 border border-slate-700';
+                    }
+                }
+                const totalEl = document.getElementById('mitre-badge-total-detections');
+                if (totalEl) {
+                    totalEl.innerText = `총 탐지: ${data.total_detections.toLocaleString()}건`;
+                }
+
+                // Render Tactics Grid
+                renderMitreTactics(data.tactics);
+            } catch (err) {
+                console.error('Failed to fetch MITRE matrix:', err);
+            }
+        }
+
+        function renderMitreTactics(tactics) {
+            const container = document.getElementById('mitre-tactics-grid');
+            if (!container) return;
+            container.innerHTML = '';
+
+            tactics.forEach(tactic => {
+                const col = document.createElement('div');
+                col.className = 'mitre-col flex-1 min-w-[125px] max-w-[170px] bg-slate-900/90 rounded border border-slate-800 flex flex-col p-2 space-y-2';
+
+                // Tactic Header
+                const hasHits = tactic.total_hits > 0;
+                col.innerHTML = `
+                    <div class="border-b border-slate-800/80 pb-1.5">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[9px] text-slate-400 font-mono">${tactic.id}</span>
+                            ${hasHits ? `<span class="px-1.5 py-0.2 rounded text-[9px] font-bold bg-rose-900/80 text-rose-200 border border-rose-700 animate-pulse">${tactic.total_hits}</span>` : ''}
+                        </div>
+                        <div class="text-[11px] font-bold text-white leading-tight mt-0.5" title="${tactic.name_en}">${tactic.name_ko}</div>
+                        <div class="text-[9px] text-slate-400 truncate mt-0.5">${tactic.name_en}</div>
+                        <div class="flex items-center justify-between text-[9px] text-slate-400 mt-1">
+                            <span>커버리지:</span>
+                            <span class="font-bold text-slate-300">${tactic.coverage_percentage}%</span>
+                        </div>
+                    </div>
+                    <div class="techniques-list space-y-1.5 flex-1 flex flex-col justify-start"></div>
+                `;
+
+                const techList = col.querySelector('.techniques-list');
+
+                tactic.techniques.forEach(tech => {
+                    const card = document.createElement('div');
+                    let heatClass = 'bg-slate-950/60 border-slate-800/80 text-slate-400 mitre-tile-zero hover:border-slate-600';
+                    let hitBadge = `<span class="text-[9px] px-1 py-0.2 rounded bg-slate-800/80 text-slate-400">${tech.hit_count} hits</span>`;
+
+                    if (tech.hit_count >= 5) {
+                        heatClass = 'bg-rose-950/90 border-rose-600 text-rose-100 hover:bg-rose-900 shadow-md shadow-rose-950/40 animate-pulse';
+                        hitBadge = `<span class="text-[9px] font-bold px-1 py-0.2 rounded bg-rose-600 text-white">${tech.hit_count} hits</span>`;
+                    } else if (tech.hit_count > 0) {
+                        heatClass = 'bg-amber-950/70 border-amber-600 text-amber-100 hover:bg-amber-900 shadow-sm';
+                        hitBadge = `<span class="text-[9px] font-bold px-1 py-0.2 rounded bg-amber-600 text-white">${tech.hit_count} hits</span>`;
+                    }
+
+                    let sevBadge = '';
+                    if (tech.severity === 'CRITICAL') {
+                        sevBadge = '<span class="text-[8px] font-bold px-1 rounded bg-rose-600 text-white">CRIT</span>';
+                    } else if (tech.severity === 'HIGH') {
+                        sevBadge = '<span class="text-[8px] font-bold px-1 rounded bg-amber-600 text-white">HIGH</span>';
+                    } else if (tech.severity === 'MEDIUM') {
+                        sevBadge = '<span class="text-[8px] font-bold px-1 rounded bg-yellow-600 text-white">MED</span>';
+                    }
+
+                    card.className = `p-2 rounded border cursor-pointer transition select-none ${heatClass}`;
+                    card.setAttribute('onclick', `openTechniqueDetailModal('${tech.id}')`);
+                    card.innerHTML = `
+                        <div class="flex items-center justify-between text-[10px] font-mono">
+                            <span class="font-bold text-indigo-400">${tech.id}</span>
+                            ${sevBadge}
+                        </div>
+                        <div class="text-[11px] font-semibold leading-tight mt-1 line-clamp-2" title="${tech.name}">${tech.name}</div>
+                        <div class="flex items-center justify-between mt-2 pt-1 border-t border-slate-800/50">
+                            ${hitBadge}
+                            <span class="text-[8px] text-slate-400 font-mono">${(tech.mapped_sids || []).length} SIDs</span>
+                        </div>
+                    `;
+                    techList.appendChild(card);
+                });
+
+                container.appendChild(col);
+            });
+        }
+
+        async function openTechniqueDetailModal(techId) {
+            try {
+                const res = await fetch(`/api/threats/mitre/techniques/${encodeURIComponent(techId)}`);
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                const tech = await res.json();
+                currentMitreTechnique = tech;
+
+                const techIdEl = document.getElementById('mitre-modal-tech-id');
+                const techNameEl = document.getElementById('mitre-modal-tech-name');
+                const tacticEl = document.getElementById('mitre-modal-tactic');
+                const sevEl = document.getElementById('mitre-modal-severity');
+                const hitEl = document.getElementById('mitre-modal-hit-count');
+                const activeEl = document.getElementById('mitre-modal-active-status');
+                const descEl = document.getElementById('mitre-modal-description');
+                const sidsEl = document.getElementById('mitre-modal-mapped-sids');
+                const lastSeenEl = document.getElementById('mitre-modal-last-seen');
+                const ruleCountEl = document.getElementById('mitre-modal-rule-count');
+                const mitigationEl = document.getElementById('mitre-modal-mitigation');
+
+                if (techIdEl) techIdEl.innerText = tech.id;
+                if (techNameEl) techNameEl.innerText = tech.name;
+                if (tacticEl) tacticEl.innerText = `전술: ${tech.tactic_name_ko} (${tech.tactic_id})`;
+
+                if (sevEl) {
+                    sevEl.innerText = tech.severity;
+                    if (tech.severity === 'CRITICAL') {
+                        sevEl.className = 'px-2 py-0.5 rounded text-[11px] font-bold bg-rose-950 text-rose-300 border border-rose-800';
+                    } else if (tech.severity === 'HIGH') {
+                        sevEl.className = 'px-2 py-0.5 rounded text-[11px] font-bold bg-amber-950 text-amber-300 border border-amber-800';
+                    } else if (tech.severity === 'MEDIUM') {
+                        sevEl.className = 'px-2 py-0.5 rounded text-[11px] font-bold bg-yellow-950 text-yellow-300 border border-yellow-800';
+                    } else {
+                        sevEl.className = 'px-2 py-0.5 rounded text-[11px] font-bold bg-slate-800 text-slate-400 border border-slate-700';
+                    }
+                }
+
+                if (hitEl) {
+                    hitEl.innerText = `${tech.hit_count.toLocaleString()}건 탐지`;
+                    if (tech.hit_count >= 5) {
+                        hitEl.className = 'px-2 py-0.5 rounded text-[11px] font-bold bg-rose-950 text-rose-300 border border-rose-800';
+                    } else if (tech.hit_count > 0) {
+                        hitEl.className = 'px-2 py-0.5 rounded text-[11px] font-bold bg-amber-950 text-amber-300 border border-amber-800';
+                    } else {
+                        hitEl.className = 'px-2 py-0.5 rounded text-[11px] font-bold bg-slate-800 text-slate-400 border border-slate-700';
+                    }
+                }
+
+                if (activeEl) {
+                    if (tech.active) {
+                        activeEl.innerText = '⚡ 활성 위협 감지';
+                        activeEl.className = 'px-2 py-0.5 rounded text-[11px] font-bold bg-rose-950 text-rose-300 border border-rose-800 animate-pulse';
+                    } else {
+                        activeEl.innerText = '⏸️ 현재 비활성 (안전)';
+                        activeEl.className = 'px-2 py-0.5 rounded text-[11px] font-bold bg-slate-800 text-slate-400 border border-slate-700';
+                    }
+                }
+
+                if (descEl) descEl.innerText = tech.description;
+
+                if (sidsEl) {
+                    sidsEl.innerHTML = '';
+                    if (tech.mapped_sids && tech.mapped_sids.length > 0) {
+                        tech.mapped_sids.forEach(sid => {
+                            const badge = document.createElement('span');
+                            badge.className = 'px-2 py-0.5 rounded bg-indigo-950/80 border border-indigo-700 text-indigo-300 text-[11px] font-mono font-bold';
+                            badge.innerText = `SID: ${sid}`;
+                            sidsEl.appendChild(badge);
+                        });
+                    } else {
+                        sidsEl.innerHTML = '<span class="text-slate-500 text-[11px]">연계된 커스텀 탐지 룰 없음 (기본 프로파일 커버리지)</span>';
+                    }
+                }
+
+                if (lastSeenEl) lastSeenEl.innerText = tech.last_seen || '최근 탐지 이력 없음';
+                if (ruleCountEl) ruleCountEl.innerText = `${(tech.mapped_sids || []).length}개 탐지 룰 등록`;
+                if (mitigationEl) mitigationEl.innerText = tech.mitigation || '특별한 권고 조치가 정의되지 않았습니다.';
+
+                const modal = document.getElementById('mitreTechniqueModal');
+                if (modal) modal.classList.remove('hidden');
+            } catch (err) {
+                alert('기법 상세 정보를 불러오는 데 실패했습니다: ' + err.message);
+            }
+        }
+
+        function closeTechniqueDetailModal() {
+            const modal = document.getElementById('mitreTechniqueModal');
+            if (modal) modal.classList.add('hidden');
+            currentMitreTechnique = null;
+        }
+
+        function triggerMitrePcapCarving() {
+            if (!currentMitreTechnique) return;
+            const sid = (currentMitreTechnique.mapped_sids && currentMitreTechnique.mapped_sids.length > 0) ? currentMitreTechnique.mapped_sids[0] : 0;
+            const sig = `[MITRE ${currentMitreTechnique.id}] ${currentMitreTechnique.name}`;
+            closeTechniqueDetailModal();
+            if (typeof openPcapForensicModal === 'function') {
+                openPcapForensicModal(sig, '10.77.20.20', '10.77.30.20', 80, sid);
+            } else {
+                alert('PCAP 카빙 엔진 모달을 열 수 없습니다.');
+            }
+        }
 
         // Initialize on Load
         window.addEventListener('DOMContentLoaded', () => {
@@ -6037,6 +6397,7 @@
             refreshAllTelemetry();
             loadSecurityHypotheses('MULTI');
             fetchQuarantines();
+            fetchMitreMatrix();
 
             // Realtime countdown ticker every 1s
             setInterval(tickQuarantineCountdowns, 1000);

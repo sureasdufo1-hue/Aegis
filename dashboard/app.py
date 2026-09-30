@@ -20,6 +20,8 @@ from dashboard.quarantine_manager import (
     QuarantineApplyRequest,
     QuarantineRollbackRequest,
 )
+from dashboard.mitre_matrix import mitre_matrix_engine
+
 
 
 
@@ -428,9 +430,27 @@ def rollback_ip_quarantine(quarantine_id: str, req: QuarantineRollbackRequest):
     return {"status": "success", "record": rec_or_err.model_dump() if hasattr(rec_or_err, "model_dump") else rec_or_err}
 
 
+# =============================================================================
+# MITRE ATT&CK 14-Tactics Matrix & Dynamic Heatmap API
+# =============================================================================
+@app.get("/api/threats/mitre/matrix")
+def get_mitre_matrix():
+    """Retrieve full 14-tactics MITRE ATT&CK Matrix report with dynamic detection heatmaps."""
+    report = mitre_matrix_engine.get_matrix_report()
+    return report.model_dump()
+
+
+@app.get("/api/threats/mitre/techniques/{technique_id}")
+def get_mitre_technique_detail(technique_id: str):
+    """Retrieve detailed metadata, mapped SIDs, and mitigation guidance for a specific ATT&CK technique."""
+    tech = mitre_matrix_engine.get_technique(technique_id)
+    if not tech:
+        return JSONResponse(status_code=404, content={"detail": f"Technique '{technique_id}' not found.", "error": f"Technique '{technique_id}' not found."})
+    return tech.model_dump()
 
 
 @app.post("/api/ai/interpret")
+
 def interpret_event(req: InterpretRequest):
     if req.target_type == "incident" and req.incident_id:
         incidents = get_current_incidents()
