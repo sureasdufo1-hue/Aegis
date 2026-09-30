@@ -1890,6 +1890,8 @@ flowchart TD
 - `evidence/EV-HITL-001`: 1-Click 승인 Nonce 토큰 생성 및 재사용 차단 로그
 - `evidence/EV-RESP-001`: MockFirewallAdapter 3,600s TTL 차단 및 즉시 롤백 증적
 - `evidence/EV-E2E-001`: 7대 통합 엔드투엔드 시나리오 실행 종합 로그
+- `evidence/EV-RUNTIME-LIVE-001`: 5대 실 VM 실환경 폐루프 관제·탐지 및 HITL 승인 실측 증적 (Suricata 8.0.6, Filebeat ➔ ES 8.19.20 611건 적재, INC-10.77.20.50, APR-90738766-238)
+- `docs/02-architecture/AI_SECURITY_7_PRINCIPLES.md`: AI 보안 7대 원칙 기준서 (STD-SEC-AI-001: 24대 위협 대응 및 NIST/OWASP/ATLAS 매핑 규격)
 
 ---
 

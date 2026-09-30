@@ -17,8 +17,11 @@
 
 ---
 
-> 🚀 **[AegisAI v2.0 최종 기술 포트폴리오 보고서 (15_PORTFOLIO_REPORT.md)](./15_PORTFOLIO_REPORT.md)**  
-> *기존 SOC의 탐지·SIEM 기반을 유지하면서 AI를 보안 분석에 활용하고, 동시에 AI 자체의 Prompt·Data·RAG·Agent·Response 공격면을 같은 SOC에서 탐지·통제하는 통합 보안관제 플랫폼의 전 생애주기 엔지니어링 포트폴리오.*
+> 🚀 **핵심 산출물 바로가기 (Core Master Deliverables):**  
+> - 📄 **[AegisAI 최종 엔지니어링 포트폴리오 (15_PORTFOLIO_REPORT.md)](./docs/15_PORTFOLIO_REPORT.md)**: AI for Security × Security for AI 전 생애주기 엔지니어링 포트폴리오.  
+> - 🛡️ **[AI 보안 7대 원칙 기준서 (AI_SECURITY_7_PRINCIPLES.md)](./docs/02-architecture/AI_SECURITY_7_PRINCIPLES.md)**: 상위 거버넌스·보안정책·24대 위협 대응 규격 (`STD-SEC-AI-001`).  
+> - 🔬 **[실환경 5-VM 폐루프 실측 증적 (EV-RUNTIME-LIVE-001)](./evidence/EV-RUNTIME-LIVE-001/metadata.md)**: 5대 가상머신 실시간 패킷 공격, Suricata 24건 탐지, Elasticsearch 611건 적재, HITL 1-Click 승인 실측 증적.  
+> - 🎤 **[대외 심사·기술면접 디펜스 및 시연 가이드 (16_DEFENSE_PRESENTATION_AND_QA.md)](./docs/16_DEFENSE_PRESENTATION_AND_QA.md)**: 10분 발표 슬라이드, 심층 기술면접 15대 Q&A, 3분 실시간 시연 스크립트.  
 
 ---
 

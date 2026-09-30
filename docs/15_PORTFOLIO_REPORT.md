@@ -1084,6 +1084,8 @@ flowchart TD
 | **Protected Asset 자해 차단 방지**| 게이트웨이 IP 차단 명령 주입 시도 | `evidence/EV-RESP-001` (HTTP 400)| 화이트리스트 하드코딩 보호 자산 국한 |
 | **AI 다운 시 Core SOC 생존** | AI 컨테이너 전체 정지 후 공격 주입 | Suricata/Wazuh 실시간 알림 지속 | AI Failure != Core SOC Failure 입증 |
 | **자동화 회귀 시험 100% 합격**| pytest 자동화 러너 21개 케이스 실행 | 21 passed in 5.48s 출력 로그 | CI/CD 파이프라인 검증 완료 |
+| **실환경 폐루프 SOC 파이프라인**| 5대 실 VM 가동 (공격 ➔ 탐지 ➔ ES 적재 ➔ AI 분석 ➔ HITL 승인)| `evidence/EV-RUNTIME-LIVE-001` (611건 ES, 24건 실시간 알림)| 다중 PVN 네트워크, 실시간 패킷 전송 및 1-Click 승인 완결 |
+| **AI 보안 7대 원칙 기준서 수립**| NIST AI RMF, CSF 2.0, OWASP LLM 2025/2026, ATLAS 24대 위협 매핑 | `docs/02-architecture/AI_SECURITY_7_PRINCIPLES.md` (STD-SEC-AI-001)| 프로젝트 전 주기 최상위 거버넌스 규격 |
 
 ---
 
@@ -1109,6 +1111,7 @@ flowchart TD
 | `00_PROJECT_DEFINITION_V2` | AegisAI 프로젝트 최상위 정의서 | 프로젝트 비전, 5대 원칙, 핵심 요구선언 | **FROZEN** |
 | `01_AS_IS_SOC_BASELINE` | 전통적 SOC 베이스라인 인프라 분석서 | v1.0 레거시 인프라, Suricata/Wazuh 스펙 | **FROZEN** |
 | `02_TO_BE_ARCHITECTURE` | AegisAI 목표 시스템 아키텍처 설계서 | 4-Layer 아키텍처, 폐쇄 루프 SOAR 모델 | **FROZEN** |
+| `STD-SEC-AI-001` | **AI 보안 7대 원칙 기준서 (AI_SECURITY_7_PRINCIPLES.md)** | **상위 거버넌스·보안정책·24대 위협 대응 규격** | **APPROVED** |
 | `03_AI_THREAT_MODEL` | AI/LLM/RAG/Agent 통합 위협모델 분석서 | STRIDE, ATLAS, 15대 자산, 10대 진입점 | **FROZEN** |
 | `04_REQUIREMENTS_SPECIFICATION_V2` | 통합 시스템 요구사항 명세서 | 68개 챕터, 112개 기능/보안 요구사항 | **FROZEN** |
 | `05_SECURITY_EVENT_SCHEMA` | 통합 보안 이벤트 스키마 및 정규화 명세서 | ECS 기반 9대 Frozen 이벤트 도메인 규격 | **FROZEN** |
