@@ -15,6 +15,12 @@ from pydantic import BaseModel, Field
 from dashboard.pcap_carver import pcap_carver_engine
 from dashboard.xai_engine import xai_engine
 from dashboard.hypothesis_engine import hypothesis_engine
+from dashboard.quarantine_manager import (
+    quarantine_manager,
+    QuarantineApplyRequest,
+    QuarantineRollbackRequest,
+)
+
 
 
 from analyzer.ai.actions.executor import ActionExecutor
@@ -377,6 +383,50 @@ def evaluate_security_hypotheses(req: HypothesisEvaluateRequest):
     """Evaluate or re-verify security hypotheses with custom incident context."""
     report = hypothesis_engine.evaluate_custom(req.model_dump())
     return report.model_dump()
+
+
+# =============================================================================
+# SOAR Active Quarantine & 1-Click Rollback Safeguard API
+# =============================================================================
+@app.get("/api/soar/quarantine/list")
+def get_quarantine_list(include_historical: bool = True):
+    """List active and historical SOAR quarantine records with real-time remaining TTL."""
+    records = quarantine_manager.list_quarantines(include_historical=include_historical)
+    return [r.model_dump() for r in records]
+
+
+@app.get("/api/soar/quarantine/stats")
+def get_quarantine_stats():
+    """Get active, expired, rolled-back quarantine statistics."""
+    stats = quarantine_manager.get_stats()
+    return stats.model_dump()
+
+
+@app.post("/api/soar/quarantine/apply")
+def apply_ip_quarantine(req: QuarantineApplyRequest):
+    """Apply active quarantine with designated TTL to Gateway firewall."""
+    record = quarantine_manager.quarantine_ip(
+        ip=req.ip,
+        reason=req.reason,
+        ttl_seconds=req.ttl_seconds,
+        operator=req.operator,
+        rule_override=req.rule_override,
+    )
+    return {"status": "success", "record": record.model_dump()}
+
+
+@app.post("/api/soar/quarantine/{quarantine_id}/rollback")
+def rollback_ip_quarantine(quarantine_id: str, req: QuarantineRollbackRequest):
+    """Instantly rollback a quarantine record to restore firewall connectivity."""
+    ok, rec_or_err = quarantine_manager.rollback_quarantine(
+        quarantine_id=quarantine_id,
+        operator=req.operator,
+        reason=req.reason,
+    )
+    if not ok:
+        return JSONResponse(status_code=400, content={"error": rec_or_err})
+    return {"status": "success", "record": rec_or_err.model_dump() if hasattr(rec_or_err, "model_dump") else rec_or_err}
+
 
 
 
