@@ -868,11 +868,11 @@
 
                 <!-- Quick Global Search Input -->
                 <div class="flex items-center gap-1.5">
-                    <input type="text" id="global-search-input" onkeyup="if(event.key==='Enter') applyGlobalFilters()" placeholder="IP, SID, 규칙명 검색..." class="px-2.5 py-1 text-[11px] bg-slate-900 border border-slate-700 rounded text-slate-200 placeholder-slate-500 focus:outline-none focus:border-sky-500 font-mono w-48">
-                    <button onclick="applyGlobalFilters()" class="px-2.5 py-1 text-[11px] bg-sky-700 hover:bg-sky-600 text-white rounded font-medium transition">
+                    <input type="text" id="global-search-input" oninput="applyGlobalFilters()" onkeyup="applyGlobalFilters()" placeholder="IP, SID, 규칙명, 공격유형 (예: 스캔, SQL)..." class="px-2.5 py-1 text-[11px] bg-slate-900 border border-slate-700 rounded text-slate-200 placeholder-slate-500 focus:outline-none focus:border-sky-500 font-mono w-60">
+                    <button onclick="applyGlobalFilters()" class="px-2.5 py-1 text-[11px] bg-sky-700 hover:bg-sky-600 text-white rounded font-medium transition cursor-pointer">
                         검색
                     </button>
-                    <button onclick="resetGlobalFilters()" class="px-2 py-1 text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-300 rounded border border-slate-700 transition" title="필터 초기화">
+                    <button onclick="resetGlobalFilters()" class="px-2 py-1 text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-300 rounded border border-slate-700 transition cursor-pointer" title="필터 초기화">
                         초기화
                     </button>
                 </div>
@@ -1426,6 +1426,7 @@
                     <div class="soc-panel-header px-3 py-2 flex items-center justify-between text-xs font-mono">
                         <div class="flex items-center gap-2">
                             <span class="text-red-400 font-bold">⚠️ 최근 중요 경보 (Recent Critical & High Alerts)</span>
+                            <span id="crit-filter-badge" class="hidden text-[10px] px-2 py-0.5 rounded bg-sky-950 text-sky-300 border border-sky-700 font-bold flex items-center gap-1 animate-pulse"></span>
                             <span class="text-[10px] px-1.5 py-0.2 rounded bg-slate-800 text-slate-400">클릭 시 상세 분석</span>
                         </div>
                         <button onclick="switchView('monitor', 'events')" class="text-sky-400 hover:underline text-[11px]">
@@ -2400,7 +2401,7 @@
                             <span>📡 실시간 침입 탐지 경보 스트림 (Live Alert Telemetry)</span>
                         </h2>
                         <div class="flex items-center gap-2">
-                            <input type="text" id="alert-search-input" onkeyup="filterAlerts()" placeholder="IP, 규칙명, SID 검색..." class="px-2.5 py-1 text-xs bg-slate-900 border border-slate-700 rounded text-white placeholder-slate-500 focus:outline-none focus:border-sky-500 font-mono w-44">
+                            <input type="text" id="alert-search-input" oninput="filterAlerts()" onkeyup="filterAlerts()" placeholder="IP, 규칙명, SID 검색..." class="px-2.5 py-1 text-xs bg-slate-900 border border-slate-700 rounded text-white placeholder-slate-500 focus:outline-none focus:border-sky-500 font-mono w-44">
                             <select id="alert-severity-select" onchange="filterAlerts()" class="px-2 py-1 text-xs bg-slate-900 border border-slate-700 rounded text-slate-300 focus:outline-none focus:border-sky-500 font-mono">
                                 <option value="ALL">모든 위험도 (All)</option>
                                 <option value="CRITICAL">심각 (Critical)</option>
@@ -3619,7 +3620,20 @@
                 const data = await res.json();
 
                 updateKpiDisplay(data.kpis);
-                renderRecentCriticalTable(data.recent_alerts);
+                rawRecentCriticalCache = data.recent_alerts || [];
+
+                // Check if user has an active search filter
+                const currentQ = document.getElementById('global-search-input')?.value?.trim();
+                const sev = document.getElementById('filter-severity')?.value;
+                const eng = document.getElementById('filter-engine')?.value;
+                const proto = document.getElementById('filter-proto')?.value;
+                const hasActiveFilter = Boolean(currentQ || (sev && sev !== 'ALL') || (eng && eng !== 'ALL') || (proto && proto !== 'ALL'));
+
+                if (hasActiveFilter) {
+                    applyGlobalFilters();
+                } else {
+                    renderRecentCriticalTable(rawRecentCriticalCache, false);
+                }
                 renderCharts(data);
             } catch (err) {
                 console.error('Error fetching dashboard summary:', err);
@@ -3973,14 +3987,14 @@
             }
         }
 
-        function renderRecentCriticalTable(alerts) {
-            if (alerts) {
+        function renderRecentCriticalTable(alerts, isFiltered = false) {
+            if (alerts && !isFiltered) {
                 rawRecentCriticalCache = alerts;
             }
             const dataList = alerts || rawRecentCriticalCache;
             const tbody = document.getElementById('recent-critical-tbody');
             if (!dataList || dataList.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" class="py-4 text-center text-slate-500">감지된 중요 경보가 없습니다.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="8" class="py-4 text-center text-slate-500">일치하거나 감지된 중요 경보가 없습니다.</td></tr>';
                 return;
             }
 
@@ -5229,6 +5243,8 @@
             const eng = document.getElementById('filter-engine')?.value || 'ALL';
             const proto = document.getElementById('filter-proto')?.value || 'ALL';
 
+            const isScanQuery = (q === '스캔' || q.includes('스캔') || q.includes('scan'));
+
             const filterFn = a => {
                 const sig = (a.signature || a.rule || '').toLowerCase();
                 const koSig = (getLocalizedSignature(a.signature || a.rule || '') || '').toLowerCase();
@@ -5236,8 +5252,14 @@
                 const dst = (a.dst_ip || a.destination || '').toLowerCase();
                 const sid = String(a.sid || '');
                 const mitre = (a.mitre_technique || a.mitre || '').toLowerCase();
+                const cat = (a.category || '').toLowerCase();
 
-                const matchQ = !q || sig.includes(q) || koSig.includes(q) || src.includes(q) || dst.includes(q) || sid.includes(q) || mitre.includes(q);
+                const matchScan = isScanQuery && (
+                    sig.includes('scan') || cat.includes('scan') || cat.includes('information leak') ||
+                    koSig.includes('스캔') || sid === '9000001' || sid === '9100020' || sid === '9100021' || sid === '1000003'
+                );
+
+                const matchQ = !q || matchScan || sig.includes(q) || koSig.includes(q) || src.includes(q) || dst.includes(q) || sid.includes(q) || mitre.includes(q) || cat.includes(q);
                 const matchSev = sev === 'ALL' || a.severity === sev;
                 const engVal = a.engine || a.sensor || 'SURICATA';
                 const matchEng = eng === 'ALL' || engVal === eng;
@@ -5246,11 +5268,30 @@
             };
 
             const filteredAlerts = (rawAlertsCache || []).filter(filterFn);
-            const filteredRecent = (rawRecentCriticalCache || []).filter(filterFn);
+
+            // Dashboard table: when filter/query is active, search across full alert pool so all scan alerts appear!
+            const hasActiveFilter = Boolean(q || sev !== 'ALL' || eng !== 'ALL' || proto !== 'ALL');
+            let filteredRecent;
+            if (hasActiveFilter) {
+                const pool = (rawAlertsCache && rawAlertsCache.length > 0) ? rawAlertsCache : rawRecentCriticalCache;
+                filteredRecent = pool.filter(filterFn);
+            } else {
+                filteredRecent = rawRecentCriticalCache;
+            }
 
             renderAlertsTable(filteredAlerts);
-            renderRecentCriticalTable(filteredRecent);
-            showToast(`필터 적용: 최근 중요 ${filteredRecent.length}건 / 전체 이벤트 ${filteredAlerts.length}건 검색됨`, 'sky');
+            renderRecentCriticalTable(filteredRecent, true);
+
+            // Update badge on Recent Critical Alerts table
+            const critBadge = document.getElementById('crit-filter-badge');
+            if (critBadge) {
+                if (hasActiveFilter) {
+                    critBadge.classList.remove('hidden');
+                    critBadge.textContent = q ? `🔍 "${q}" 검색 결과: ${filteredRecent.length}건 일치` : `🔍 필터 적용: ${filteredRecent.length}건 일치`;
+                } else {
+                    critBadge.classList.add('hidden');
+                }
+            }
         }
 
         function resetGlobalFilters() {
@@ -5263,9 +5304,12 @@
             const fProto = document.getElementById('filter-proto');
             if (fProto) fProto.value = 'ALL';
 
+            const critBadge = document.getElementById('crit-filter-badge');
+            if (critBadge) critBadge.classList.add('hidden');
+
             renderAlertsTable(rawAlertsCache);
-            renderRecentCriticalTable(rawRecentCriticalCache);
-            showToast('필터 초기화 완료', 'sky');
+            renderRecentCriticalTable(rawRecentCriticalCache, false);
+            showToast('검색 및 필터 초기화 완료', 'sky');
         }
 
         function setTimeRange(range) {
@@ -5779,7 +5823,10 @@
                         n.label.toLowerCase().includes(q) ||
                         n.id.toLowerCase().includes(q) ||
                         n.name.toLowerCase().includes(q) ||
-                        (n.mitre && n.mitre.toLowerCase().includes(q))
+                        (n.role && n.role.toLowerCase().includes(q)) ||
+                        (n.alerts && n.alerts.toLowerCase().includes(q)) ||
+                        (n.mitre && n.mitre.toLowerCase().includes(q)) ||
+                        (q.includes('스캔') && (n.name.toLowerCase().includes('scan') || n.id.includes('1000003') || n.id.includes('1000005') || n.id === 'attacker'))
                     );
                     if (matched) {
                         focusGraphNode(matched.id);
