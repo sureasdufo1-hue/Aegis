@@ -23,6 +23,7 @@ from dashboard.quarantine_manager import (
 from dashboard.mitre_matrix import mitre_matrix_engine
 from dashboard.incident_report_generator import incident_report_engine
 from dashboard.attack_simulator import attack_simulator_engine, LaunchRequest
+from dashboard.cti_engine import cti_engine
 
 
 
@@ -1111,6 +1112,34 @@ async def api_simulator_history(limit: int = 20):
     """Returns execution history of recent attack simulations."""
     history = attack_simulator_engine.get_history(limit=limit)
     return [h.model_dump() for h in history]
+
+
+# -------------------------------------------------------------
+# Live Threat Intelligence (CTI) Endpoints
+# -------------------------------------------------------------
+
+@app.get("/api/threats/intel/{indicator}")
+async def api_threat_intel_lookup(indicator: str):
+    """Returns real-time CTI reputation profile (AbuseIPDB, VirusTotal, GeoIP, ASN)."""
+    try:
+        report = cti_engine.lookup(indicator)
+        return report.model_dump()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"CTI lookup failed: {e}")
+
+
+class CTIBatchRequest(BaseModel):
+    indicators: list[str] = Field(default_factory=list)
+
+
+@app.post("/api/threats/intel/batch")
+async def api_threat_intel_batch(req: CTIBatchRequest):
+    """Returns batch CTI reputation profiles for multiple IP addresses or domains."""
+    try:
+        reports = cti_engine.batch_lookup(req.indicators)
+        return [r.model_dump() for r in reports]
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Batch CTI lookup failed: {e}")
 
 
 # -------------------------------------------------------------

@@ -9,13 +9,15 @@
 [![SOAR TTL Quarantine](https://img.shields.io/badge/SOAR%20Quarantine-TTL%20Auto--Rollback-purple.svg)](dashboard/quarantine_manager.py)
 [![PCAP Session Carver](https://img.shields.io/badge/PCAP%20Carver-5--Tuple%20Hex%20Inspector-teal.svg)](dashboard/pcap_carver.py)
 [![XAI Radar](https://img.shields.io/badge/XAI%20Radar-Feature%20Attribution-blueviolet.svg)](dashboard/xai_radar.py)
+[![Red Team Simulator](https://img.shields.io/badge/Red_Team_Simulator-1--Click_Live_Attack-red.svg)](dashboard/attack_simulator.py)
+[![Live CTI Profiler](https://img.shields.io/badge/CTI_Reputation-AbuseIPDB%20%26%20VT-indigo.svg)](dashboard/cti_engine.py)
 [![Suricata](https://img.shields.io/badge/Suricata-8.0.6-red.svg?logo=suricata)](https://suricata.io/)
 [![Snort](https://img.shields.io/badge/Snort-3.12.2-blue.svg?logo=cisco)](https://www.snort.org/)
 [![Wazuh](https://img.shields.io/badge/Wazuh-4.14.7-0052cc.svg?logo=wazuh)](https://wazuh.com/)
 [![Hyper-V](https://img.shields.io/badge/Hyper--V-Port_Mirroring-0078d4.svg?logo=windows)](https://learn.microsoft.com/virtualization/hyper-v-on-windows/)
 [![Ubuntu](https://img.shields.io/badge/Ubuntu-22.04_LTS-E95420.svg?logo=ubuntu)](https://ubuntu.com/)
 [![MITRE ATT&CK](https://img.shields.io/badge/MITRE_ATT%26CK-v19.2-orange.svg)](https://attack.mitre.org/)
-[![Tests](https://img.shields.io/badge/Pytest-167%2F167_PASS-brightgreen.svg?logo=pytest)](tests/)
+[![Tests](https://img.shields.io/badge/Pytest-177%2F177_PASS-brightgreen.svg?logo=pytest)](tests/)
 [![Python](https://img.shields.io/badge/Python-3.13-yellow.svg?logo=python)](https://python.org/)
 
 ---
@@ -269,12 +271,12 @@ python scripts/evaluate_detection_metrics.py
 python scripts/verify_detection_tuning.py
 ```
 
-### 4. 룰 무결성 린터 및 전체 회귀 테스트 (Pytest 167/167 PASS)
+### 4. 룰 무결성 린터 및 전체 회귀 테스트 (Pytest 177/177 PASS)
 ```bash
 # 1) Detection-as-Code (DaC) 룰 문법 및 무결성 린터 실행 (Errors: 0, Warnings: 0)
 python scripts/validate_rules.py
 
-# 2) 167개 단위/통합 테스트 스위트 회귀 검증
+# 2) 177개 단위/통합 테스트 스위트 회귀 검증
 pytest -v
 ```
 
