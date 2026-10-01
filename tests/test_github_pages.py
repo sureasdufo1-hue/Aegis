@@ -25,6 +25,12 @@ def test_github_pages_core_sections_presence():
     assert "3-Zone 격리 & 스텔스 센서" in html
     assert "Detection-as-Code & SOAR" in html
     assert "TLS 1.3 복호화 리버스 프록시" in html
+    assert "KISA & NIST SP 800-61 Rev.2 침해사고 보고서" in html
+    assert "MITRE ATT&CK v19.2 14-Tactics 매트릭스 히트맵" in html
+    assert "SOAR 능동 격리 & TTL 자동 롤백 세이프가드" in html
+    assert "1-Click 5-Tuple PCAP 세션 카빙 & 헥사덤프" in html
+    assert "XAI 레이더 기반 피처 기여도 분석" in html
+    assert "1-Click 레드팀 실시간 모의 공격 시뮬레이터" in html
 
     # Benchmark Data
     assert "92.31%" in html  # Precision

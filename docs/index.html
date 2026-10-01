@@ -86,16 +86,28 @@
         <div class="flex flex-wrap items-center justify-center gap-2">
           <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-950/80 text-emerald-400 border border-emerald-700/60">
             <span class="w-2 h-2 rounded-full bg-emerald-400 mr-2 animate-pulse"></span>
-            CI: PASS (84/84 Tests)
+            CI: PASS (172/172 Tests)
           </span>
           <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-blue-950/80 text-blue-400 border border-blue-700/60">
-            Detection-as-Code Linter: PASS
+            Detection-as-Code: PASS (Errors: 0, Warnings: 0)
+          </span>
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-amber-950/80 text-amber-400 border border-amber-700/60">
+            KISA & NIST IR Report Engine
+          </span>
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-orange-950/80 text-orange-400 border border-orange-700/60">
+            MITRE ATT&CK v19.2 Matrix Heatmap
           </span>
           <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-purple-950/80 text-purple-400 border border-purple-700/60">
-            SOAR Dispatcher Active
+            SOAR TTL Quarantine & Rollback
+          </span>
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-teal-950/80 text-teal-400 border border-teal-700/60">
+            5-Tuple PCAP Session Carver
+          </span>
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-indigo-950/80 text-indigo-400 border border-indigo-700/60">
+            XAI Radar Feature Attribution
           </span>
           <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-rose-950/80 text-rose-400 border border-rose-700/60">
-            TLS 1.3 Decryption Pipeline
+            Red Team Live Attack Simulator
           </span>
         </div>
 
@@ -297,6 +309,60 @@
           <h3 class="text-lg font-bold text-white mb-2">TLS 1.3 복호화 리버스 프록시</h3>
           <p class="text-sm text-gray-400 leading-relaxed">
             Nginx SSL Termination을 통해 암호화된 HTTPS 인바운드를 평문 L7으로 변환 후 미러링(SID 9010001 탐지) 및 패시브 SNI/JA3 C2 도메인 탐지 체계 구축.
+          </p>
+        </div>
+
+        <!-- Card 7 -->
+        <div class="glass-card p-6 rounded-2xl relative overflow-hidden group hover:border-amber-500/50 transition-all">
+          <div class="w-10 h-10 rounded-xl bg-amber-900/50 text-amber-400 flex items-center justify-center text-xl font-bold mb-4">07</div>
+          <h3 class="text-lg font-bold text-white mb-2">KISA & NIST SP 800-61 Rev.2 침해사고 보고서</h3>
+          <p class="text-sm text-gray-400 leading-relaxed">
+            KISA 침해사고 대응 가이드라인 및 NIST 권고안을 준용하는 CISO 제출용 보고서 엔진. 5단계 생애주기 기반 마크다운 및 브라우저 1-클릭 인쇄/PDF 최적화 지원.
+          </p>
+        </div>
+
+        <!-- Card 8 -->
+        <div class="glass-card p-6 rounded-2xl relative overflow-hidden group hover:border-orange-500/50 transition-all">
+          <div class="w-10 h-10 rounded-xl bg-orange-900/50 text-orange-400 flex items-center justify-center text-xl font-bold mb-4">08</div>
+          <h3 class="text-lg font-bold text-white mb-2">MITRE ATT&CK v19.2 14-Tactics 매트릭스 히트맵</h3>
+          <p class="text-sm text-gray-400 leading-relaxed">
+            정찰부터 임팩트까지 14대 전체 전술(Tactics) 및 19.2 최신 기법 빈도 히트맵 시각화. 기법 클릭 시 공격자 사용 예시, 유관 탐지 룰셋, 증적 PCAP 연계 팝업 인스펙터 제공.
+          </p>
+        </div>
+
+        <!-- Card 9 -->
+        <div class="glass-card p-6 rounded-2xl relative overflow-hidden group hover:border-purple-500/50 transition-all">
+          <div class="w-10 h-10 rounded-xl bg-purple-900/50 text-purple-400 flex items-center justify-center text-xl font-bold mb-4">09</div>
+          <h3 class="text-lg font-bold text-white mb-2">SOAR 능동 격리 & TTL 자동 롤백 세이프가드</h3>
+          <p class="text-sm text-gray-400 leading-relaxed">
+            침해 IP 즉시 차단 후 오차단(False Blocking)으로 인한 서비스 장애 방지를 위해 유효시간(TTL: 30분~24시간) 만료 시 자동 차단 해제 및 분석관 1-클릭 즉시 롤백 지원.
+          </p>
+        </div>
+
+        <!-- Card 10 -->
+        <div class="glass-card p-6 rounded-2xl relative overflow-hidden group hover:border-teal-500/50 transition-all">
+          <div class="w-10 h-10 rounded-xl bg-teal-900/50 text-teal-400 flex items-center justify-center text-xl font-bold mb-4">10</div>
+          <h3 class="text-lg font-bold text-white mb-2">1-Click 5-Tuple PCAP 세션 카빙 & 헥사덤프</h3>
+          <p class="text-sm text-gray-400 leading-relaxed">
+            대용량 PCAP 원본에서 출발지/목적지 IP/Port, 프로토콜 5-Tuple 일치 세션 패킷만 서브세컨드로 슬라이싱 추출하고 바이너리 헥사덤프/Wireshark 다운로드 제공.
+          </p>
+        </div>
+
+        <!-- Card 11 -->
+        <div class="glass-card p-6 rounded-2xl relative overflow-hidden group hover:border-indigo-500/50 transition-all">
+          <div class="w-10 h-10 rounded-xl bg-indigo-900/50 text-indigo-400 flex items-center justify-center text-xl font-bold mb-4">11</div>
+          <h3 class="text-lg font-bold text-white mb-2">XAI 레이더 기반 피처 기여도 분석</h3>
+          <p class="text-sm text-gray-400 leading-relaxed">
+            AI 보안 모델의 의사결정 블랙박스를 해소하기 위해 6대 관제 피처(빈도, 포트 희귀도, 페이로드 위험도, CTI 위협도, 유저에이전트 이상치 등) 기여도를 Radar 차트로 시각화.
+          </p>
+        </div>
+
+        <!-- Card 12 -->
+        <div class="glass-card p-6 rounded-2xl relative overflow-hidden group hover:border-rose-500/50 transition-all">
+          <div class="w-10 h-10 rounded-xl bg-rose-900/50 text-rose-400 flex items-center justify-center text-xl font-bold mb-4">12</div>
+          <h3 class="text-lg font-bold text-white mb-2">1-Click 레드팀 실시간 모의 공격 시뮬레이터</h3>
+          <p class="text-sm text-gray-400 leading-relaxed">
+            Nmap 스캔, SQLi, Log4j RCE, SSH Brute Force, C2 Reverse Shell, SYN Flood 6대 공격 시나리오를 1-클릭으로 실행하고 Suricata EVE/Snort 알람에 실시간 텔레메트리 주입 실증.
           </p>
         </div>
       </div>
