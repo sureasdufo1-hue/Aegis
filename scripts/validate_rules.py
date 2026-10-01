@@ -45,8 +45,9 @@ class RuleFinding(NamedTuple):
 
 
 class RuleValidator:
-    def __init__(self, repo_root: Path) -> None:
+    def __init__(self, repo_root: Path, include_legacy: bool = False) -> None:
         self.repo_root = repo_root
+        self.include_legacy = include_legacy
         self.findings: list[RuleFinding] = []
         self.suricata_sids: dict[int, tuple[str, int]] = {}
         self.snort_sids: dict[int, tuple[str, int]] = {}
@@ -54,10 +55,9 @@ class RuleValidator:
 
     def parse_suricata_rules(self) -> int:
         count = 0
-        suricata_dirs = [
-            self.repo_root / "suricata" / "rules",
-            self.repo_root / "rules" / "suricata",
-        ]
+        suricata_dirs = [self.repo_root / "suricata" / "rules"]
+        if self.include_legacy:
+            suricata_dirs.append(self.repo_root / "rules" / "suricata")
         for sdir in suricata_dirs:
             if not sdir.exists():
                 continue
@@ -119,10 +119,9 @@ class RuleValidator:
 
     def parse_snort_rules(self) -> int:
         count = 0
-        snort_dirs = [
-            self.repo_root / "snort" / "rules",
-            self.repo_root / "rules" / "snort",
-        ]
+        snort_dirs = [self.repo_root / "snort" / "rules"]
+        if self.include_legacy:
+            snort_dirs.append(self.repo_root / "rules" / "snort")
         for sdir in snort_dirs:
             if not sdir.exists():
                 continue
@@ -257,7 +256,16 @@ class RuleValidator:
 
 
 def main() -> int:
-    validator = RuleValidator(REPO_ROOT)
+    import argparse
+    parser = argparse.ArgumentParser(description="DaC Rule Integrity Linter")
+    parser.add_argument(
+        "--include-legacy",
+        action="store_true",
+        help="Include legacy rules/ directory in addition to canonical suricata/ and snort/ rules",
+    )
+    args = parser.parse_args()
+
+    validator = RuleValidator(REPO_ROOT, include_legacy=args.include_legacy)
     success = validator.validate_all()
     return 0 if success else 1
 

@@ -4,15 +4,18 @@
 [![CI Pipeline](https://github.com/sureasdufo1-hue/Aegis/actions/workflows/ci.yml/badge.svg)](https://github.com/sureasdufo1-hue/Aegis/actions/workflows/ci.yml)
 [![Live Showcase](https://img.shields.io/badge/Live_Showcase-GitHub_Pages-brightgreen.svg?logo=github)](https://sureasdufo1-hue.github.io/Aegis/)
 [![Detection-as-Code](https://img.shields.io/badge/Detection--as--Code-Linter_PASS-blue.svg)](scripts/validate_rules.py)
-[![SOAR Dispatcher](https://img.shields.io/badge/SOAR-Slack%2FDiscord%2FWebhook-purple.svg)](docs/04-deployment/TRACK2_SOAR_DISPATCHER_PLAN.md)
-[![TLS Decryption](https://img.shields.io/badge/TLS%20Decryption-Nginx%20SSL%20Termination-success.svg)](docs/02-architecture/TLS_DECRYPTION_AND_REVERSE_PROXY_ARCHITECTURE.md)
+[![KISA & NIST IR](https://img.shields.io/badge/KISA%20%26%20NIST-IR%20Report%20Exporter-success.svg)](dashboard/incident_report_generator.py)
+[![MITRE ATT&CK Matrix](https://img.shields.io/badge/MITRE%20ATT%26CK-v19.2%20Matrix%20Heatmap-orange.svg)](dashboard/mitre_matrix.py)
+[![SOAR TTL Quarantine](https://img.shields.io/badge/SOAR%20Quarantine-TTL%20Auto--Rollback-purple.svg)](dashboard/quarantine_manager.py)
+[![PCAP Session Carver](https://img.shields.io/badge/PCAP%20Carver-5--Tuple%20Hex%20Inspector-teal.svg)](dashboard/pcap_carver.py)
+[![XAI Radar](https://img.shields.io/badge/XAI%20Radar-Feature%20Attribution-blueviolet.svg)](dashboard/xai_radar.py)
 [![Suricata](https://img.shields.io/badge/Suricata-8.0.6-red.svg?logo=suricata)](https://suricata.io/)
 [![Snort](https://img.shields.io/badge/Snort-3.12.2-blue.svg?logo=cisco)](https://www.snort.org/)
 [![Wazuh](https://img.shields.io/badge/Wazuh-4.14.7-0052cc.svg?logo=wazuh)](https://wazuh.com/)
 [![Hyper-V](https://img.shields.io/badge/Hyper--V-Port_Mirroring-0078d4.svg?logo=windows)](https://learn.microsoft.com/virtualization/hyper-v-on-windows/)
 [![Ubuntu](https://img.shields.io/badge/Ubuntu-22.04_LTS-E95420.svg?logo=ubuntu)](https://ubuntu.com/)
 [![MITRE ATT&CK](https://img.shields.io/badge/MITRE_ATT%26CK-v19.2-orange.svg)](https://attack.mitre.org/)
-[![Tests](https://img.shields.io/badge/Pytest-87%2F87_PASS-brightgreen.svg?logo=pytest)](tests/)
+[![Tests](https://img.shields.io/badge/Pytest-167%2F167_PASS-brightgreen.svg?logo=pytest)](tests/)
 [![Python](https://img.shields.io/badge/Python-3.13-yellow.svg?logo=python)](https://python.org/)
 
 ---
@@ -82,6 +85,25 @@ Victim Target Host    (Lossless Tap, No IP)    Snort 3.12.2 (Offline PCAP)    Ma
 ### 6. TLS 암호화 트래픽 가시성 확보 아키텍처
 * HTTPS/TLS 환경의 페이로드 비가시성을 극복하기 위해 **Nginx SSL Termination 후단 미러링** 아키텍처 수립 ([`ARCH-TLS-001`](docs/02-architecture/TLS_DECRYPTION_AND_REVERSE_PROXY_ARCHITECTURE.md)).
 * 비복호화 구간에서는 TLS SNI 및 X.509 Subject 기반 C2 통신 식별 룰셋(SID `9030025`, `9030026`)을 병행 배치.
+
+### 7. 1-클릭 KISA 및 NIST SP 800-61 Rev.2 침해사고 조사 보고서 생성기
+* KISA 침해사고 대응 가이드라인 및 NIST SP 800-61 Rev.2 권고안을 100% 준용하는 CISO/경영진 제출용 보고서 엔진 탑재.
+* 5단계(준비-탐지/분석-봉쇄/박멸-복구-사후대응) 프레임워크 기반 마크다운 및 브라우저 1-클릭 PDF 인쇄 최적화 스타일링 제공.
+
+### 8. MITRE ATT&CK v19.2 14-Tactics 엔터프라이즈 매트릭스 히트맵
+* 정찰(Reconnaissance)부터 임팩트(Impact)까지 14대 전체 전술(Tactics) 및 세부 기법(Techniques) 실시간 침해 빈도 히트맵 시각화.
+* 기법 클릭 시 공격자 사용 예시, 유관 탐지 룰셋(Suricata/Snort SID), 증적 PCAP, 완화 대책(Mitigation) 팝업 인스펙터 지원.
+
+### 9. SOAR 능동 격리 및 TTL 자동 롤백 세이프가드 (TTL Auto-Rollback Safeguard)
+* 공격 IP 즉시 차단(nftables/iptables) 후 오차단(False Blocking)으로 인한 서비스 장애 방지를 위해 유효시간(TTL: 30분~24시간) 만료 시 자동 차단 해제.
+* 분석관을 위한 1-클릭 즉시 롤백(Rollback) 및 격리 사유 감사 로그 보존.
+
+### 10. 1-클릭 5-Tuple PCAP 세션 카빙 및 헥사덤프 인스펙터
+* 대용량 PCAP 원본에서 출발지 IP/Port, 목적지 IP/Port, 프로토콜 5-Tuple 일치 패킷만 서브세컨드로 슬라이싱 추출.
+* 바이너리 헥사덤프(Hex/ASCII) 및 Wireshark 다운로드를 즉각 제공하여 1차 관제 분석관의 신속한 심층 분석 지원.
+
+### 11. XAI (Explainable AI) 레이더 기반 피처 기여도 해석
+* AI 보안 모델의 의사결정 블랙박스를 해소하기 위해 6대 관제 피처(빈도, 포트 희귀도, 페이로드 위험도, CTI 위협도, 사용자 에이전트 이상치 등) 기여도를 Radar 차트로 시각화.
 
 ---
 
@@ -247,12 +269,12 @@ python scripts/evaluate_detection_metrics.py
 python scripts/verify_detection_tuning.py
 ```
 
-### 4. 룰 무결성 린터 및 전체 회귀 테스트 (Pytest 87/87 PASS)
+### 4. 룰 무결성 린터 및 전체 회귀 테스트 (Pytest 167/167 PASS)
 ```bash
-# 1) Detection-as-Code (DaC) 룰 문법 및 무결성 린터 실행
+# 1) Detection-as-Code (DaC) 룰 문법 및 무결성 린터 실행 (Errors: 0, Warnings: 0)
 python scripts/validate_rules.py
 
-# 2) 87개 단위/통합 테스트 스위트 회귀 검증
+# 2) 167개 단위/통합 테스트 스위트 회귀 검증
 pytest -v
 ```
 
