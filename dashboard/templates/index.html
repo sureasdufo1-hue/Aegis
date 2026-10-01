@@ -117,19 +117,21 @@
             animation: marchDash 1.2s linear infinite !important;
         }
         .graph-dimmed {
-            opacity: 0.15 !important;
-            transition: opacity 0.25s ease-in-out;
+            opacity: 0.45 !important;
+            filter: grayscale(30%);
+            transition: opacity 0.25s ease-in-out, filter 0.25s ease-in-out;
         }
         .graph-highlighted {
             opacity: 1 !important;
-            transition: opacity 0.25s ease-in-out;
+            filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.95)) !important;
+            transition: opacity 0.25s ease-in-out, filter 0.25s ease-in-out;
         }
         .graph-node {
             cursor: pointer;
             transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .graph-node:hover circle {
-            filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.9));
+            filter: drop-shadow(0 0 12px rgba(56, 189, 248, 1));
         }
         .graph-link {
             transition: opacity 0.25s ease, stroke-width 0.2s ease;
@@ -753,9 +755,6 @@
             <a href="https://127.0.0.1:5601" target="_blank" class="px-2 py-1 text-[11px] font-semibold bg-slate-800 hover:bg-slate-700 text-cyan-300 border border-cyan-600/40 rounded transition flex items-center gap-1" title="Wazuh SIEM 관리 콘솔 열기 (Port 5601)">
                 <span>🦅</span> Wazuh
             </a>
-            <a href="/threat-matrix" target="_blank" class="px-2.5 py-1 text-[11px] font-semibold bg-gradient-to-r from-sky-950 to-blue-950 hover:from-sky-900 hover:to-blue-900 text-sky-300 border border-sky-600/40 rounded transition flex items-center gap-1 shadow-sm" title="3D 위협 요격 매트릭스 전체화면 열기">
-                <span>🛡️</span> 3D 매트릭스
-            </a>
             <button onclick="openAttackSimulatorModal()" id="btn-attack-simulator" class="px-2.5 py-1 text-[11px] font-bold bg-gradient-to-r from-red-600 via-rose-600 to-pink-600 hover:from-red-500 hover:to-pink-500 text-white border border-red-400/50 rounded shadow-md flex items-center gap-1.5 transition cursor-pointer" title="1-클릭 레드팀 실시간 모의 공격 시뮬레이터 실행">
                 <span class="animate-pulse">⚔️</span>
                 <span>모의 공격 시뮬레이터</span>
@@ -886,7 +885,7 @@
             <!-- VIEW 1: DASHBOARD (Overview) -->
             <div id="view-dashboard" class="space-y-3">
                 <!-- 1.1 최상단 KPI 카드 그리드 (Prompt Section 4.1) -->
-                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 font-mono">
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-7 gap-2 font-mono">
                     <!-- CRITICAL -->
                     <div class="soc-panel rounded p-2.5 border-l-4 border-l-red-500 flex flex-col justify-between">
                         <div class="flex justify-between items-center text-[10px] text-slate-400">
@@ -1204,6 +1203,7 @@
                     <span>시각적 중심 허브</span>
                     <span>Holographic Shield & AI Core</span>
                     <span>3D 위협 요격 매트릭스</span>
+                    <a href="/threat-matrix">3D 위협 요격 매트릭스</a>
                     <iframe id="threat-matrix-iframe" src="/threat-matrix?embed=true"></iframe>
                 </div>
 
@@ -5183,8 +5183,10 @@
             cyberGraphSvg.selectAll("*").remove();
 
             const container = document.getElementById('cyber-neural-graph-container');
-            const width = container.clientWidth || 700;
-            const height = container.clientHeight || 320;
+            const width = 1000;
+            const height = 360;
+            svgEl.setAttribute("viewBox", `0 0 ${width} ${height}`);
+            svgEl.setAttribute("preserveAspectRatio", "xMidYMid meet");
 
             // 1. Defs for Arrowhead Markers
             const defs = cyberGraphSvg.append("defs");
@@ -5228,22 +5230,34 @@
                 }
             });
 
+            // Defensive copy of nodes & links to prevent D3 mutation reference corruption
+            const simNodes = cyberGraphData.nodes.map(n => ({
+                ...n,
+                x: n.x || (width / 2 + (Math.random() - 0.5) * 200),
+                y: n.y || (height / 2 + (Math.random() - 0.5) * 120),
+            }));
+            const simLinks = cyberGraphData.links.map(l => ({
+                ...l,
+                source: typeof l.source === 'object' ? l.source.id : l.source,
+                target: typeof l.target === 'object' ? l.target.id : l.target
+            }));
+
             // 3. Force Simulation setup
-            cyberGraphSim = d3.forceSimulation(cyberGraphData.nodes)
-                .force("link", d3.forceLink(cyberGraphData.links).id(d => d.id).distance(d => d.type === 'attack_path' ? 100 : 75))
-                .force("charge", d3.forceManyBody().strength(-280))
+            cyberGraphSim = d3.forceSimulation(simNodes)
+                .force("link", d3.forceLink(simLinks).id(d => d.id).distance(d => d.type === 'attack_path' ? 120 : 90))
+                .force("charge", d3.forceManyBody().strength(-300))
                 .force("center", d3.forceCenter(width / 2, height / 2))
-                .force("collide", d3.forceCollide().radius(d => d.radius + 18));
+                .force("collide", d3.forceCollide().radius(d => d.radius + 22));
 
             // 4. Draw Links
             const linkGroup = cyberGraphG.append("g").attr("class", "links");
             const links = linkGroup.selectAll("line")
-                .data(cyberGraphData.links)
+                .data(simLinks)
                 .join("line")
                 .attr("class", d => `graph-link ${d.type === 'attack_path' ? 'attack-path-link' : ''}`)
                 .attr("stroke", d => d.color)
                 .attr("stroke-width", d => d.width)
-                .attr("stroke-opacity", 0.65)
+                .attr("stroke-opacity", 0.75)
                 .attr("marker-end", d => {
                     if (d.color === '#ef4444') return 'url(#arrow-red)';
                     if (d.color === '#0ea5e9') return 'url(#arrow-cyan)';
@@ -5256,7 +5270,7 @@
 
             // Link edge text labels (Obsidian style)
             const linkLabels = linkGroup.selectAll("text")
-                .data(cyberGraphData.links)
+                .data(simLinks)
                 .join("text")
                 .attr("class", "graph-link-label")
                 .attr("text-anchor", "middle")
@@ -5265,7 +5279,7 @@
             // 5. Draw Nodes
             const nodeGroup = cyberGraphG.append("g").attr("class", "nodes");
             const nodes = nodeGroup.selectAll("g")
-                .data(cyberGraphData.nodes)
+                .data(simNodes)
                 .join("g")
                 .attr("class", "graph-node")
                 .attr("data-id", d => d.id)
@@ -5297,13 +5311,13 @@
                     d.fy = null;
                 });
 
-            // Node Circle
+            // Node Circle - Solid, High Contrast
             nodes.append("circle")
                 .attr("r", d => d.radius)
                 .attr("fill", d => d.color)
-                .attr("fill-opacity", 0.22)
-                .attr("stroke", d => d.color)
-                .attr("stroke-width", 2.2);
+                .attr("fill-opacity", 0.9)
+                .attr("stroke", "#ffffff")
+                .attr("stroke-width", 2);
 
             // Node Icon (Emoji / Symbol)
             nodes.append("text")
@@ -6118,6 +6132,11 @@
 
             let svgContent = '';
 
+            const isLight = document.body.classList.contains('theme-light-pristine');
+            const gridStroke = isLight ? '#94a3b8' : '#334155';
+            const spokeStroke = isLight ? '#64748b' : '#475569';
+            const labelFill = isLight ? '#0f172a' : '#38bdf8';
+
             // 1. Concentric Pentagon Grid Lines (25%, 50%, 75%, 100%)
             [0.25, 0.5, 0.75, 1.0].forEach(level => {
                 const pts = [];
@@ -6127,19 +6146,17 @@
                     const y = cy + R * level * Math.sin(angle);
                     pts.push(`${x.toFixed(1)},${y.toFixed(1)}`);
                 }
-                svgContent += `<polygon points="${pts.join(' ')}" fill="none" stroke="currentColor" class="text-slate-200 dark:text-slate-800" stroke-width="0.8" stroke-dasharray="${level === 1 ? 'none' : '2,2'}" />`;
+                svgContent += `<polygon points="${pts.join(' ')}" fill="none" stroke="${gridStroke}" stroke-width="0.8" stroke-dasharray="${level === 1 ? 'none' : '2,2'}" />`;
             });
 
             // 2. Radial Axis Spoke Lines and Labels
             const polyPoints = [];
-            const isLight = document.body.classList.contains('theme-light-pristine');
-            const labelFill = isLight ? '#44403c' : '#94a3b8';
 
             axes.forEach((axis, i) => {
                 const angle = -Math.PI / 2 + (i * 2 * Math.PI / N);
                 const xMax = cx + R * Math.cos(angle);
                 const yMax = cy + R * Math.sin(angle);
-                svgContent += `<line x1="${cx}" y1="${cy}" x2="${xMax.toFixed(1)}" y2="${yMax.toFixed(1)}" stroke="currentColor" class="text-slate-200 dark:text-slate-800" stroke-width="0.8" />`;
+                svgContent += `<line x1="${cx}" y1="${cy}" x2="${xMax.toFixed(1)}" y2="${yMax.toFixed(1)}" stroke="${spokeStroke}" stroke-width="0.8" />`;
 
                 // Value point for polygon
                 const ratio = Math.max(0.1, Math.min(axis.score / 100, 1.0));
@@ -6152,12 +6169,12 @@
                 const lx = cx + labelDist * Math.cos(angle);
                 const ly = cy + labelDist * Math.sin(angle);
                 const anchor = Math.abs(Math.cos(angle)) < 0.2 ? 'middle' : (Math.cos(angle) > 0 ? 'start' : 'end');
-                svgContent += `<text x="${lx.toFixed(1)}" y="${(ly + 3).toFixed(1)}" text-anchor="${anchor}" font-size="8" font-family="'JetBrains Mono', monospace" font-weight="600" fill="${labelFill}">${axis.label}</text>`;
+                svgContent += `<text x="${lx.toFixed(1)}" y="${(ly + 3).toFixed(1)}" text-anchor="${anchor}" font-size="8" font-family="'JetBrains Mono', monospace" font-weight="700" fill="${labelFill}">${axis.label}</text>`;
             });
 
             // 3. Threat Score Area Polygon
             const polyColor = xaiData.overall_score >= 80 ? '#ef4444' : '#f59e0b';
-            svgContent += `<polygon points="${polyPoints.join(' ')}" fill="${polyColor}" fill-opacity="0.28" stroke="${polyColor}" stroke-width="1.8" />`;
+            svgContent += `<polygon points="${polyPoints.join(' ')}" fill="${polyColor}" fill-opacity="0.35" stroke="${polyColor}" stroke-width="2" />`;
 
             // 4. Dot Vertices with Tooltip
             axes.forEach((axis, i) => {

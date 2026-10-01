@@ -381,6 +381,7 @@ class XAIExplainRequest(BaseModel):
 
 
 @app.post("/api/ai/xai/explain")
+@app.post("/api/xai/explain")
 def get_xai_explanation(req: XAIExplainRequest):
     """Compute Explainable AI (XAI) 5-dimensional threat feature contribution scores."""
     result = xai_engine.explain_threat(req.model_dump())
