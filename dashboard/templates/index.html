@@ -6792,7 +6792,13 @@
         /* Official SOC Incident Investigation & Response Report (과제 1)                */
         /* ============================================================================== */
         let currentReportIncidentId = 'IR-06';
-        let currentReportData = null;
+        let currentIncidentReportData = null;
+
+        function openApprovalModal(approvalId) {
+            switchView('ai', 'approvals');
+            const el = document.getElementById('view-ai-analysis');
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }
 
         async function openIncidentReportModal(incidentId = 'IR-06', srcIp = '10.77.20.20') {
             currentReportIncidentId = incidentId;
@@ -6803,7 +6809,7 @@
                 const res = await fetch(`/api/incidents/${encodeURIComponent(incidentId)}/report?scenario=MULTI`);
                 if (!res.ok) throw new Error('HTTP ' + res.status);
                 const data = await res.json();
-                currentReportData = data;
+                currentIncidentReportData = data;
 
                 // Bind Header
                 const docNumEl = document.getElementById('rep-modal-doc-num');
