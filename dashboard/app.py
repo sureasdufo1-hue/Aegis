@@ -22,6 +22,7 @@ from dashboard.quarantine_manager import (
 )
 from dashboard.mitre_matrix import mitre_matrix_engine
 from dashboard.incident_report_generator import incident_report_engine
+from dashboard.attack_simulator import attack_simulator_engine, LaunchRequest
 
 
 
@@ -1056,6 +1057,60 @@ def create_audit_log_endpoint(req: CreateAuditLogRequest):
         detail=req.detail,
     )
     return rec.model_dump()
+
+
+# -------------------------------------------------------------
+# Red Team Attack Simulator Endpoints
+# -------------------------------------------------------------
+
+@app.get("/api/simulator/scenarios")
+async def api_simulator_scenarios():
+    """Returns the catalog of 6 pre-configured red-team attack scenarios."""
+    scenarios = attack_simulator_engine.get_catalog()
+    return [s.model_dump() for s in scenarios]
+
+
+@app.post("/api/simulator/launch")
+async def api_simulator_launch(req: LaunchRequest):
+    """Launches an attack scenario and injects realistic live telemetry into EVE JSON and Snort logs."""
+    try:
+        res = attack_simulator_engine.launch(
+            scenario_id=req.scenario_id,
+            intensity=req.intensity,
+            live_inject=req.live_inject,
+        )
+        record_audit_log(
+            event_type="ATTACK_SIMULATION",
+            action=f"LAUNCH_{req.scenario_id.upper()}",
+            actor="red_team_analyst",
+            result="SUCCESS",
+            detail=f"Scenario: {res.scenario_name} | Technique: {res.technique_id} | Injected: {res.alerts_generated} alerts | Attacker: {res.attacker_ip} -> Target: {res.target_ip}:{res.target_port}",
+        )
+        # Broadcast real-time event to connected WebSockets
+        try:
+            await ws_manager.broadcast({
+                "type": "ATTACK_SIMULATION_EVENT",
+                "scenario_id": res.scenario_id,
+                "scenario_name": res.scenario_name,
+                "technique_id": res.technique_id,
+                "alerts_generated": res.alerts_generated,
+                "timestamp": res.timestamp,
+            }, "stream")
+        except Exception:
+            pass
+
+        return res.model_dump()
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to launch attack simulation: {e}")
+
+
+@app.get("/api/simulator/history")
+async def api_simulator_history(limit: int = 20):
+    """Returns execution history of recent attack simulations."""
+    history = attack_simulator_engine.get_history(limit=limit)
+    return [h.model_dump() for h in history]
 
 
 # -------------------------------------------------------------
