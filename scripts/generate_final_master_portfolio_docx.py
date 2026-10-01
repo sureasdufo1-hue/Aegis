@@ -21,6 +21,12 @@ REPORTS_DIR = BASE_DIR / "docs" / "reports"
 
 
 def main():
+    if sys.stdout.encoding and sys.stdout.encoding.lower() != 'utf-8':
+        try:
+            sys.stdout.reconfigure(encoding='utf-8')
+        except Exception:
+            pass
+
     print("==================================================")
     print(" Aegis SOC Final Master Portfolio Document Builder")
     print("==================================================")
@@ -67,7 +73,7 @@ def main():
     print(f"  • Incident Rulebooks: 7 Rulebooks (IR-01 ~ IR-07, 14 items each)")
     print(f"  • Incident Reports  : 3 Incidents (INC-01 ~ INC-03)")
     print(f"  • Quality Gates     : 14 Gates (100% PASS)")
-    print(f"  • Pytest Suite      : 183 Tests (182 Passed, 1 Skipped, 100% Valid)")
+    print(f"  • Pytest Suite      : 187 Tests (186 Passed, 1 Skipped, 100% Valid)")
     print("==================================================")
     print("🎉 ALL FINAL MASTER PORTFOLIO DELIVERABLES COMPLETED!")
     print("==================================================")

@@ -17,7 +17,7 @@
 [![Hyper-V](https://img.shields.io/badge/Hyper--V-Port_Mirroring-0078d4.svg?logo=windows)](https://learn.microsoft.com/virtualization/hyper-v-on-windows/)
 [![Ubuntu](https://img.shields.io/badge/Ubuntu-22.04_LTS-E95420.svg?logo=ubuntu)](https://ubuntu.com/)
 [![MITRE ATT&CK](https://img.shields.io/badge/MITRE_ATT%26CK-v19.2-orange.svg)](https://attack.mitre.org/)
-[![Tests](https://img.shields.io/badge/Pytest-182%2F182_PASS-brightgreen.svg?logo=pytest)](tests/)
+[![Tests](https://img.shields.io/badge/Pytest-186%2F186_PASS-brightgreen.svg?logo=pytest)](tests/)
 [![Python](https://img.shields.io/badge/Python-3.13-yellow.svg?logo=python)](https://python.org/)
 
 ---

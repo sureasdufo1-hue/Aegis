@@ -219,6 +219,9 @@ class AttackSimulatorEngine:
                 return s
         return None
 
+    def launch_scenario(self, req: LaunchRequest) -> SimulationResult:
+        return self.launch(req.scenario_id, intensity=req.intensity, live_inject=req.live_inject)
+
     def launch(self, scenario_id: str, intensity: int = 3, live_inject: bool = True) -> SimulationResult:
         scenario = self.get_scenario(scenario_id)
         if not scenario:

@@ -635,6 +635,7 @@ def get_incident_report_markdown(incident_id: str, scenario: str = "MULTI"):
 
 
 @app.get("/api/incidents/{incident_id}/report/print", response_class=HTMLResponse)
+@app.get("/api/incidents/{incident_id}/report/html", response_class=HTMLResponse)
 def get_incident_report_printable_html(incident_id: str, scenario: str = "MULTI"):
     """Retrieve standalone printable A4 HTML view for browser printing or PDF saving."""
     report = incident_report_engine.generate_report(incident_id, scenario=scenario)

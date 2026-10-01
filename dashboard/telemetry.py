@@ -210,22 +210,67 @@ def generate_traffic_and_event_timeline(alerts: list[NormalizedAlert]) -> dict[s
     }
 
 
+def get_simulation_traffic_increments() -> dict[str, Any]:
+    try:
+        from dashboard.attack_simulator import attack_simulator_engine
+        history = attack_simulator_engine.history
+        if not history:
+            return {
+                "extra_pkts": 0,
+                "extra_bytes": 0,
+                "rx_pps_boost": 0.0,
+                "rx_bps_boost": 0.0,
+            }
+        total_sim_alerts = sum(h.alerts_generated for h in history)
+        extra_pkts = total_sim_alerts * 120
+        extra_bytes = extra_pkts * 780  # ~93.6 KB per alert
+        recent = [
+            h for h in history
+            if (datetime.now(UTC) - datetime.fromisoformat(h.timestamp.replace("Z", "+00:00"))).total_seconds() < 60
+        ]
+        recent_alerts = sum(h.alerts_generated for h in recent)
+        pps_boost = recent_alerts * 14.5
+        bps_boost = recent_alerts * 92.4 * 1024
+        return {
+            "extra_pkts": extra_pkts,
+            "extra_bytes": extra_bytes,
+            "rx_pps_boost": pps_boost,
+            "rx_bps_boost": bps_boost,
+        }
+    except Exception:
+        return {
+            "extra_pkts": 0,
+            "extra_bytes": 0,
+            "rx_pps_boost": 0.0,
+            "rx_bps_boost": 0.0,
+        }
+
+
 def get_traffic_analysis_data(time_range: str = "1H") -> dict[str, Any]:
-    # Ranking data matching Reference Image 3 (안랩 트래픽분석.jpg)
+    sim = get_simulation_traffic_increments()
+    extra_mb = sim["extra_bytes"] / (1024 * 1024)
+    extra_pkts = sim["extra_pkts"]
+
+    attacker_pkts_num = 128450 + extra_pkts
+    attacker_bytes_val = 48.2 + extra_mb
+    victim_pkts_num = 142000 + extra_pkts
+    victim_bytes_val = 52.4 + extra_mb
+    nic_monitor_bytes_val = 66.5 + extra_mb
+
     return {
         "time_range": time_range,
-        "total_rx_mbps": 42.8,
-        "total_tx_mbps": 38.6,
-        "total_mbps": 81.4,
+        "total_rx_mbps": round(42.8 + (extra_mb * 0.1), 1),
+        "total_tx_mbps": round(38.6 + (extra_mb * 0.1), 1),
+        "total_mbps": round(81.4 + (extra_mb * 0.2), 1),
         "top_sources": [
-            {"ip": "10.77.20.20", "bytes": "48.2 MB", "packets": "128,450", "pct": 48.2, "flag": "🔴", "desc": "soc-attacker (Kali)"},
+            {"ip": "10.77.20.20", "bytes": f"{attacker_bytes_val:.1f} MB", "packets": f"{attacker_pkts_num:,}", "pct": 48.2, "flag": "🔴", "desc": "soc-attacker (Kali)"},
             {"10.10.70.151": {"bytes": "32.1 MB", "packets": "85,200", "pct": 32.1, "flag": "🇰🇷", "desc": "SOC Analyst Console"}},
             {"ip": "198.51.100.44", "bytes": "14.5 MB", "packets": "34,100", "pct": 14.5, "flag": "🇺🇸", "desc": "External SSH Scanner"},
             {"ip": "10.10.69.42", "bytes": "8.4 MB", "packets": "19,800", "pct": 8.4, "flag": "🇰🇷", "desc": "Gateway Admin"},
             {"ip": "185.220.101.5", "bytes": "5.2 MB", "packets": "12,400", "pct": 5.2, "flag": "🇩🇪", "desc": "Tor Exit Node"},
         ],
         "top_destinations": [
-            {"ip": "10.77.30.20", "bytes": "52.4 MB", "packets": "142,000", "pct": 52.4, "flag": "🛡️", "desc": "soc-victim (JuiceShop/Target)"},
+            {"ip": "10.77.30.20", "bytes": f"{victim_bytes_val:.1f} MB", "packets": f"{victim_pkts_num:,}", "pct": 52.4, "flag": "🛡️", "desc": "soc-victim (JuiceShop/Target)"},
             {"ip": "208.103.161.2", "bytes": "24.1 MB", "packets": "62,300", "pct": 24.1, "flag": "🇺🇸", "desc": "External CDN Target"},
             {"ip": "10.77.10.10", "bytes": "18.6 MB", "packets": "48,900", "pct": 18.6, "flag": "💻", "desc": "soc-wazuh-siem (1514)"},
             {"ip": "172.64.155.209", "bytes": "12.3 MB", "packets": "31,400", "pct": 12.3, "flag": "🇺🇸", "desc": "Cloudflare DNS/Web"},
@@ -258,16 +303,36 @@ def get_traffic_analysis_data(time_range: str = "1H") -> dict[str, Any]:
             {"id": "FW-001", "name": "Stateful Established / Related", "hits": 1420, "bytes": "112.5 MB"},
         ],
         "top_interfaces": [
-            {"interface": "eth1 (soc-vsw-attack)", "rx": "48.2 MB", "tx": "12.4 MB", "total": "60.6 MB"},
-            {"interface": "eth2 (soc-vsw-victim)", "rx": "14.1 MB", "tx": "52.4 MB", "total": "66.5 MB"},
+            {"interface": "eth1 (soc-vsw-attack)", "rx": f"{48.2 + extra_mb:.1f} MB", "tx": "12.4 MB", "total": f"{60.6 + extra_mb:.1f} MB"},
+            {"interface": "eth2 (soc-vsw-victim)", "rx": "14.1 MB", "tx": f"{52.4 + extra_mb:.1f} MB", "total": f"{66.5 + extra_mb:.1f} MB"},
             {"interface": "eth0 (soc-vsw-mgmt)", "rx": "28.6 MB", "tx": "18.2 MB", "total": "46.8 MB"},
-            {"interface": "nic-monitor (Promiscuous)", "rx": "66.5 MB", "tx": "0 B", "total": "66.5 MB"},
+            {"interface": "nic-monitor (Promiscuous)", "rx": f"{nic_monitor_bytes_val:.1f} MB", "tx": "0 B", "total": f"{nic_monitor_bytes_val:.1f} MB"},
         ],
     }
 
 
 def get_network_interfaces_telemetry() -> list[dict[str, Any]]:
-    # High density interface table matching Reference Image 4 (안랩 인터페이스.jpg)
+    sim = get_simulation_traffic_increments()
+    extra_mb = sim["extra_bytes"] / (1024 * 1024)
+    extra_pkts = sim["extra_pkts"]
+    pps_boost = sim["rx_pps_boost"]
+    bps_boost_kb = sim["rx_bps_boost"] / 1000.0
+
+    nic_monitor_pkts = 14000 + extra_pkts
+    nic_monitor_bytes_val = 66.5 + extra_mb
+    nic_monitor_pps = 34.0 + pps_boost
+    nic_monitor_bps = 278.4 + bps_boost_kb
+
+    eth1_tx_pkts = 7800 + extra_pkts
+    eth1_tx_bytes_val = 10.7 + extra_mb
+    eth1_tx_pps = 25.0 + pps_boost
+    eth1_tx_bps = 286.2 + bps_boost_kb
+
+    eth2_rx_pkts = 6200 + extra_pkts
+    eth2_rx_bytes_val = 8.9 + extra_mb
+    eth2_rx_pps = 28.0 + pps_boost
+    eth2_rx_bps = 242.1 + bps_boost_kb
+
     return [
         {
             "interface": "eth0",
@@ -306,13 +371,13 @@ def get_network_interfaces_telemetry() -> list[dict[str, Any]]:
             "link": "1000 Full",
             "speed": "1000 Mbps",
             "rx_bps": "36.3 Kbps",
-            "tx_bps": "286.2 Kbps",
+            "tx_bps": f"{eth1_tx_bps:.1f} Kbps",
             "rx_pps": "14.0 pps",
-            "tx_pps": "25.0 pps",
+            "tx_pps": f"{eth1_tx_pps:.1f} pps",
             "rx_bytes": "1.4 MB",
-            "tx_bytes": "10.7 MB",
+            "tx_bytes": f"{eth1_tx_bytes_val:.1f} MB",
             "rx_pkts": 4500,
-            "tx_pkts": 7800,
+            "tx_pkts": eth1_tx_pkts,
             "peak_rx": "2.2 KB",
             "peak_tx": "8.9 MB",
             "avg_rx": "44.8 KB",
@@ -330,13 +395,13 @@ def get_network_interfaces_telemetry() -> list[dict[str, Any]]:
             "ipv6": "fe80::3 / 64",
             "link": "1000 Full",
             "speed": "1000 Mbps",
-            "rx_bps": "242.1 Kbps",
+            "rx_bps": f"{eth2_rx_bps:.1f} Kbps",
             "tx_bps": "48.2 Kbps",
-            "rx_pps": "28.0 pps",
+            "rx_pps": f"{eth2_rx_pps:.1f} pps",
             "tx_pps": "6.0 pps",
-            "rx_bytes": "8.9 MB",
+            "rx_bytes": f"{eth2_rx_bytes_val:.1f} MB",
             "tx_bytes": "1.8 MB",
-            "rx_pkts": 6200,
+            "rx_pkts": eth2_rx_pkts,
             "tx_pkts": 1400,
             "peak_rx": "14.2 MB",
             "peak_tx": "3.1 MB",
@@ -355,13 +420,13 @@ def get_network_interfaces_telemetry() -> list[dict[str, Any]]:
             "ipv6": "NO L3 IP",
             "link": "1000 Full",
             "speed": "1000 Mbps",
-            "rx_bps": "278.4 Kbps",
+            "rx_bps": f"{nic_monitor_bps:.1f} Kbps",
             "tx_bps": "0.0 bps",
-            "rx_pps": "34.0 pps",
+            "rx_pps": f"{nic_monitor_pps:.1f} pps",
             "tx_pps": "0.0 pps",
-            "rx_bytes": "66.5 MB",
+            "rx_bytes": f"{nic_monitor_bytes_val:.1f} MB",
             "tx_bytes": "0 B",
-            "rx_pkts": 14000,
+            "rx_pkts": nic_monitor_pkts,
             "tx_pkts": 0,
             "peak_rx": "28.4 MB",
             "peak_tx": "0 B",
