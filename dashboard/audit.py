@@ -79,11 +79,15 @@ def record_audit_log(
     action: str,
     actor: str = "soc-analyst",
     result: str = "SUCCESS",
-    detail: str = "",
+    detail: Any = "",
 ) -> AuditLogRecord:
     init_audit_log_if_needed()
     now_str = datetime.now(UTC).isoformat()
     record_id = f"AUD-{int(datetime.now(UTC).timestamp() * 1000) % 1000000:06d}"
+    if isinstance(detail, (dict, list)):
+        detail_str = json.dumps(detail, ensure_ascii=False)
+    else:
+        detail_str = str(detail)
     rec = AuditLogRecord(
         id=record_id,
         timestamp=now_str,
@@ -91,7 +95,7 @@ def record_audit_log(
         actor=actor,
         action=action,
         result=result,
-        detail=detail,
+        detail=detail_str,
     )
     with open(AUDIT_LOG_FILE, "a", encoding="utf-8") as f:
         f.write(json.dumps(rec.model_dump(), ensure_ascii=False) + "\n")

@@ -12,7 +12,7 @@
   [AI Security]    AI Security Gateway · Prompt Defense · DLP · Zero Cloud Dependency
   [RAG & Agent]    Local Milvus · BAAI bge-small · Ollama Qwen2.5 7B · Sandboxed Tools
   [Governance]     HITL 1-Click Approval · Single-use Nonce · Mock Response · 7 Rollbacks
-  [Validation]     15 Red Team Scenarios · 21/21 Automated Pytests · Evidence Hashed
+  [Validation]     15 Red Team Scenarios · 183 Tests (182 Passed, 1 Skipped) · Evidence Hashed
 ========================================================================================
 ```
 
@@ -1045,7 +1045,7 @@ flowchart TD
 - **Vector Database:** `Milvus Standalone` (Docker HNSW)
 - **Embedding Model:** `BAAI/bge-small-en-v1.5` (384-dim local)
 - **Backend API & PEP:** `FastAPI` (Python 3.13, Pydantic v2.10)
-- **Automated Test Runner:** `pytest v9.1.1` (21 tests PASS)
+- **Automated Test Runner:** `pytest v9.1.1` (183 Tests: 182 Passed, 1 Skipped, 100% Valid)
 
 ---
 

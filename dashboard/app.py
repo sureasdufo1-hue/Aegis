@@ -1,4 +1,5 @@
 import asyncio
+from contextlib import asynccontextmanager
 import json
 import os
 from collections import Counter
@@ -78,7 +79,41 @@ from dashboard.elk_client import (
 )
 from dashboard.websocket_manager import ws_manager
 
-app = FastAPI(title="SOC Lab - Suricata, Snort & AI Copilot Monitoring Center")
+
+# Background Broadcaster Task
+async def background_telemetry_broadcaster():
+    while True:
+        try:
+            await asyncio.sleep(3.0)
+            if any(len(conns) > 0 for conns in ws_manager.active_connections.values()):
+                summary = get_dashboard_summary_telemetry()
+                await ws_manager.broadcast({
+                    "type": "TICK",
+                    "timestamp": datetime.now(UTC).isoformat(),
+                    "kpis": summary["kpis"],
+                    "system": summary["system_telemetry"],
+                }, "stream")
+        except asyncio.CancelledError:
+            break
+        except (RuntimeError, OSError):
+            await asyncio.sleep(1.0)
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    task = asyncio.create_task(background_telemetry_broadcaster())
+    yield
+    task.cancel()
+    try:
+        await task
+    except asyncio.CancelledError:
+        pass
+
+
+app = FastAPI(
+    title="SOC Lab - Suricata, Snort & AI Copilot Monitoring Center",
+    lifespan=lifespan,
+)
 
 app.add_middleware(
     CORSMiddleware,
@@ -1200,27 +1235,3 @@ async def websocket_channel_endpoint(websocket: WebSocket, channel: str):
         ws_manager.disconnect(websocket, channel)
     except (RuntimeError, OSError):
         ws_manager.disconnect(websocket, channel)
-
-
-# Background Broadcaster Task
-async def background_telemetry_broadcaster():
-    while True:
-        try:
-            await asyncio.sleep(3.0)
-            if any(len(conns) > 0 for conns in ws_manager.active_connections.values()):
-                summary = get_dashboard_summary_telemetry()
-                await ws_manager.broadcast({
-                    "type": "TICK",
-                    "timestamp": datetime.now(UTC).isoformat(),
-                    "kpis": summary["kpis"],
-                    "system": summary["system_telemetry"],
-                }, "stream")
-        except asyncio.CancelledError:
-            break
-        except (RuntimeError, OSError):
-            await asyncio.sleep(1.0)
-
-
-@app.on_event("startup")
-async def on_startup():
-    asyncio.create_task(background_telemetry_broadcaster())
