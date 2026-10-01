@@ -4535,7 +4535,8 @@
         // Drawers & Modals View Helpers
         // -------------------------------------------------------------
         function showEventDrawer(eventId) {
-            const alert = rawAlertsCache.find(a => a.id === eventId);
+            const alert = (rawAlertsCache || []).find(a => a.id === eventId) ||
+                          (rawRecentCriticalCache || []).find(a => a.id === eventId);
             if (!alert) return;
             const drawer = document.getElementById('eventDetailDrawer');
 
@@ -5216,35 +5217,55 @@
 
         function quickFilterSearch(ip) {
             if (!ip) return;
-            document.getElementById('global-search-input').value = ip;
+            const sInput = document.getElementById('global-search-input');
+            if (sInput) sInput.value = ip;
             applyGlobalFilters();
             closeEventDrawer();
         }
 
         function applyGlobalFilters() {
-            const q = (document.getElementById('global-search-input')?.value || '').toLowerCase();
+            const q = (document.getElementById('global-search-input')?.value || '').toLowerCase().trim();
             const sev = document.getElementById('filter-severity')?.value || 'ALL';
             const eng = document.getElementById('filter-engine')?.value || 'ALL';
             const proto = document.getElementById('filter-proto')?.value || 'ALL';
 
-            const filtered = rawAlertsCache.filter(a => {
-                const matchQ = !q || a.signature.toLowerCase().includes(q) || a.src_ip.includes(q) || a.dst_ip.includes(q) || String(a.sid).includes(q);
+            const filterFn = a => {
+                const sig = (a.signature || a.rule || '').toLowerCase();
+                const koSig = (getLocalizedSignature(a.signature || a.rule || '') || '').toLowerCase();
+                const src = (a.src_ip || a.source || '').toLowerCase();
+                const dst = (a.dst_ip || a.destination || '').toLowerCase();
+                const sid = String(a.sid || '');
+                const mitre = (a.mitre_technique || a.mitre || '').toLowerCase();
+
+                const matchQ = !q || sig.includes(q) || koSig.includes(q) || src.includes(q) || dst.includes(q) || sid.includes(q) || mitre.includes(q);
                 const matchSev = sev === 'ALL' || a.severity === sev;
-                const matchEng = eng === 'ALL' || a.engine === eng;
+                const engVal = a.engine || a.sensor || 'SURICATA';
+                const matchEng = eng === 'ALL' || engVal === eng;
                 const matchProto = proto === 'ALL' || (a.protocol || 'TCP').toUpperCase() === proto;
                 return matchQ && matchSev && matchEng && matchProto;
-            });
+            };
 
-            renderAlertsTable(filtered);
-            showToast(`필터 적용: ${filtered.length}건 검색됨`, 'sky');
+            const filteredAlerts = (rawAlertsCache || []).filter(filterFn);
+            const filteredRecent = (rawRecentCriticalCache || []).filter(filterFn);
+
+            renderAlertsTable(filteredAlerts);
+            renderRecentCriticalTable(filteredRecent);
+            showToast(`필터 적용: 최근 중요 ${filteredRecent.length}건 / 전체 이벤트 ${filteredAlerts.length}건 검색됨`, 'sky');
         }
 
         function resetGlobalFilters() {
-            document.getElementById('global-search-input').value = '';
-            document.getElementById('filter-severity').value = 'ALL';
-            document.getElementById('filter-engine').value = 'ALL';
-            document.getElementById('filter-proto').value = 'ALL';
-            applyGlobalFilters();
+            const sInput = document.getElementById('global-search-input');
+            if (sInput) sInput.value = '';
+            const fSev = document.getElementById('filter-severity');
+            if (fSev) fSev.value = 'ALL';
+            const fEng = document.getElementById('filter-engine');
+            if (fEng) fEng.value = 'ALL';
+            const fProto = document.getElementById('filter-proto');
+            if (fProto) fProto.value = 'ALL';
+
+            renderAlertsTable(rawAlertsCache);
+            renderRecentCriticalTable(rawRecentCriticalCache);
+            showToast('필터 초기화 완료', 'sky');
         }
 
         function setTimeRange(range) {
@@ -6911,20 +6932,11 @@
             if (modal) modal.classList.add('hidden');
         }
 
-        async function submitQuarantine() {
-            const ipInput = document.getElementById('qrn-input-ip');
-            const reasonInput = document.getElementById('qrn-input-reason');
-            const ttlInput = document.getElementById('qrn-input-ttl');
-
-            const ip = ipInput ? ipInput.value.trim() : '';
-            const reason = reasonInput ? reasonInput.value.trim() : '';
-            const ttl = ttlInput ? parseInt(ttlInput.value, 10) : 3600;
-
+        async function applyQuarantine(ip, reason = '보안 위협 탐지 및 침해 확산 방지 격리', ttl = 3600) {
             if (!ip) {
-                alert('격리 대상 IP 주소를 입력해 주십시오.');
-                return;
+                showToast('격리 대상 IP 주소가 지정되지 않았습니다.', 'red');
+                return false;
             }
-
             try {
                 const res = await fetch('/api/soar/quarantine/apply', {
                     method: 'POST',
@@ -6932,13 +6944,38 @@
                     body: JSON.stringify({ ip, reason, ttl_seconds: ttl, operator: 'soc-analyst' })
                 });
 
-                if (!res.ok) throw new Error('HTTP ' + res.status);
-                closeQuarantineModal();
+                if (!res.ok) {
+                    const err = await res.json().catch(() => ({}));
+                    throw new Error(err.detail || err.error || ('HTTP ' + res.status));
+                }
+
                 showActionToast(`✅ IP ${ip} 방화벽 격리 룰이 성공적으로 적용되었습니다. (TTL: ${ttl}s)`);
                 fetchQuarantines();
                 fetchAuditLogs();
+                return true;
             } catch (e) {
-                alert('격리 룰 적용 실패: ' + e.message);
+                showToast(`격리 룰 적용 실패: ${e.message}`, 'red');
+                return false;
+            }
+        }
+
+        async function submitQuarantine() {
+            const ipInput = document.getElementById('qrn-input-ip');
+            const reasonInput = document.getElementById('qrn-input-reason');
+            const ttlInput = document.getElementById('qrn-input-ttl');
+
+            const ip = ipInput ? ipInput.value.trim() : '';
+            const reason = reasonInput ? reasonInput.value.trim() : '보안 위협 탐지 및 침해 확산 방지 격리';
+            const ttl = ttlInput ? parseInt(ttlInput.value, 10) : 3600;
+
+            if (!ip) {
+                alert('격리 대상 IP 주소를 입력해 주십시오.');
+                return;
+            }
+
+            const ok = await applyQuarantine(ip, reason, ttl);
+            if (ok) {
+                closeQuarantineModal();
             }
         }
 
@@ -7741,19 +7778,17 @@
             `;
         }
 
-        function triggerCtiQuarantine() {
+        async function triggerCtiQuarantine() {
             if (!currentCtiReport) return;
             const ip = currentCtiReport.indicator;
             if (currentCtiReport.is_private_ip && currentCtiReport.verdict === 'INTERNAL_SAFE') {
-                alert(`[보호 자산] 내부 사설망 IP (${ip})는 SOAR 보호 정책에 의해 격리가 차단됩니다.`);
+                showToast(`[보호 자산] 내부 사설망 IP (${ip})는 SOAR 보호 정책에 의해 격리가 차단됩니다.`, 'amber');
                 return;
             }
-            if (typeof applyQuarantine === 'function') {
-                applyQuarantine(ip, `CTI 악성 평판 탐지 (AbuseIPDB Score: ${currentCtiReport.abuseipdb_score}%)`, 60);
-                showToast(`[CTI 연계] ${ip}에 대한 SOAR 방화벽 격리(TTL 60분)가 요청되었습니다.`, 'success');
+            const ok = await applyQuarantine(ip, `CTI 악성 평판 탐지 (AbuseIPDB Score: ${currentCtiReport.abuseipdb_score || 0}%)`, 3600);
+            if (ok) {
+                showToast(`[CTI 연계] ${ip}에 대한 SOAR 방화벽 격리(TTL 60분)가 성공적으로 요청되었습니다.`, 'emerald');
                 closeCtiModal();
-            } else {
-                alert(`격리 엔진 연동: ${ip}`);
             }
         }
 
