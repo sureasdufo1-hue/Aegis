@@ -1436,14 +1436,14 @@
                         <table class="w-full text-left font-mono soc-table">
                             <thead>
                                 <tr>
-                                    <th>발생 시각 (Time)</th>
-                                    <th>위험도 (Severity)</th>
-                                    <th>출발지 (Source)</th>
-                                    <th>목적지 (Destination)</th>
-                                    <th>탐지 시그니처 (Rule)</th>
-                                    <th>MITRE ATT&CK</th>
-                                    <th>센서 (Sensor)</th>
-                                    <th>상태 (Status)</th>
+                                    <th id="th-crit-time">발생 시각 (Time)</th>
+                                    <th id="th-crit-sev">위험도 (Severity)</th>
+                                    <th id="th-crit-src">출발지 (Source)</th>
+                                    <th id="th-crit-dst">목적지 (Destination)</th>
+                                    <th id="th-crit-sig">탐지 시그니처 (Rule)</th>
+                                    <th id="th-crit-mitre">MITRE ATT&CK</th>
+                                    <th id="th-crit-engine">센서 (Sensor)</th>
+                                    <th id="th-crit-status">상태 (Status)</th>
                                 </tr>
                             </thead>
                             <tbody id="recent-critical-tbody" class="divide-y divide-slate-800/60 text-slate-300">
@@ -2415,14 +2415,14 @@
                         <table class="w-full text-left font-mono soc-table">
                             <thead>
                                 <tr>
-                                    <th>발생 시각 (KST / UTC)</th>
-                                    <th>엔진</th>
-                                    <th>위험도</th>
-                                    <th>탐지 규칙 (시그니처)</th>
-                                    <th>출발지 (Attacker)</th>
-                                    <th>목적지 (Target)</th>
-                                    <th>MITRE 기법</th>
-                                    <th class="text-center">조치 / 해석</th>
+                                    <th id="th-alert-time">발생 시각 (KST / UTC)</th>
+                                    <th id="th-alert-engine">엔진</th>
+                                    <th id="th-alert-sev">위험도</th>
+                                    <th id="th-alert-sig">탐지 규칙 (시그니처)</th>
+                                    <th id="th-alert-src">출발지 (Attacker)</th>
+                                    <th id="th-alert-dst">목적지 (Target)</th>
+                                    <th id="th-alert-mitre">MITRE 기법</th>
+                                    <th id="th-alert-actions" class="text-center">조치 / 해석</th>
                                 </tr>
                             </thead>
                             <tbody id="alerts-tbody" class="divide-y divide-slate-800/60 text-slate-300">
@@ -3269,6 +3269,7 @@
 
         // Caches
         let rawAlertsCache = [];
+        let rawRecentCriticalCache = [];
         let rawIncidentsCache = [];
         let rawInterfacesCache = [];
         let invTimerInterval = null;
@@ -3973,23 +3974,59 @@
         }
 
         function renderRecentCriticalTable(alerts) {
+            if (alerts) {
+                rawRecentCriticalCache = alerts;
+            }
+            const dataList = alerts || rawRecentCriticalCache;
             const tbody = document.getElementById('recent-critical-tbody');
-            if (!alerts || alerts.length === 0) {
+            if (!dataList || dataList.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="8" class="py-4 text-center text-slate-500">감지된 중요 경보가 없습니다.</td></tr>';
                 return;
             }
-            tbody.innerHTML = alerts.map(a => `
-                <tr class="cursor-pointer hover:bg-slate-800/60" onclick="showEventDrawer('${a.id}')">
-                    <td class="text-slate-400">${a.time}</td>
-                    <td><span class="text-[10px] px-1.5 py-0.2 rounded font-bold ${a.severity === 'CRITICAL' ? 'sev-critical' : 'sev-high'}">${a.severity}</span></td>
-                    <td class="text-red-400 font-bold">${a.source}</td>
-                    <td class="text-sky-400">${a.destination}</td>
-                    <td class="text-slate-200 font-medium">${a.rule}</td>
-                    <td class="text-slate-400">${a.mitre}</td>
-                    <td class="text-slate-400">${a.sensor}</td>
-                    <td><span class="text-emerald-400 font-bold">${a.status}</span></td>
-                </tr>
-            `).join('');
+
+            const isKo = (currentViewMode === 'korean' || currentViewMode === 'ko');
+            const isOrig = (currentViewMode === 'original' || currentViewMode === 'orig');
+            const isSplit = (currentViewMode === 'split');
+
+            tbody.innerHTML = dataList.map(a => {
+                const time = a.timestamp || a.time || '-';
+                const rule = a.signature || a.rule || '-';
+                const src = (a.src_ip || a.source || '-') + (a.src_port ? ':' + a.src_port : '');
+                const dst = (a.dst_ip || a.destination || '-') + (a.dst_port ? ':' + a.dst_port : '');
+                const mitre = a.mitre_technique || a.mitre || '-';
+                const engine = a.engine || a.sensor || 'SURICATA';
+                const status = a.action || a.status || 'DETECTED';
+
+                const koTitle = getLocalizedSignature(rule);
+                const hasKo = koTitle && koTitle !== rule;
+                const sevText = getLocalizedSeverity(a.severity);
+                const sevClass = a.severity === 'CRITICAL' ? 'sev-critical' : 'sev-high';
+
+                let sigHtml = '';
+                if (isKo) {
+                    sigHtml = `<div class="font-bold text-slate-100">${koTitle}</div>
+                               <div class="text-[10px] text-slate-500 font-mono mt-0.5">${rule}</div>`;
+                } else if (isOrig) {
+                    sigHtml = `<div class="font-mono text-slate-200 text-xs font-semibold">${rule}</div>`;
+                } else {
+                    // Split
+                    sigHtml = `<div class="font-mono text-slate-200 text-xs font-semibold">${rule}</div>
+                               ${hasKo ? `<div class="text-[11px] text-sky-400 font-sans mt-0.5 flex items-center gap-1.5"><span class="px-1 py-0.2 rounded bg-sky-950/80 border border-sky-800 text-[9px] text-sky-300 font-bold shrink-0">🇰🇷 해석</span><span>${koTitle}</span></div>` : ''}`;
+                }
+
+                return `
+                    <tr class="cursor-pointer hover:bg-slate-800/60 transition" onclick="showEventDrawer('${a.id}')">
+                        <td class="text-slate-400 font-mono text-[11px]">${time}</td>
+                        <td><span class="text-[10px] px-1.5 py-0.5 rounded font-bold ${sevClass}">${sevText}</span></td>
+                        <td class="text-red-400 font-bold font-mono text-[11px]">${src}</td>
+                        <td class="text-sky-400 font-mono text-[11px]">${dst}</td>
+                        <td>${sigHtml}</td>
+                        <td class="text-slate-400 font-mono text-[10px]">${mitre}</td>
+                        <td class="text-slate-400 font-mono text-[10px]">${engine}</td>
+                        <td><span class="text-emerald-400 font-bold font-mono text-[10px]">${status}</span></td>
+                    </tr>
+                `;
+            }).join('');
         }
 
         // -------------------------------------------------------------
@@ -4282,25 +4319,58 @@
                 return;
             }
 
-            tbody.innerHTML = alerts.map(a => `
-                <tr class="cursor-pointer hover:bg-slate-800/60" onclick="showEventDrawer('${a.id}')">
-                    <td class="text-slate-400">${a.timestamp?.replace('T', ' ').slice(0, 19)}</td>
-                    <td><span class="text-[10px] px-1.5 py-0.2 rounded font-bold ${a.engine === 'SURICATA' ? 'bg-sky-950 text-sky-300 border border-sky-800' : 'bg-indigo-950 text-indigo-300 border border-indigo-800'}">${a.engine}</span></td>
-                    <td><span class="text-[10px] px-1.5 py-0.2 rounded font-bold ${a.severity === 'CRITICAL' ? 'sev-critical' : (a.severity === 'HIGH' ? 'sev-high' : 'sev-medium')}">${a.severity}</span></td>
-                    <td class="text-slate-200 font-semibold">${a.signature} <span class="text-slate-500 text-[10px]">[SID:${a.sid}]</span></td>
-                    <td class="text-red-400 font-bold">${a.src_ip}${a.src_port ? ':' + a.src_port : ''}</td>
-                    <td class="text-sky-400">${a.dst_ip}${a.dst_port ? ':' + a.dst_port : ''}</td>
-                    <td class="text-slate-400">${a.mitre_technique || '-'}</td>
-                    <td class="text-center whitespace-nowrap space-x-1">
-                        <button onclick="event.stopPropagation(); openPcapForensicModal('${a.signature.replace(/'/g, "\\'")}', '${a.src_ip}', '${a.dst_ip}', ${a.dst_port || 80}, ${a.sid || 0})" class="px-1.5 py-0.5 text-[10px] font-bold bg-amber-100 hover:bg-amber-200 text-amber-900 dark:bg-amber-950/70 dark:hover:bg-amber-900/90 dark:text-amber-300 border border-amber-300 dark:border-amber-800 rounded transition cursor-pointer" title="5-Tuple 세션 PCAP 증적 카빙 및 Wireshark 뷰어 열기">
-                            📦 PCAP
-                        </button>
-                        <button onclick="event.stopPropagation(); interpretAlertInline('${a.signature.replace(/'/g, "\\'")}', '${a.category}', '${a.severity}', '${a.mitre_technique || ''}')" class="px-1.5 py-0.5 text-[10px] bg-slate-100 hover:bg-slate-200 text-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-sky-300 border border-slate-300 dark:border-slate-700 rounded cursor-pointer">
-                            AI 해석
-                        </button>
-                    </td>
-                </tr>
-            `).join('');
+            const isKo = (currentViewMode === 'korean' || currentViewMode === 'ko');
+            const isOrig = (currentViewMode === 'original' || currentViewMode === 'orig');
+            const isSplit = (currentViewMode === 'split');
+
+            tbody.innerHTML = alerts.map(a => {
+                const koTitle = getLocalizedSignature(a.signature);
+                const hasKo = koTitle && koTitle !== a.signature;
+
+                let sigDisplay = '';
+                if (isKo) {
+                    sigDisplay = `
+                        <div class="font-bold text-slate-100">${koTitle}</div>
+                        <div class="text-[10px] text-slate-500 font-mono mt-0.5">[SID:${a.sid}] ${a.signature}</div>
+                    `;
+                } else if (isOrig) {
+                    sigDisplay = `
+                        <div class="font-mono text-slate-200 text-xs font-semibold">${a.signature} <span class="text-slate-500 text-[10px]">[SID:${a.sid}]</span></div>
+                    `;
+                } else {
+                    // Split
+                    sigDisplay = `
+                        <div class="font-mono text-slate-200 text-xs font-semibold">${a.signature} <span class="text-slate-500 text-[10px]">[SID:${a.sid}]</span></div>
+                        ${hasKo ? `<div class="text-[11px] text-sky-400 font-sans mt-0.5 flex items-center gap-1.5"><span class="px-1 py-0.2 rounded bg-sky-950/80 border border-sky-800 text-[9px] text-sky-300 font-bold shrink-0">🇰🇷 해석</span><span>${koTitle}</span></div>` : ''}
+                    `;
+                }
+
+                const sevText = getLocalizedSeverity(a.severity);
+                const sevClass = a.severity === 'CRITICAL' ? 'sev-critical' : (a.severity === 'HIGH' ? 'sev-high' : 'sev-medium');
+
+                const btnExplainText = isOrig ? 'AI Explain' : (isKo ? 'AI 해석' : 'AI 해석');
+                const btnPcapText = isOrig ? 'PCAP' : (isKo ? 'PCAP 증적' : 'PCAP');
+
+                return `
+                    <tr class="cursor-pointer hover:bg-slate-800/60 transition" onclick="showEventDrawer('${a.id}')">
+                        <td class="text-slate-400 font-mono text-[11px]">${a.timestamp?.replace('T', ' ').slice(0, 19)}</td>
+                        <td><span class="text-[10px] px-1.5 py-0.5 rounded font-bold ${a.engine === 'SURICATA' ? 'bg-sky-950 text-sky-300 border border-sky-800' : 'bg-indigo-950 text-indigo-300 border border-indigo-800'}">${a.engine}</span></td>
+                        <td><span class="text-[10px] px-1.5 py-0.5 rounded font-bold ${sevClass}">${sevText}</span></td>
+                        <td>${sigDisplay}</td>
+                        <td class="text-red-400 font-bold font-mono text-[11px]">${a.src_ip}${a.src_port ? ':' + a.src_port : ''}</td>
+                        <td class="text-sky-400 font-mono text-[11px]">${a.dst_ip}${a.dst_port ? ':' + a.dst_port : ''}</td>
+                        <td class="text-slate-400 font-mono text-[11px]">${a.mitre_technique || '-'}</td>
+                        <td class="text-center whitespace-nowrap space-x-1">
+                            <button onclick="event.stopPropagation(); openPcapForensicModal('${a.signature.replace(/'/g, "\\'")}', '${a.src_ip}', '${a.dst_ip}', ${a.dst_port || 80}, ${a.sid || 0})" class="px-1.5 py-0.5 text-[10px] font-bold bg-amber-100 hover:bg-amber-200 text-amber-900 dark:bg-amber-950/70 dark:hover:bg-amber-900/90 dark:text-amber-300 border border-amber-300 dark:border-amber-800 rounded transition cursor-pointer" title="5-Tuple 세션 PCAP 증적 카빙 및 Wireshark 뷰어 열기">
+                                📦 ${btnPcapText}
+                            </button>
+                            <button onclick="event.stopPropagation(); interpretAlertInline('${a.signature.replace(/'/g, "\\'")}', '${a.category}', '${a.severity}', '${a.mitre_technique || ''}')" class="px-1.5 py-0.5 text-[10px] bg-slate-100 hover:bg-slate-200 text-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-sky-300 border border-slate-300 dark:border-slate-700 rounded cursor-pointer font-medium">
+                                ${btnExplainText}
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
         }
 
         function filterAlerts() {
@@ -4308,7 +4378,8 @@
             const sev = document.getElementById('alert-severity-select')?.value || 'ALL';
 
             const filtered = rawAlertsCache.filter(a => {
-                const matchQ = !q || a.signature.toLowerCase().includes(q) || a.src_ip.includes(q) || a.dst_ip.includes(q) || String(a.sid).includes(q);
+                const koTitle = (getLocalizedSignature(a.signature) || '').toLowerCase();
+                const matchQ = !q || a.signature.toLowerCase().includes(q) || koTitle.includes(q) || a.src_ip.includes(q) || a.dst_ip.includes(q) || String(a.sid).includes(q);
                 const matchSev = sev === 'ALL' || a.severity === sev;
                 return matchQ && matchSev;
             });
@@ -4467,12 +4538,36 @@
             const alert = rawAlertsCache.find(a => a.id === eventId);
             if (!alert) return;
             const drawer = document.getElementById('eventDetailDrawer');
-            document.getElementById('drawer-title').textContent = `경보 분석: [SID:${alert.sid}] ${alert.signature}`;
+
+            const koTitle = getLocalizedSignature(alert.signature);
+            const hasKo = koTitle && koTitle !== alert.signature;
+            const isKo = (currentViewMode === 'korean' || currentViewMode === 'ko');
+            const isSplit = (currentViewMode === 'split');
+
+            let titleText = `경보 분석: [SID:${alert.sid}] ${alert.signature}`;
+            if (isKo) {
+                titleText = `경보 분석: [SID:${alert.sid}] ${koTitle}`;
+            } else if (isSplit && hasKo) {
+                titleText = `경보 분석: [SID:${alert.sid}] ${alert.signature} (${koTitle})`;
+            }
+            document.getElementById('drawer-title').textContent = titleText;
 
             const rawJson = JSON.stringify(alert.raw_data || alert, null, 2);
 
             document.getElementById('drawer-body').innerHTML = `
                 <div class="space-y-3">
+                    ${hasKo ? `
+                    <div class="soc-panel rounded p-3 space-y-1.5 border-l-4 border-l-cyan-500 bg-sky-950/20">
+                        <div class="text-[10px] text-cyan-300 font-bold uppercase flex items-center gap-1">
+                            <span>🇰🇷</span> 한국어 보안 의미 및 위협 분석 (Security Context)
+                        </div>
+                        <div class="text-sm font-bold text-white">${koTitle}</div>
+                        <p class="text-xs text-slate-300 font-sans leading-relaxed">
+                            ${(localizationDict?.signatures?.[alert.signature]?.explanation) || '비정상 트래픽 및 잠재적 침해 패턴이 감지되었습니다. 5-Tuple 좌표 및 관련 엔드포인트 로그를 교차 검증하십시오.'}
+                        </p>
+                    </div>
+                    ` : ''}
+
                     <div class="soc-panel rounded p-3 space-y-1.5 border-l-4 border-l-sky-500">
                         <div class="text-[10px] text-slate-400 font-bold uppercase">5-Tuple Network Coordinates</div>
                         <div class="text-sm font-bold text-white">${alert.src_ip}:${alert.src_port || '-'} ➔ ${alert.dst_ip}:${alert.dst_port || '-'} (${alert.protocol})</div>
@@ -4488,13 +4583,13 @@
                     <div class="soc-panel rounded p-3 space-y-1.5">
                         <div class="flex items-center justify-between">
                             <span class="text-[10px] text-slate-400 font-bold uppercase">Raw Packet JSON Evidence</span>
-                            <button onclick="navigator.clipboard.writeText(document.getElementById('raw-evidence-box').textContent); showToast('JSON 복사됨', 'sky');" class="text-[10px] px-2 py-0.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded border border-slate-700">복사</button>
+                            <button onclick="navigator.clipboard.writeText(document.getElementById('raw-evidence-box').textContent); showToast('JSON 복사됨', 'sky');" class="text-[10px] px-2 py-0.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded border border-slate-700 cursor-pointer">복사</button>
                         </div>
                         <pre id="raw-evidence-box" class="p-2.5 rounded bg-slate-950 text-slate-300 text-[10px] overflow-x-auto max-h-60 font-mono">${rawJson}</pre>
                     </div>
 
                     <div class="flex items-center gap-2 pt-2">
-                        <button onclick="quickFilterSearch('${alert.src_ip}')" class="flex-1 px-3 py-1.5 bg-sky-700 hover:bg-sky-600 text-white rounded font-bold text-xs transition">
+                        <button onclick="quickFilterSearch('${alert.src_ip}')" class="flex-1 px-3 py-1.5 bg-sky-700 hover:bg-sky-600 text-white rounded font-bold text-xs transition cursor-pointer">
                             이 공격자 IP (${alert.src_ip}) 전체 검색
                         </button>
                     </div>
@@ -5165,20 +5260,168 @@
             showToast(`시간 범위 변경: 최근 ${range}`, 'sky');
         }
 
+        async function loadLocalizationDictionary() {
+            if (localizationDict) return localizationDict;
+            try {
+                const res = await fetch('/api/localization/dictionary');
+                if (res.ok) {
+                    localizationDict = await res.json();
+                }
+            } catch (e) {
+                console.warn('Failed to load localization dictionary:', e);
+            }
+            return localizationDict;
+        }
+
+        function getLocalizedSignature(signature) {
+            if (!signature) return '-';
+            if (localizationDict && localizationDict.signatures && localizationDict.signatures[signature]) {
+                return localizationDict.signatures[signature].ko_title;
+            }
+            const s = signature.toLowerCase();
+            if (s.includes('log4j') || s.includes('jndi')) return 'Apache Log4j JNDI RCE 원격 코드 실행 취약점 악용 탐지';
+            if (s.includes('sql injection') || s.includes('union select') || s.includes('sqli')) return '웹 애플리케이션 SQL 인젝션(SQLi) 공격 시도 탐지';
+            if (s.includes('reverse shell') || s.includes('/bin/sh')) return '리버스 셸(Reverse Shell) 대화형 세션 연결 탐지';
+            if (s.includes('ssh brute force') || s.includes('high-frequency ssh') || s.includes('ssh connection threshold') || s.includes('ssh brute force rate')) return 'SSH 무차별 대입(Brute Force) 로그인 공격 탐지';
+            if (s.includes('null scan') || s.includes('zero flags') || s.includes('no flags')) return 'Nmap 스텔스 NULL 포트 스캔 탐지 (Zero Flags)';
+            if (s.includes('syn stealth') || s.includes('syn scan') || s.includes('port scan')) return 'Nmap 은닉 SYN 포트 스캔 정찰 활동 탐지';
+            if (s.includes('nikto') || s.includes('vulnerability scanner')) return 'Nikto 웹 취약점 자동화 스캐너 정찰 탐지';
+            if (s.includes('dns tunneling') || s.includes('tunneling query')) return 'DNS 터널링 기반 데이터 은닉 및 유출 의심 쿼리 탐지';
+            if (s.includes('xss') || s.includes('cross-site')) return '웹 크로스사이트 스크립팅(XSS) 취약점 공격 탐지';
+            if (s.includes('directory traversal') || s.includes('path traversal')) return '경로 조작 및 디렉터리 순회(Path Traversal) 공격 탐지';
+            if (s.includes('icmp ping flood') || s.includes('ping flood')) return 'ICMP Ping Flood 서비스 거부(DoS) 공격 탐지';
+            return signature;
+        }
+
+        function getLocalizedSeverity(severity) {
+            const sevMap = {
+                'CRITICAL': { ko: '심각', en: 'CRITICAL' },
+                'HIGH': { ko: '높음', en: 'HIGH' },
+                'MEDIUM': { ko: '보통', en: 'MEDIUM' },
+                'LOW': { ko: '낮음', en: 'LOW' },
+                'INFORMATIONAL': { ko: '정보', en: 'INFO' }
+            };
+            const s = sevMap[severity] || { ko: severity, en: severity };
+            if (currentViewMode === 'korean' || currentViewMode === 'ko') {
+                return s.ko;
+            } else if (currentViewMode === 'split') {
+                return `${s.en} (${s.ko})`;
+            } else {
+                return s.en;
+            }
+        }
+
+        function updateTableHeaders(mode) {
+            const isKo = (mode === 'korean' || mode === 'ko');
+            const isOrig = (mode === 'original' || mode === 'orig');
+
+            // 1. Live Events Table Headers
+            const thTime = document.getElementById('th-alert-time');
+            const thEngine = document.getElementById('th-alert-engine');
+            const thSev = document.getElementById('th-alert-sev');
+            const thSig = document.getElementById('th-alert-sig');
+            const thSrc = document.getElementById('th-alert-src');
+            const thDst = document.getElementById('th-alert-dst');
+            const thMitre = document.getElementById('th-alert-mitre');
+            const thActions = document.getElementById('th-alert-actions');
+
+            if (isOrig) {
+                if (thTime) thTime.textContent = 'TIMESTAMP';
+                if (thEngine) thEngine.textContent = 'ENGINE';
+                if (thSev) thSev.textContent = 'SEVERITY';
+                if (thSig) thSig.textContent = 'DETECTION RULE (SIGNATURE)';
+                if (thSrc) thSrc.textContent = 'SOURCE (ATTACKER)';
+                if (thDst) thDst.textContent = 'DESTINATION (TARGET)';
+                if (thMitre) thMitre.textContent = 'MITRE ATT&CK';
+                if (thActions) thActions.textContent = 'ACTIONS';
+            } else if (isKo) {
+                if (thTime) thTime.textContent = '발생 시각 (KST)';
+                if (thEngine) thEngine.textContent = '탐지 엔진';
+                if (thSev) thSev.textContent = '위험도';
+                if (thSig) thSig.textContent = '탐지 규칙 (국문 번역)';
+                if (thSrc) thSrc.textContent = '출발지 (공격자)';
+                if (thDst) thDst.textContent = '목적지 (대상 자산)';
+                if (thMitre) thMitre.textContent = 'MITRE 전술 기법';
+                if (thActions) thActions.textContent = '조치 및 분석';
+            } else {
+                // Split
+                if (thTime) thTime.textContent = '발생 시각 (KST / UTC)';
+                if (thEngine) thEngine.textContent = '엔진 (Engine)';
+                if (thSev) thSev.textContent = '위험도 (Severity)';
+                if (thSig) thSig.textContent = '탐지 규칙 & 국문 해석 (Signature / Korean)';
+                if (thSrc) thSrc.textContent = '출발지 (Attacker)';
+                if (thDst) thDst.textContent = '목적지 (Target)';
+                if (thMitre) thMitre.textContent = 'MITRE 기법';
+                if (thActions) thActions.textContent = '조치 / 해석';
+            }
+
+            // 2. Recent Critical Table Headers on Dashboard
+            const thCritTime = document.getElementById('th-crit-time');
+            const thCritSev = document.getElementById('th-crit-sev');
+            const thCritSrc = document.getElementById('th-crit-src');
+            const thCritDst = document.getElementById('th-crit-dst');
+            const thCritSig = document.getElementById('th-crit-sig');
+            const thCritMitre = document.getElementById('th-crit-mitre');
+            const thCritEngine = document.getElementById('th-crit-engine');
+            const thCritStatus = document.getElementById('th-crit-status');
+
+            if (isOrig) {
+                if (thCritTime) thCritTime.textContent = 'TIME';
+                if (thCritSev) thCritSev.textContent = 'SEVERITY';
+                if (thCritSrc) thCritSrc.textContent = 'SOURCE';
+                if (thCritDst) thCritDst.textContent = 'DESTINATION';
+                if (thCritSig) thCritSig.textContent = 'RULE (SIGNATURE)';
+                if (thCritMitre) thCritMitre.textContent = 'MITRE ATT&CK';
+                if (thCritEngine) thCritEngine.textContent = 'SENSOR';
+                if (thCritStatus) thCritStatus.textContent = 'STATUS';
+            } else if (isKo) {
+                if (thCritTime) thCritTime.textContent = '발생 시각';
+                if (thCritSev) thCritSev.textContent = '위험도';
+                if (thCritSrc) thCritSrc.textContent = '출발지 (공격자)';
+                if (thCritDst) thCritDst.textContent = '목적지 (자산)';
+                if (thCritSig) thCritSig.textContent = '탐지 시그니처 (국문 해석)';
+                if (thCritMitre) thCritMitre.textContent = 'MITRE 기법';
+                if (thCritEngine) thCritEngine.textContent = '탐지 센서';
+                if (thCritStatus) thCritStatus.textContent = '대응 상태';
+            } else {
+                // Split
+                if (thCritTime) thCritTime.textContent = '발생 시각 (Time)';
+                if (thCritSev) thCritSev.textContent = '위험도 (Severity)';
+                if (thCritSrc) thCritSrc.textContent = '출발지 (Source)';
+                if (thCritDst) thCritDst.textContent = '목적지 (Destination)';
+                if (thCritSig) thCritSig.textContent = '탐지 시그니처 & 국문 해석 (Rule / Korean)';
+                if (thCritMitre) thCritMitre.textContent = 'MITRE ATT&CK';
+                if (thCritEngine) thCritEngine.textContent = '센서 (Sensor)';
+                if (thCritStatus) thCritStatus.textContent = '상태 (Status)';
+            }
+        }
+
         function setViewMode(mode) {
             currentViewMode = mode;
             localStorage.setItem('soc_view_mode', mode);
+
             ['orig', 'ko', 'split'].forEach(m => {
                 const b = document.getElementById(`btn-mode-${m}`);
                 if (b) {
                     if (m === mode || (mode === 'original' && m === 'orig') || (mode === 'korean' && m === 'ko')) {
-                        b.className = 'px-2 py-0.5 rounded bg-sky-700 text-white font-medium';
+                        b.className = 'px-2 py-0.5 rounded bg-sky-700 text-white font-medium shadow-sm transition';
                     } else {
-                        b.className = 'px-2 py-0.5 rounded text-slate-400 hover:text-white';
+                        b.className = 'px-2 py-0.5 rounded text-slate-400 hover:text-white transition';
                     }
                 }
             });
+
+            updateTableHeaders(mode);
+            renderRecentCriticalTable();
             renderAlertsTable(rawAlertsCache);
+            fetchIncidents();
+
+            const modeToast = {
+                'original': '원문 (EN) 모드 적용: 영문 원본 시그니처 표시',
+                'korean': '한국어 (KO) 모드 적용: 국문 번역 시그니처 및 상세 분석 표시',
+                'split': '나란히 보기 (Split) 모드 적용: 영문 원문 및 국문 번역 동시 병기'
+            };
+            showToast(modeToast[mode] || `${mode} 모드 적용`, 'sky');
         }
 
         function interpretAlertInline(sig, cat, sev, mitre) {
@@ -7515,8 +7758,14 @@
         }
 
         // Initialize on Load
-        window.addEventListener('DOMContentLoaded', () => {
+        window.addEventListener('DOMContentLoaded', async () => {
             initPristineTheme();
+            if (typeof loadLocalizationDictionary === 'function') {
+                await loadLocalizationDictionary();
+            }
+            if (typeof setViewMode === 'function') {
+                setViewMode(currentViewMode || 'split');
+            }
             switchView('dashboard', 'overview');
             initWorldThreatMap();
             initCyberNeuralGraph();
