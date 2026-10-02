@@ -21,7 +21,7 @@
     <style>
         body {
             font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
-            background-color: #0b0f19;
+            background-color: #0f1117;
             color: #e2e8f0;
             margin: 0;
             padding: 0;
@@ -29,18 +29,28 @@
         }
         .font-mono { font-family: 'JetBrains Mono', monospace; }
         
-        /* Enterprise SOC Console Theme */
-        .soc-header { background-color: #121927; border-bottom: 1px solid #1e293b; }
-        .soc-sidebar { background-color: #0d131f; border-right: 1px solid #1e293b; }
-        .soc-workspace { background-color: #070a12; }
-        .soc-panel { background-color: #0f172a; border: 1px solid #1e293b; }
-        .soc-panel-header { background-color: #162032; border-bottom: 1px solid #1e293b; }
+        /* Fasoo DSPM Enterprise Theme */
+        .soc-header { background-color: #12151e; border-bottom: 1px solid #1e2230; }
+        .soc-sidebar { background-color: #131620; border-right: 1px solid #1e2230; }
+        .soc-workspace { background-color: #0f1117; }
+        .soc-panel { background-color: #171b26; border: 1px solid #232734; border-radius: 14px; }
+        .soc-panel-header { background-color: #1a1f2c; border-bottom: 1px solid #232734; }
+        
+        /* DSPM Style Tokens */
+        .dspm-card { background-color: #171b26; border: 1px solid #232734; border-radius: 14px; }
+        .dspm-sub-card { background-color: #1b202e; border: 1px solid #282f40; border-radius: 10px; }
+        .dspm-pill { background-color: #1a1e2b; border: 1px solid #2c3347; color: #c5cdd9; border-radius: 9999px; padding: 4px 13px; font-size: 11px; font-weight: 500; transition: all 0.2s; cursor: pointer; white-space: nowrap; }
+        .dspm-pill:hover, .dspm-pill.active { border-color: #3b82f6; color: #ffffff; background-color: #20273a; }
+        .dspm-tab { color: #8b95a5; font-size: 13px; font-weight: 600; padding: 2px 8px 6px 8px; cursor: pointer; transition: all 0.2s; }
+        .dspm-tab.active { color: #ffffff; border-bottom: 2px solid #2563eb; }
+        .dspm-badge-blue { background: rgba(37, 99, 235, 0.2); color: #60a5fa; border: 1px solid rgba(37, 99, 235, 0.4); border-radius: 6px; font-size: 10px; font-weight: 700; padding: 2px 8px; }
+        .dspm-badge-purple { background: rgba(168, 85, 247, 0.2); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.4); border-radius: 6px; font-size: 10px; font-weight: 700; padding: 2px 8px; }
         
         /* Scrollbar styling */
         ::-webkit-scrollbar { width: 5px; height: 5px; }
-        ::-webkit-scrollbar-track { background: #0b0f19; }
-        ::-webkit-scrollbar-thumb { background: #26334d; border-radius: 2px; }
-        ::-webkit-scrollbar-thumb:hover { background: #3b4d6e; }
+        ::-webkit-scrollbar-track { background: #0f1117; }
+        ::-webkit-scrollbar-thumb { background: #262c3e; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #3b455e; }
 
         /* Severity indicators */
         .sev-critical { color: #f87171; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.35); }
@@ -50,14 +60,14 @@
         .sev-info { color: #a3e635; background: rgba(163, 230, 53, 0.15); border: 1px solid rgba(163, 230, 53, 0.35); }
 
         /* Navigation active indicator */
-        .nav-item-active { background-color: #1e293b; color: #38bdf8; border-left: 3px solid #0284c7; }
-        .subnav-item-active { background-color: #1e293b; color: #38bdf8; font-weight: 600; }
+        .nav-item-active { background-color: #2563eb !important; color: #ffffff !important; border-radius: 8px; font-weight: 600; }
+        .subnav-item-active { background-color: #2563eb; color: #ffffff; font-weight: 600; border-radius: 8px; }
         
         /* High density table styles */
-        .soc-table th { padding: 6px 10px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; color: #94a3b8; background: #131d2e; border-bottom: 1px solid #1e293b; }
-        .soc-table td { padding: 5px 10px; font-size: 11px; border-bottom: 1px solid #141f33; }
-        .soc-table tr:hover { background-color: #162238; }
-        .soc-sub-header { background-color: #0f1624; border-bottom: 1px solid rgba(30, 41, 59, 0.8); }
+        .soc-table th { padding: 7px 12px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; color: #8b95a5; background: #151924; border-bottom: 1px solid #232734; }
+        .soc-table td { padding: 6px 12px; font-size: 11px; border-bottom: 1px solid #1b202d; }
+        .soc-table tr:hover { background-color: #1a2030; }
+        .soc-sub-header { background-color: #12151e; border-bottom: 1px solid #1e2230; }
 
         /* Pulse animation for live indicators */
         @keyframes livePulse {
@@ -634,17 +644,17 @@
         <div class="flex items-center gap-4">
             <!-- Brand Logo -->
             <div class="flex items-center gap-2.5 cursor-pointer" onclick="switchView('dashboard', 'overview')">
-                <div class="w-9 h-9 rounded-lg bg-gradient-to-tr from-sky-500 via-blue-600 to-cyan-400 flex items-center justify-center font-black text-white text-sm shadow-md shadow-sky-500/30 border border-white/50">
+                <div class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center font-black text-white text-base shadow-sm">
                     🛡️
                 </div>
                 <div>
-                    <div class="flex items-center gap-2">
-                        <span class="text-sm font-extrabold tracking-tight">AegisAI</span>
-                        <span class="text-[9px] px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-700 font-bold border border-blue-400/40">
-                            AI for Security × Security for AI
+                    <div class="flex items-center gap-1.5">
+                        <span class="text-base font-extrabold tracking-tight text-white">Aegis <span class="text-blue-500 font-extrabold">DSPM</span></span>
+                        <span class="text-[9px] px-1.5 py-0.5 rounded-full bg-blue-500/20 text-blue-400 font-bold border border-blue-500/30">
+                            AI for Sec × Sec for AI
                         </span>
                     </div>
-                    <div class="text-[10px] text-slate-500 font-mono leading-none mt-0.5">
+                    <div class="text-[10px] text-slate-400 font-mono leading-none mt-0.5">
                         Suricata 8.0.6 · Snort 3.12.2 · Wazuh 4.14.7 · AI 보안 7대 원칙 준수
                     </div>
                 </div>
@@ -652,61 +662,67 @@
 
             <!-- Global Navigation Tabs (Prompt Section 3.1) -->
             <nav class="hidden lg:flex items-center space-x-1 ml-4 text-xs font-medium text-slate-300">
-                <button onclick="switchView('dashboard', 'overview')" id="tab-dashboard" class="px-2.5 py-1.5 rounded hover:bg-slate-800 transition nav-item-active">
+                <button onclick="switchView('dashboard', 'overview')" id="tab-dashboard" class="px-2.5 py-1.5 rounded-lg hover:bg-slate-800 transition nav-item-active">
                     Dashboard
                 </button>
-                <button onclick="switchView('monitor', 'traffic')" id="tab-monitor" class="px-2.5 py-1.5 rounded hover:bg-slate-800 transition">
+                <button onclick="switchView('monitor', 'traffic')" id="tab-monitor" class="px-2.5 py-1.5 rounded-lg hover:bg-slate-800 transition">
                     Monitor Center
                 </button>
-                <button onclick="switchView('incidents', 'queue')" id="tab-incidents" class="px-2.5 py-1.5 rounded hover:bg-slate-800 transition">
+                <button onclick="switchView('incidents', 'queue')" id="tab-incidents" class="px-2.5 py-1.5 rounded-lg hover:bg-slate-800 transition">
                     Incidents
                 </button>
-                <button onclick="switchView('assets', 'list')" id="tab-assets" class="px-2.5 py-1.5 rounded hover:bg-slate-800 transition">
+                <button onclick="switchView('assets', 'list')" id="tab-assets" class="px-2.5 py-1.5 rounded-lg hover:bg-slate-800 transition">
                     Assets
                 </button>
-                <button onclick="switchView('network', 'interfaces')" id="tab-network" class="px-2.5 py-1.5 rounded hover:bg-slate-800 transition">
+                <button onclick="switchView('network', 'interfaces')" id="tab-network" class="px-2.5 py-1.5 rounded-lg hover:bg-slate-800 transition">
                     Network
                 </button>
-                <button onclick="switchView('detection', 'rules')" id="tab-detection" class="px-2.5 py-1.5 rounded hover:bg-slate-800 transition">
+                <button onclick="switchView('detection', 'rules')" id="tab-detection" class="px-2.5 py-1.5 rounded-lg hover:bg-slate-800 transition">
                     Detection
                 </button>
-                <button onclick="switchView('ai', 'analysis')" id="tab-ai" class="px-2.5 py-1.5 rounded hover:bg-slate-800 transition">
+                <button onclick="switchView('ai', 'analysis')" id="tab-ai" class="px-2.5 py-1.5 rounded-lg hover:bg-slate-800 transition">
                     AI Analysis
                 </button>
-                <button onclick="switchView('policy', 'firewall')" id="tab-policy" class="px-2.5 py-1.5 rounded hover:bg-slate-800 transition">
+                <button onclick="switchView('policy', 'firewall')" id="tab-policy" class="px-2.5 py-1.5 rounded-lg hover:bg-slate-800 transition">
                     Policy
                 </button>
-                <button onclick="switchView('reports', 'executive')" id="tab-reports" class="px-2.5 py-1.5 rounded hover:bg-slate-800 transition">
+                <button onclick="switchView('reports', 'executive')" id="tab-reports" class="px-2.5 py-1.5 rounded-lg hover:bg-slate-800 transition">
                     Reports
                 </button>
-                <button onclick="switchView('system', 'sensors')" id="tab-system" class="px-2.5 py-1.5 rounded hover:bg-slate-800 transition">
+                <button onclick="switchView('system', 'sensors')" id="tab-system" class="px-2.5 py-1.5 rounded-lg hover:bg-slate-800 transition">
                     System
                 </button>
             </nav>
         </div>
 
         <!-- Right: Telemetry & Controls -->
-        <div class="flex items-center gap-2.5 text-xs">
+        <div class="flex items-center gap-2 text-xs">
+            <!-- FDR Dashboard External Link (Matching Reference Image) -->
+            <a href="http://127.0.0.1:5602/app/dashboards#/view/soc-unified-threat-dashboard" target="_blank" class="px-2.5 py-1 text-[11px] font-semibold bg-[#1a1e2b] hover:bg-[#20273a] text-slate-200 border border-[#2c3347] rounded-lg transition flex items-center gap-1.5 shadow-sm" title="Kibana FDR 통합 위협 관제 대시보드 (Port 5602)">
+                <span class="text-blue-400 font-bold">↗</span>
+                <span>FDR 대시보드</span>
+            </a>
+
             <!-- Real-time Status Badge -->
-            <div class="flex items-center gap-1.5 px-2 py-1 rounded bg-emerald-950/40 border border-emerald-600/40 text-emerald-400 font-mono text-[11px]">
+            <div class="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-emerald-950/40 border border-emerald-600/40 text-emerald-400 font-mono text-[11px]">
                 <span class="w-2 h-2 rounded-full bg-emerald-400 live-dot"></span>
                 <span class="font-bold">SOC ONLINE</span>
             </div>
 
             <!-- Last Event Timestamp -->
-            <div class="hidden sm:flex items-center gap-1 text-slate-400 font-mono text-[11px] px-2 py-1 bg-slate-900 border border-slate-800 rounded">
+            <div class="hidden sm:flex items-center gap-1 text-slate-400 font-mono text-[11px] px-2 py-1 bg-slate-900 border border-slate-800 rounded-lg">
                 <span>Last Event:</span>
                 <span id="header-last-event" class="text-slate-200 font-semibold">17:09:35</span>
             </div>
 
             <!-- Alerts Badge -->
-            <div class="flex items-center gap-1 px-2 py-1 bg-red-950/40 border border-red-800/40 text-red-300 rounded font-mono text-[11px]">
+            <div class="flex items-center gap-1 px-2 py-1 bg-red-950/40 border border-red-800/40 text-red-300 rounded-lg font-mono text-[11px]">
                 <span>Alerts:</span>
                 <span id="header-alert-count" class="font-bold text-red-400">84</span>
             </div>
 
             <!-- AI Engine Selector (Preserved for tests) -->
-            <div class="flex items-center gap-1 bg-slate-900 border border-slate-800 rounded px-2 py-0.5 text-xs">
+            <div class="flex items-center gap-1 bg-slate-900 border border-slate-800 rounded-lg px-2 py-0.5 text-xs">
                 <span class="text-indigo-400 text-[11px]">🤖</span>
                 <select id="provider-select" onchange="switchAiProvider(this.value)" class="bg-transparent text-[11px] font-mono font-semibold text-slate-200 focus:outline-none cursor-pointer">
                     <option value="mock">⚡ 모의 엔진 (Mock Baseline · 0s)</option>
@@ -720,48 +736,55 @@
             </div>
 
             <!-- View Mode Control (Preserved for tests) -->
-            <div class="hidden xl:flex items-center rounded bg-slate-900 p-0.5 border border-slate-800 text-[11px]">
+            <div class="hidden xl:flex items-center rounded-lg bg-slate-900 p-0.5 border border-slate-800 text-[11px]">
                 <button onclick="setViewMode('original')" id="btn-mode-orig" class="px-2 py-0.5 rounded text-slate-400 hover:text-white">
                     원문 (EN)
                 </button>
                 <button onclick="setViewMode('korean')" id="btn-mode-ko" class="px-2 py-0.5 rounded text-slate-400 hover:text-white">
                     한국어 (KO)
                 </button>
-                <button onclick="setViewMode('split')" id="btn-mode-split" class="px-2 py-0.5 rounded bg-sky-700 text-white font-medium">
+                <button onclick="setViewMode('split')" id="btn-mode-split" class="px-2 py-0.5 rounded bg-blue-600 text-white font-medium">
                     나란히 보기 (Split)
                 </button>
             </div>
 
-            <!-- Analyst Profile -->
-            <div class="hidden md:flex items-center gap-1.5 px-2 py-1 bg-slate-900 border border-slate-800 rounded font-mono text-[11px]">
-                <span class="text-slate-400">👤 admin</span>
-                <span class="text-slate-600">|</span>
-                <span class="text-sky-400 font-semibold">SOC Analyst</span>
+            <!-- Notification Bell Icon (DSPM style) -->
+            <button class="w-7 h-7 rounded-lg bg-[#1a1e2b] hover:bg-[#20273a] border border-[#2c3347] text-slate-300 flex items-center justify-center text-xs transition" title="알림 센터">
+                <span>🔔</span>
+            </button>
+
+            <!-- Language / Globe Icon (DSPM style) -->
+            <button class="w-7 h-7 rounded-lg bg-[#1a1e2b] hover:bg-[#20273a] border border-[#2c3347] text-slate-300 flex items-center justify-center text-xs transition" title="다국어 설정">
+                <span>🌐</span>
+            </button>
+
+            <!-- User Avatar Badge (AD) (DSPM style) -->
+            <div class="flex items-center gap-1.5 pl-1">
+                <div class="w-7 h-7 rounded-full bg-blue-600 text-white font-bold text-xs flex items-center justify-center border border-blue-400/50 shadow-sm" title="SOC Analyst Admin">
+                    AD
+                </div>
             </div>
 
             <!-- Ivory Warm vs Charcoal Dark Theme Toggle -->
-            <button onclick="togglePristineTheme()" id="btn-theme-toggle" class="px-2.5 py-1 text-[11px] font-semibold bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 rounded transition flex items-center gap-1 shadow-sm cursor-pointer" title="Ivory Warm 라이트 / Charcoal 다크 테마 전환">
+            <button onclick="togglePristineTheme()" id="btn-theme-toggle" class="px-2 py-1 text-[11px] font-semibold bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 rounded-lg transition flex items-center gap-1 shadow-sm cursor-pointer" title="Ivory Warm 라이트 / Charcoal 다크 테마 전환">
                 <span id="theme-toggle-icon">🌾</span>
                 <span id="theme-toggle-label" class="hidden sm:inline">Ivory Warm</span>
             </button>
 
             <!-- Refresh & External Telemetry Links -->
-            <button onclick="refreshAllTelemetry()" class="px-2 py-1 text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded transition flex items-center gap-1" title="실시간 텔레메트리 갱신">
+            <button onclick="refreshAllTelemetry()" class="px-2 py-1 text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-lg transition flex items-center gap-1" title="실시간 텔레메트리 갱신">
                 <span>🔄</span>
             </button>
-            <a href="http://127.0.0.1:5602/app/dashboards#/view/soc-unified-threat-dashboard" target="_blank" class="px-2 py-1 text-[11px] font-semibold bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-600/40 rounded transition flex items-center gap-1" title="Kibana 통합 위협 관제 대시보드 열기 (Port 5602)">
-                <span>📊</span> Kibana
-            </a>
-            <a href="https://127.0.0.1:5601" target="_blank" class="px-2 py-1 text-[11px] font-semibold bg-slate-800 hover:bg-slate-700 text-cyan-300 border border-cyan-600/40 rounded transition flex items-center gap-1" title="Wazuh SIEM 관리 콘솔 열기 (Port 5601)">
+            <a href="https://127.0.0.1:5601" target="_blank" class="px-2 py-1 text-[11px] font-semibold bg-slate-800 hover:bg-slate-700 text-cyan-300 border border-cyan-600/40 rounded-lg transition flex items-center gap-1" title="Wazuh SIEM 관리 콘솔 열기 (Port 5601)">
                 <span>🦅</span> Wazuh
             </a>
-            <button onclick="openAttackSimulatorModal()" id="btn-attack-simulator" class="px-2.5 py-1 text-[11px] font-bold bg-gradient-to-r from-red-600 via-rose-600 to-pink-600 hover:from-red-500 hover:to-pink-500 text-white border border-red-400/50 rounded shadow-md flex items-center gap-1.5 transition cursor-pointer" title="1-클릭 레드팀 실시간 모의 공격 시뮬레이터 실행">
+            <button onclick="openAttackSimulatorModal()" id="btn-attack-simulator" class="px-2.5 py-1 text-[11px] font-bold bg-gradient-to-r from-red-600 via-rose-600 to-pink-600 hover:from-red-500 hover:to-pink-500 text-white border border-red-400/50 rounded-lg shadow-md flex items-center gap-1.5 transition cursor-pointer" title="1-클릭 레드팀 실시간 모의 공격 시뮬레이터 실행">
                 <span class="animate-pulse">⚔️</span>
-                <span>모의 공격 시뮬레이터</span>
+                <span>모의 공격</span>
             </button>
-            <button onclick="openCtiModal('198.51.100.44')" id="btn-cti-lookup" class="px-2.5 py-1 text-[11px] font-bold bg-gradient-to-r from-purple-700 to-indigo-700 hover:from-purple-600 hover:to-indigo-600 text-white border border-purple-400/50 rounded shadow-md flex items-center gap-1.5 transition cursor-pointer" title="실시간 위협 인텔리전스 (CTI) 평판 조회">
+            <button onclick="openCtiModal('198.51.100.44')" id="btn-cti-lookup" class="px-2.5 py-1 text-[11px] font-bold bg-gradient-to-r from-purple-700 to-indigo-700 hover:from-purple-600 hover:to-indigo-600 text-white border border-purple-400/50 rounded-lg shadow-md flex items-center gap-1.5 transition cursor-pointer" title="실시간 위협 인텔리전스 (CTI) 평판 조회">
                 <span>🌐</span>
-                <span>CTI 인텔</span>
+                <span>CTI</span>
             </button>
         </div>
     </header>
@@ -796,7 +819,29 @@
         
         <!-- Left Sub-Navigation Sidebar (Collapsible, Enterprise Gray/Navy) -->
         <aside id="main-sidebar" class="soc-sidebar w-56 flex-shrink-0 flex flex-col justify-between overflow-y-auto text-xs select-none transition-all duration-300">
-            <div class="py-2 space-y-3">
+            <div class="py-2 space-y-2">
+                <!-- Fasoo DSPM Top Primary Navigation Items -->
+                <div class="px-2 space-y-1">
+                    <button onclick="switchView('dashboard', 'overview')" class="w-full px-3 py-2 rounded-lg bg-blue-600 text-white font-bold flex items-center gap-2.5 text-xs shadow-sm text-left">
+                        <span class="text-sm">🏠</span>
+                        <span>홈</span>
+                    </button>
+                    <button onclick="switchView('assets', 'list')" class="w-full px-3 py-1.5 rounded-lg text-slate-300 hover:bg-[#1a1e2b] hover:text-white flex items-center gap-2.5 text-xs text-left transition">
+                        <span class="text-sm text-slate-400">📦</span>
+                        <span>인벤토리</span>
+                    </button>
+                    <button onclick="switchView('detection', 'rules')" class="w-full px-3 py-1.5 rounded-lg text-slate-300 hover:bg-[#1a1e2b] hover:text-white flex items-center gap-2.5 text-xs text-left transition">
+                        <span class="text-sm text-slate-400">📑</span>
+                        <span>카탈로그</span>
+                    </button>
+                    <button onclick="document.getElementById('global-search-input').focus()" class="w-full px-3 py-1.5 rounded-lg text-slate-300 hover:bg-[#1a1e2b] hover:text-white flex items-center gap-2.5 text-xs text-left transition">
+                        <span class="text-sm text-slate-400">🔍</span>
+                        <span>검색</span>
+                    </button>
+                </div>
+
+                <div class="border-t border-[#232734] mx-2 pt-2"></div>
+
                 <!-- Sub-menu Category Heading -->
                 <div class="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400 border-b border-slate-800 pb-1 flex items-center justify-between">
                     <span id="sidebar-category-title">Monitor Center</span>
@@ -809,17 +854,55 @@
                 </div>
             </div>
 
-            <!-- Sidebar Footer Hardware Mini-Card -->
-            <div id="sidebar-footer-card" class="p-3 border-t border-slate-800/80 bg-[#0a0f19] text-[10px] font-mono space-y-1">
-                <div class="text-slate-400 font-semibold flex items-center justify-between">
-                    <span>SENSOR GATEWAY</span>
-                    <span class="text-emerald-400 font-bold">NORMAL</span>
+            <!-- Floating Scan Status Drawer (Matching Reference Image) -->
+            <div class="px-2 pb-2 space-y-2">
+                <div class="dspm-sub-card p-2.5 space-y-2 text-[11px] shadow-lg border border-[#282f40]">
+                    <div class="flex items-center justify-between text-slate-200 font-bold border-b border-[#282f40] pb-1.5">
+                        <span class="flex items-center gap-1.5">
+                            <span class="text-blue-400">🛡️</span> 검사 상태
+                        </span>
+                        <span class="text-slate-400 text-[10px] cursor-pointer">▾</span>
+                    </div>
+                    <div class="space-y-1.5 text-[10px] font-mono">
+                        <!-- GCP In Progress -->
+                        <div class="flex items-center justify-between py-0.5">
+                            <div class="flex items-center gap-1.5">
+                                <span class="w-3 h-3 rounded-full border-2 border-blue-500 border-t-transparent animate-spin inline-block"></span>
+                                <span class="text-slate-200 font-sans">GCP (GCS)</span>
+                            </div>
+                            <span class="text-blue-400 font-bold font-sans">진행 중</span>
+                        </div>
+                        <!-- AWS Completed -->
+                        <div class="flex items-center justify-between py-0.5">
+                            <div class="flex items-center gap-1.5">
+                                <span class="text-emerald-400 text-xs font-bold">✓</span>
+                                <span class="text-slate-200 font-sans">AWS (S3)</span>
+                            </div>
+                            <span class="text-slate-400 text-[9px]">2026. 10. 02 14:00</span>
+                        </div>
+                        <!-- Azure Completed -->
+                        <div class="flex items-center justify-between py-0.5">
+                            <div class="flex items-center gap-1.5">
+                                <span class="text-emerald-400 text-xs font-bold">✓</span>
+                                <span class="text-slate-200 font-sans">MS Azure (Blob)</span>
+                            </div>
+                            <span class="text-slate-400 text-[9px]">2026. 10. 02 14:00</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="text-slate-500">Host: Cloud-fw-sensor (TG50B)</div>
-                <div class="text-slate-500">IP: 10.77.10.1 (GW) / 10.77.10.20</div>
-                <div class="flex items-center gap-2 pt-1">
-                    <span class="text-slate-400">Uptime:</span>
-                    <span class="text-slate-300 font-bold">10일 05시간</span>
+
+                <!-- Sidebar Footer Hardware Mini-Card -->
+                <div id="sidebar-footer-card" class="p-2.5 border border-[#232734] rounded-lg bg-[#11141e] text-[10px] font-mono space-y-1">
+                    <div class="text-slate-400 font-semibold flex items-center justify-between">
+                        <span>SENSOR GATEWAY</span>
+                        <span class="text-emerald-400 font-bold">NORMAL</span>
+                    </div>
+                    <div class="text-slate-400">Host: Cloud-fw-sensor (TG50B)</div>
+                    <div class="text-slate-400">IP: 10.77.10.1 / 10.77.10.20</div>
+                    <div class="flex items-center gap-2 pt-0.5">
+                        <span class="text-slate-400">Uptime:</span>
+                        <span class="text-slate-300 font-bold">10일 05시간</span>
+                    </div>
                 </div>
             </div>
         </aside>
@@ -884,76 +967,525 @@
 
             <!-- VIEW 1: DASHBOARD (Overview) -->
             <div id="view-dashboard" class="space-y-3">
-                <!-- 1.1 최상단 KPI 카드 그리드 (Prompt Section 4.1) -->
-                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-7 gap-2 font-mono">
+                <!-- 1.0 Fasoo DSPM 4-Card Top Statistics Grid (Matching Reference Design) -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                    <!-- Card 1: 총 오브젝트 수 -->
+                    <div class="dspm-card p-4 flex flex-col justify-between">
+                        <div class="flex items-center justify-between text-slate-400 text-xs font-semibold">
+                            <span>총 오브젝트 수</span>
+                            <span class="text-blue-400 text-sm">📁</span>
+                        </div>
+                        <div class="mt-2 flex items-baseline gap-1">
+                            <span class="text-3xl font-extrabold text-white tracking-tight">42.1</span>
+                            <span class="text-sm font-bold text-slate-400">K</span>
+                        </div>
+                        <div class="mt-2 text-[10px] text-slate-400 flex items-center justify-between border-t border-[#232734] pt-2">
+                            <span>Aegis 보호 전역 데이터</span>
+                            <span class="text-blue-400 font-mono">100% 매핑</span>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: 검출된 오브젝트 수 -->
+                    <div class="dspm-card p-4 flex flex-col justify-between">
+                        <div class="flex items-center justify-between text-slate-400 text-xs font-semibold">
+                            <span>검출된 오브젝트 수</span>
+                            <span class="text-emerald-400 text-sm">🔍</span>
+                        </div>
+                        <div class="mt-2 flex items-baseline gap-1">
+                            <span class="text-3xl font-extrabold text-white tracking-tight">38.4</span>
+                            <span class="text-sm font-bold text-slate-400">K</span>
+                        </div>
+                        <div class="mt-2 text-[10px] text-slate-400 flex items-center justify-between border-t border-[#232734] pt-2">
+                            <span>정밀 식별률 91.2%</span>
+                            <span class="text-emerald-400 font-mono">Suricata/Snort</span>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: 총 오브젝트 크기 -->
+                    <div class="dspm-card p-4 flex flex-col justify-between">
+                        <div class="flex items-center justify-between text-slate-400 text-xs font-semibold">
+                            <span>총 오브젝트 크기</span>
+                            <span class="text-amber-400 text-sm">💾</span>
+                        </div>
+                        <div class="mt-2 flex items-baseline gap-2">
+                            <span class="text-3xl font-extrabold text-white tracking-tight">65.1</span>
+                            <span class="text-sm font-bold text-slate-400">TB</span>
+                            <span class="text-[11px] font-bold text-emerald-400 bg-emerald-950/60 px-1.5 py-0.5 rounded border border-emerald-800/60">
+                                ▲ +6.50%
+                            </span>
+                        </div>
+                        <div class="mt-2 text-[10px] text-slate-400 flex items-center justify-between border-t border-[#232734] pt-2">
+                            <span>전월 대비 증가율</span>
+                            <span class="text-slate-300 font-mono">증적 무결성 100%</span>
+                        </div>
+                    </div>
+
+                    <!-- Card 4: CSP별 스토리지 수 -->
+                    <div class="dspm-card p-4 flex flex-col justify-between">
+                        <div class="flex items-center justify-between text-slate-400 text-xs font-semibold">
+                            <span>CSP별 스토리지 수</span>
+                            <span class="text-purple-400 text-sm">☁️</span>
+                        </div>
+                        <div class="mt-2 flex items-center justify-between text-xs font-mono">
+                            <div class="text-center">
+                                <div class="text-slate-400 text-[10px]">AWS</div>
+                                <div class="text-lg font-extrabold text-white">152<span class="text-[11px] font-normal text-slate-400">개</span></div>
+                            </div>
+                            <div class="w-px h-7 bg-[#232734]"></div>
+                            <div class="text-center">
+                                <div class="text-slate-400 text-[10px]">Azure</div>
+                                <div class="text-lg font-extrabold text-white">19<span class="text-[11px] font-normal text-slate-400">개</span></div>
+                            </div>
+                            <div class="w-px h-7 bg-[#232734]"></div>
+                            <div class="text-center">
+                                <div class="text-slate-400 text-[10px]">GCP</div>
+                                <div class="text-lg font-extrabold text-white">157<span class="text-[11px] font-normal text-slate-400">개</span></div>
+                            </div>
+                        </div>
+                        <div class="mt-2 text-[10px] text-slate-400 flex items-center justify-between border-t border-[#232734] pt-2">
+                            <span>총 328개 클라우드 버킷</span>
+                            <span class="text-purple-400 font-mono">멀티클라우드</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 1.05 Scope Tabs & Compliance Pills Strip (Matching Reference Image) -->
+                <div class="dspm-card p-3 flex flex-wrap items-center justify-between gap-3">
+                    <!-- Left Scope Tabs -->
+                    <div class="flex items-center gap-4 text-xs font-semibold">
+                        <span class="dspm-tab active" onclick="setDspmScope('all')">전체</span>
+                        <span class="dspm-tab" onclick="setDspmScope('aws')">AWS</span>
+                        <span class="dspm-tab" onclick="setDspmScope('azure')">Azure</span>
+                        <span class="dspm-tab" onclick="setDspmScope('gcp')">GCP</span>
+                    </div>
+
+                    <!-- Right Compliance Regulation Pills -->
+                    <div class="flex items-center gap-1.5 flex-wrap text-xs">
+                        <button class="dspm-pill active" title="규정 새로고침">🔄</button>
+                        <button class="dspm-pill active">GDPR</button>
+                        <button class="dspm-pill">CCPA</button>
+                        <button class="dspm-pill active">HIPAA</button>
+                        <button class="dspm-pill active">SOC 2</button>
+                        <button class="dspm-pill active">개인정보보호법</button>
+                        <button class="dspm-pill active">PCI DSS</button>
+                        <button class="dspm-pill">PIPEDA</button>
+                        <button class="dspm-pill active">NIST</button>
+                        <button class="dspm-pill">기타 규정 ▾</button>
+                    </div>
+                </div>
+
+                <!-- 1.1 최상단 실시간 SOC KPI 카드 그리드 (Prompt Section 4.1) -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2 font-mono text-xs">
                     <!-- CRITICAL -->
-                    <div class="soc-panel rounded p-2.5 border-l-4 border-l-red-500 flex flex-col justify-between">
+                    <div class="dspm-sub-card p-2.5 border-l-2 border-l-red-500 flex flex-col justify-between">
                         <div class="flex justify-between items-center text-[10px] text-slate-400">
                             <span class="font-bold tracking-wider">CRITICAL SEVERITY</span>
-                            <span class="text-red-400">긴급 대응</span>
+                            <span class="text-red-400 font-sans">긴급</span>
                         </div>
-                        <div id="kpi-critical" class="text-2xl font-black text-red-400 mt-1">3</div>
-                        <div class="text-[9px] text-slate-500">RCE / C2 역방향 셸</div>
+                        <div id="kpi-critical" class="text-xl font-black text-red-400 mt-1">3</div>
+                        <div class="text-[9px] text-slate-500 truncate font-sans">RCE / C2 역방향 셸</div>
                     </div>
 
                     <!-- HIGH -->
-                    <div class="soc-panel rounded p-2.5 border-l-4 border-l-orange-500 flex flex-col justify-between">
+                    <div class="dspm-sub-card p-2.5 border-l-2 border-l-orange-500 flex flex-col justify-between">
                         <div class="flex justify-between items-center text-[10px] text-slate-400">
                             <span class="font-bold tracking-wider">HIGH</span>
-                            <span class="text-orange-400">높음</span>
+                            <span class="text-orange-400 font-sans">높음</span>
                         </div>
-                        <div id="kpi-high" class="text-2xl font-black text-orange-400 mt-1">12</div>
-                        <div class="text-[9px] text-slate-500">SQLi / 무차별 대입</div>
+                        <div id="kpi-high" class="text-xl font-black text-orange-400 mt-1">12</div>
+                        <div class="text-[9px] text-slate-500 truncate font-sans">SQLi / 무차별 대입</div>
                     </div>
 
                     <!-- OPEN INCIDENTS -->
-                    <div class="soc-panel rounded p-2.5 border-l-4 border-l-sky-500 flex flex-col justify-between">
+                    <div class="dspm-sub-card p-2.5 border-l-2 border-l-sky-500 flex flex-col justify-between">
                         <div class="flex justify-between items-center text-[10px] text-slate-400">
                             <span class="font-bold tracking-wider">CORRELATED INCIDENTS</span>
-                            <span class="text-sky-400">침해 사고</span>
+                            <span class="text-sky-400 font-sans">침해 사고</span>
                         </div>
-                        <div id="kpi-incidents" class="text-2xl font-black text-sky-400 mt-1">2</div>
-                        <div class="text-[9px] text-slate-500">킬체인 복합 상관분석</div>
+                        <div id="kpi-incidents" class="text-xl font-black text-sky-400 mt-1">2</div>
+                        <div class="text-[9px] text-slate-500 truncate font-sans">킬체인 복합 상관분석</div>
                     </div>
 
                     <!-- BLOCKED CONNECTIONS -->
-                    <div class="soc-panel rounded p-2.5 border-l-4 border-l-purple-500 flex flex-col justify-between">
+                    <div class="dspm-sub-card p-2.5 border-l-2 border-l-purple-500 flex flex-col justify-between">
                         <div class="flex justify-between items-center text-[10px] text-slate-400">
                             <span class="font-bold tracking-wider">BLOCKED</span>
-                            <span class="text-purple-400">차단 연결</span>
+                            <span class="text-purple-400 font-sans">차단 연결</span>
                         </div>
-                        <div id="kpi-blocked" class="text-2xl font-black text-purple-400 mt-1">147</div>
-                        <div class="text-[9px] text-slate-500">nftables / Geo-Block</div>
+                        <div id="kpi-blocked" class="text-xl font-black text-purple-400 mt-1">147</div>
+                        <div class="text-[9px] text-slate-500 truncate font-sans">nftables / Geo-Block</div>
                     </div>
 
                     <!-- HITL APPROVALS -->
-                    <div class="soc-panel rounded p-2.5 border-l-4 border-l-amber-500 flex flex-col justify-between">
+                    <div class="dspm-sub-card p-2.5 border-l-2 border-l-amber-500 flex flex-col justify-between">
                         <div class="flex justify-between items-center text-[10px] text-slate-400">
                             <span class="font-bold tracking-wider">HITL APPROVALS</span>
-                            <span class="text-amber-400">승인 대기</span>
+                            <span class="text-amber-400 font-sans">승인 대기</span>
                         </div>
-                        <div id="kpi-approvals" class="text-2xl font-black text-amber-400 mt-1">1</div>
-                        <div class="text-[9px] text-slate-500">분석가 검토 (Dry-Run)</div>
+                        <div id="kpi-approvals" class="text-xl font-black text-amber-400 mt-1">1</div>
+                        <div class="text-[9px] text-slate-500 truncate font-sans">분석가 검토 (Dry-Run)</div>
                     </div>
 
                     <!-- ACTIVE SENSORS -->
-                    <div class="soc-panel rounded p-2.5 border-l-4 border-l-emerald-500 flex flex-col justify-between">
+                    <div class="dspm-sub-card p-2.5 border-l-2 border-l-emerald-500 flex flex-col justify-between">
                         <div class="flex justify-between items-center text-[10px] text-slate-400">
                             <span class="font-bold tracking-wider">SENSORS</span>
-                            <span class="text-emerald-400">센서 정상</span>
+                            <span class="text-emerald-400 font-sans">센서 정상</span>
                         </div>
-                        <div id="kpi-sensors" class="text-2xl font-black text-emerald-400 mt-1">4 / 4</div>
-                        <div class="text-[9px] text-slate-500">Suricata / Snort / Wazuh</div>
+                        <div id="kpi-sensors" class="text-xl font-black text-emerald-400 mt-1">4 / 4</div>
+                        <div class="text-[9px] text-slate-500 truncate font-sans">Suricata/Snort/Wazuh</div>
                     </div>
 
                     <!-- EPS (Events Per Second) -->
-                    <div class="soc-panel rounded p-2.5 border-l-4 border-l-cyan-500 flex flex-col justify-between">
+                    <div class="dspm-sub-card p-2.5 border-l-2 border-l-cyan-500 flex flex-col justify-between">
                         <div class="flex justify-between items-center text-[10px] text-slate-400">
                             <span class="font-bold tracking-wider">EPS</span>
-                            <span class="text-cyan-400">초당 이벤트</span>
+                            <span class="text-cyan-400 font-sans">초당 이벤트</span>
                         </div>
-                        <div id="kpi-eps" class="text-2xl font-black text-cyan-400 mt-1">84</div>
-                        <div class="text-[9px] text-slate-500">실시간 유입 이벤트율</div>
+                        <div id="kpi-eps" class="text-xl font-black text-cyan-400 mt-1">84</div>
+                        <div class="text-[9px] text-slate-500 truncate font-sans">실시간 유입 이벤트율</div>
+                    </div>
+                </div>
+
+                <!-- 1.15 Middle Row: 60% Map / 40% Rainbow Half-Gauge (Matching Reference Image) -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-3">
+                    <!-- Left 7 Cols (60%): Tactical World Map & Region Telemetry -->
+                    <div class="lg:col-span-7 dspm-card p-4 flex flex-col justify-between relative overflow-hidden min-h-[360px]">
+                        <div class="flex items-center justify-between border-b border-[#232734] pb-2.5 mb-2 z-10">
+                            <div>
+                                <div class="text-xs font-bold text-white flex items-center gap-1.5">
+                                    <span>🌐</span> 글로벌 위협 탐지 및 데이터 리전 맵
+                                </div>
+                                <div class="text-[10px] text-slate-400 mt-0.5 font-mono">
+                                    AWS us-east · Azure westeurope · GCP asia-northeast · Seoul SOC Lab
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-1.5 text-[11px] font-mono">
+                                <span class="px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400 font-bold border border-blue-500/30">
+                                    HYBRID ACTIVE
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Floating Mini Stats Card inside Map (Top Left, Matching Reference Image) -->
+                        <div id="map-floating-card" class="absolute top-16 left-5 dspm-sub-card p-3 shadow-2xl backdrop-blur-md bg-[#131620]/95 border border-[#2c3347] space-y-1.5 z-20 text-xs font-mono">
+                            <div class="flex items-center justify-between gap-4 border-b border-[#232734] pb-1">
+                                <span class="text-slate-400 text-[10px]">총 오브젝트 크기:</span>
+                                <span class="text-white font-extrabold text-sm">12 TB</span>
+                            </div>
+                            <div class="flex items-center justify-between gap-4">
+                                <span class="text-slate-400 text-[10px]">총 오브젝트 수:</span>
+                                <span class="text-white font-extrabold text-sm">10 K</span>
+                            </div>
+                            <div class="flex items-center justify-between gap-4 text-[10px]">
+                                <span class="text-slate-400">격리 상태:</span>
+                                <span class="text-emerald-400 font-bold">NORMAL (0 Loss)</span>
+                            </div>
+                        </div>
+
+                        <!-- SVG World Map Container -->
+                        <div id="dspm-world-map-container" class="w-full h-72 relative flex items-center justify-center">
+                            <svg id="dspmWorldMapSvg" viewBox="0 0 800 420" class="w-full h-full block select-none">
+                                <defs>
+                                    <radialGradient id="nodeGlow" cx="50%" cy="50%" r="50%">
+                                        <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.8"/>
+                                        <stop offset="100%" stop-color="#38bdf8" stop-opacity="0"/>
+                                    </radialGradient>
+                                    <radialGradient id="alertGlow" cx="50%" cy="50%" r="50%">
+                                        <stop offset="0%" stop-color="#ef4444" stop-opacity="0.9"/>
+                                        <stop offset="100%" stop-color="#ef4444" stop-opacity="0"/>
+                                    </radialGradient>
+                                </defs>
+                                
+                                <!-- World landmass silhouettes -->
+                                <path d="M 120,90 Q 210,80 250,130 Q 220,180 180,190 Q 150,150 120,90 Z" fill="#1b2130" stroke="#2a3348" stroke-width="1"/>
+                                <path d="M 190,220 Q 230,220 220,330 Q 170,300 190,220 Z" fill="#1b2130" stroke="#2a3348" stroke-width="1"/>
+                                <path d="M 370,80 Q 450,70 440,140 Q 380,160 370,80 Z" fill="#1b2130" stroke="#2a3348" stroke-width="1"/>
+                                <path d="M 380,170 Q 460,180 430,300 Q 380,260 380,170 Z" fill="#1b2130" stroke="#2a3348" stroke-width="1"/>
+                                <path d="M 460,80 Q 720,70 680,210 Q 560,220 460,80 Z" fill="#1b2130" stroke="#2a3348" stroke-width="1"/>
+                                <path d="M 620,260 Q 710,250 680,340 Q 610,320 620,260 Z" fill="#1b2130" stroke="#2a3348" stroke-width="1"/>
+                                
+                                <!-- Grid Lines -->
+                                <line x1="50" y1="140" x2="750" y2="140" stroke="#1d2434" stroke-dasharray="3,3" stroke-width="0.7"/>
+                                <line x1="50" y1="260" x2="750" y2="260" stroke="#1d2434" stroke-dasharray="3,3" stroke-width="0.7"/>
+                                <line x1="400" y1="50" x2="400" y2="380" stroke="#1d2434" stroke-dasharray="3,3" stroke-width="0.7"/>
+
+                                <!-- Threat Trajectory Curves -->
+                                <path d="M 180,140 Q 400,60 620,150" fill="none" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="5,4" class="attack-trajectory"/>
+                                <path d="M 420,120 Q 520,130 620,150" fill="none" stroke="#38bdf8" stroke-width="1.2" stroke-dasharray="4,4" class="attack-trajectory"/>
+
+                                <!-- Region Nodes -->
+                                <!-- US East (AWS) -->
+                                <circle cx="180" cy="140" r="14" fill="url(#nodeGlow)"/>
+                                <circle cx="180" cy="140" r="4" fill="#38bdf8"/>
+                                <text x="180" y="162" text-anchor="middle" fill="#94a3b8" font-size="9" font-family="'JetBrains Mono', monospace">AWS us-east</text>
+
+                                <!-- West Europe (Azure) -->
+                                <circle cx="420" cy="120" r="12" fill="url(#nodeGlow)"/>
+                                <circle cx="420" cy="120" r="4" fill="#60a5fa"/>
+                                <text x="420" y="105" text-anchor="middle" fill="#94a3b8" font-size="9" font-family="'JetBrains Mono', monospace">Azure westeurope</text>
+
+                                <!-- Seoul SOC Lab (GCP / On-Prem) -->
+                                <circle cx="620" cy="150" r="18" fill="url(#alertGlow)"/>
+                                <circle cx="620" cy="150" r="5" fill="#ef4444"/>
+                                <text x="620" y="175" text-anchor="middle" fill="#f87171" font-weight="bold" font-size="10" font-family="'JetBrains Mono', monospace">Seoul SOC (10.77.x)</text>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Right 5 Cols (40%): Rainbow Semi-Circle Half-Donut Gauge -->
+                    <div class="lg:col-span-5 dspm-card p-4 flex flex-col justify-between">
+                        <div class="flex items-center justify-between border-b border-[#232734] pb-2.5 mb-2">
+                            <div class="flex items-center gap-1.5 text-xs font-bold text-white">
+                                <span>검사 정책 적용률</span>
+                                <span class="text-slate-400 cursor-pointer" title="클라우드 스토리지 및 네트워크 자산에 대한 검사 정책 준수 비율">ⓘ</span>
+                            </div>
+                            <span class="dspm-badge-blue">COMPLIANT</span>
+                        </div>
+
+                        <!-- SVG Rainbow Semi-Circle Gauge -->
+                        <div class="flex-1 flex flex-col items-center justify-center py-2">
+                            <div class="w-full max-w-[280px] relative">
+                                <svg viewBox="0 0 260 145" class="w-full h-auto block select-none">
+                                    <defs>
+                                        <linearGradient id="rainbowGaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                            <stop offset="0%" stop-color="#ef4444"/>
+                                            <stop offset="25%" stop-color="#f97316"/>
+                                            <stop offset="50%" stop-color="#eab308"/>
+                                            <stop offset="75%" stop-color="#22c55e"/>
+                                            <stop offset="100%" stop-color="#38bdf8"/>
+                                        </linearGradient>
+                                    </defs>
+                                    
+                                    <!-- Background Track Arc -->
+                                    <path d="M 30,130 A 100,100 0 0,1 230,130" fill="none" stroke="#232734" stroke-width="18" stroke-linecap="round"/>
+                                    
+                                    <!-- Active Rainbow Arc (98% filled) -->
+                                    <path d="M 30,130 A 100,100 0 0,1 230,130" fill="none" stroke="url(#rainbowGaugeGrad)" stroke-width="18" stroke-linecap="round" stroke-dasharray="314" stroke-dashoffset="6.28"/>
+                                    
+                                    <!-- Center Text: 98% and Label -->
+                                    <text x="130" y="102" text-anchor="middle" class="fill-white font-extrabold" font-size="36" font-family="'Pretendard', sans-serif">98%</text>
+                                    <text x="130" y="122" text-anchor="middle" class="fill-slate-400 font-semibold" font-size="11" font-family="'Pretendard', sans-serif">검사 정책 적용률</text>
+                                    
+                                    <!-- Low / High scale labels at arc ends -->
+                                    <text x="30" y="142" class="fill-red-400 font-bold" font-size="10" font-family="'Pretendard', sans-serif">낮음</text>
+                                    <text x="210" y="142" class="fill-cyan-400 font-bold" font-size="10" font-family="'Pretendard', sans-serif">높음</text>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Bottom Legend Pills -->
+                        <div class="flex items-center justify-center gap-6 pt-3 border-t border-[#232734] font-mono text-xs">
+                            <div class="flex items-center gap-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                                <span class="text-slate-400">정책 적용:</span>
+                                <span class="text-white font-extrabold">98</span>
+                            </div>
+                            <div class="w-px h-4 bg-[#232734]"></div>
+                            <div class="flex items-center gap-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-red-500"></span>
+                                <span class="text-slate-400">정책 미적용:</span>
+                                <span class="text-white font-extrabold">2</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 1.18 Bottom Row: 60% Top 5 Risk Storage Assets / 40% CSP Event Breakdown (Matching Reference Image) -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-3">
+                    <!-- Left 7 Cols (60%): Top 5 위험 수준별 스토리지 -->
+                    <div class="lg:col-span-7 dspm-card p-4 flex flex-col justify-between">
+                        <div class="flex items-center justify-between border-b border-[#232734] pb-2.5 mb-2">
+                            <div class="flex items-center gap-1.5 text-xs font-bold text-white">
+                                <span>Top 5 위험 수준별 스토리지</span>
+                                <span class="text-slate-400 cursor-pointer" title="데이터 민감도 및 위협 노출도가 가장 높은 5대 스토리지">❓</span>
+                            </div>
+                            <div class="text-[11px] text-slate-300 bg-[#1b202e] px-2.5 py-1 rounded-md border border-[#282f40] cursor-pointer">
+                                스토리지별 ▾
+                            </div>
+                        </div>
+
+                        <!-- Top 5 Storage Rows List -->
+                        <div class="space-y-2 text-xs font-mono">
+                            <!-- Row 1: finance-prod-data -->
+                            <div class="dspm-sub-card p-2.5 flex items-center justify-between gap-3 hover:border-slate-600 transition">
+                                <div class="flex items-center gap-2.5 min-w-0">
+                                    <span class="text-amber-400 text-sm">🗄️</span>
+                                    <div class="truncate">
+                                        <div class="text-white font-semibold truncate">finance-prod-data</div>
+                                        <div class="text-[10px] text-slate-400 font-sans">AWS S3 · ap-northeast-2</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-3 shrink-0">
+                                    <span class="px-2 py-0.5 rounded bg-red-950/60 text-red-400 border border-red-800/60 text-[10px] font-bold font-sans">
+                                        공개
+                                    </span>
+                                    <div class="flex items-center gap-1">
+                                        <span class="w-1.5 h-3.5 rounded-sm bg-red-500"></span>
+                                        <span class="w-1.5 h-3.5 rounded-sm bg-red-500"></span>
+                                        <span class="w-1.5 h-3.5 rounded-sm bg-red-500"></span>
+                                        <span class="w-1.5 h-3.5 rounded-sm bg-red-500"></span>
+                                        <span class="text-red-400 font-bold text-[10px] ml-1 font-sans">심각</span>
+                                    </div>
+                                    <span class="text-slate-200 font-bold text-xs w-16 text-right">1.4 TB</span>
+                                </div>
+                            </div>
+
+                            <!-- Row 2: user-credentials-backup -->
+                            <div class="dspm-sub-card p-2.5 flex items-center justify-between gap-3 hover:border-slate-600 transition">
+                                <div class="flex items-center gap-2.5 min-w-0">
+                                    <span class="text-blue-400 text-sm">🗄️</span>
+                                    <div class="truncate">
+                                        <div class="text-white font-semibold truncate">user-credentials-backup</div>
+                                        <div class="text-[10px] text-slate-400 font-sans">Azure Blob · koreacentral</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-3 shrink-0">
+                                    <span class="px-2 py-0.5 rounded bg-blue-950/60 text-blue-400 border border-blue-800/60 text-[10px] font-bold font-sans">
+                                        접근 제한
+                                    </span>
+                                    <div class="flex items-center gap-1">
+                                        <span class="w-1.5 h-3.5 rounded-sm bg-red-500"></span>
+                                        <span class="w-1.5 h-3.5 rounded-sm bg-red-500"></span>
+                                        <span class="w-1.5 h-3.5 rounded-sm bg-red-500"></span>
+                                        <span class="w-1.5 h-3.5 rounded-sm bg-red-500"></span>
+                                        <span class="text-red-400 font-bold text-[10px] ml-1 font-sans">심각</span>
+                                    </div>
+                                    <span class="text-slate-200 font-bold text-xs w-16 text-right">840 GB</span>
+                                </div>
+                            </div>
+
+                            <!-- Row 3: ml-model-weights-v2 -->
+                            <div class="dspm-sub-card p-2.5 flex items-center justify-between gap-3 hover:border-slate-600 transition">
+                                <div class="flex items-center gap-2.5 min-w-0">
+                                    <span class="text-emerald-400 text-sm">🗄️</span>
+                                    <div class="truncate">
+                                        <div class="text-white font-semibold truncate">ml-model-weights-v2</div>
+                                        <div class="text-[10px] text-slate-400 font-sans">GCP Cloud Storage · asia-northeast3</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-3 shrink-0">
+                                    <span class="px-2 py-0.5 rounded bg-blue-950/60 text-blue-400 border border-blue-800/60 text-[10px] font-bold font-sans">
+                                        접근 제한
+                                    </span>
+                                    <div class="flex items-center gap-1">
+                                        <span class="w-1.5 h-3.5 rounded-sm bg-orange-500"></span>
+                                        <span class="w-1.5 h-3.5 rounded-sm bg-orange-500"></span>
+                                        <span class="w-1.5 h-3.5 rounded-sm bg-orange-500"></span>
+                                        <span class="w-1.5 h-3.5 rounded-sm bg-slate-700"></span>
+                                        <span class="text-orange-400 font-bold text-[10px] ml-1 font-sans">높음</span>
+                                    </div>
+                                    <span class="text-slate-200 font-bold text-xs w-16 text-right">4.2 TB</span>
+                                </div>
+                            </div>
+
+                            <!-- Row 4: legacy-gateway-access-logs -->
+                            <div class="dspm-sub-card p-2.5 flex items-center justify-between gap-3 hover:border-slate-600 transition">
+                                <div class="flex items-center gap-2.5 min-w-0">
+                                    <span class="text-purple-400 text-sm">🗄️</span>
+                                    <div class="truncate">
+                                        <div class="text-white font-semibold truncate">legacy-gateway-access-logs</div>
+                                        <div class="text-[10px] text-slate-400 font-sans">AWS S3 · us-east-1</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-3 shrink-0">
+                                    <span class="px-2 py-0.5 rounded bg-red-950/60 text-red-400 border border-red-800/60 text-[10px] font-bold font-sans">
+                                        공개
+                                    </span>
+                                    <div class="flex items-center gap-1">
+                                        <span class="w-1.5 h-3.5 rounded-sm bg-orange-500"></span>
+                                        <span class="w-1.5 h-3.5 rounded-sm bg-orange-500"></span>
+                                        <span class="w-1.5 h-3.5 rounded-sm bg-orange-500"></span>
+                                        <span class="w-1.5 h-3.5 rounded-sm bg-slate-700"></span>
+                                        <span class="text-orange-400 font-bold text-[10px] ml-1 font-sans">높음</span>
+                                    </div>
+                                    <span class="text-slate-200 font-bold text-xs w-16 text-right">2.8 TB</span>
+                                </div>
+                            </div>
+
+                            <!-- Row 5: soc-quarantine-vault -->
+                            <div class="dspm-sub-card p-2.5 flex items-center justify-between gap-3 hover:border-slate-600 transition">
+                                <div class="flex items-center gap-2.5 min-w-0">
+                                    <span class="text-cyan-400 text-sm">🗄️</span>
+                                    <div class="truncate">
+                                        <div class="text-white font-semibold truncate">soc-quarantine-vault</div>
+                                        <div class="text-[10px] text-slate-400 font-sans">On-Prem Sensor Storage (10.77.10.20)</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-3 shrink-0">
+                                    <span class="px-2 py-0.5 rounded bg-blue-950/60 text-blue-400 border border-blue-800/60 text-[10px] font-bold font-sans">
+                                        접근 제한
+                                    </span>
+                                    <div class="flex items-center gap-1">
+                                        <span class="w-1.5 h-3.5 rounded-sm bg-yellow-500"></span>
+                                        <span class="w-1.5 h-3.5 rounded-sm bg-yellow-500"></span>
+                                        <span class="w-1.5 h-3.5 rounded-sm bg-slate-700"></span>
+                                        <span class="w-1.5 h-3.5 rounded-sm bg-slate-700"></span>
+                                        <span class="text-yellow-400 font-bold text-[10px] ml-1 font-sans">보통</span>
+                                    </div>
+                                    <span class="text-slate-200 font-bold text-xs w-16 text-right">512 GB</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right 5 Cols (40%): CSP별 보안 이벤트 및 자산 분포 -->
+                    <div class="lg:col-span-5 dspm-card p-4 flex flex-col justify-between">
+                        <div class="flex items-center justify-between border-b border-[#232734] pb-2.5 mb-2">
+                            <div>
+                                <div class="text-xs font-bold text-white">CSP별 보안 이벤트 및 자산 분포</div>
+                                <div class="text-[10px] text-slate-400 font-mono">멀티클라우드 & 센서 통합 가시성</div>
+                            </div>
+                            <span class="dspm-badge-purple">MULTI-CLOUD</span>
+                        </div>
+
+                        <!-- CSP Breakdown Progress Bars -->
+                        <div class="space-y-3.5 my-2 text-xs font-mono">
+                            <!-- AWS -->
+                            <div class="space-y-1">
+                                <div class="flex items-center justify-between text-[11px]">
+                                    <span class="text-slate-300 font-semibold flex items-center gap-1.5 font-sans">
+                                        <span class="w-2 h-2 rounded-full bg-amber-400"></span> AWS (Amazon Web Services)
+                                    </span>
+                                    <span class="text-white font-extrabold">48% <span class="text-slate-400 text-[10px] font-normal">(152개 스토리지)</span></span>
+                                </div>
+                                <div class="w-full bg-[#1b202e] rounded-full h-2 overflow-hidden">
+                                    <div class="bg-gradient-to-r from-amber-500 to-yellow-400 h-2 rounded-full" style="width: 48%"></div>
+                                </div>
+                            </div>
+
+                            <!-- GCP -->
+                            <div class="space-y-1">
+                                <div class="flex items-center justify-between text-[11px]">
+                                    <span class="text-slate-300 font-semibold flex items-center gap-1.5 font-sans">
+                                        <span class="w-2 h-2 rounded-full bg-emerald-400"></span> GCP (Google Cloud Platform)
+                                    </span>
+                                    <span class="text-white font-extrabold">38% <span class="text-slate-400 text-[10px] font-normal">(157개 스토리지)</span></span>
+                                </div>
+                                <div class="w-full bg-[#1b202e] rounded-full h-2 overflow-hidden">
+                                    <div class="bg-gradient-to-r from-emerald-500 to-teal-400 h-2 rounded-full" style="width: 38%"></div>
+                                </div>
+                            </div>
+
+                            <!-- Azure -->
+                            <div class="space-y-1">
+                                <div class="flex items-center justify-between text-[11px]">
+                                    <span class="text-slate-300 font-semibold flex items-center gap-1.5 font-sans">
+                                        <span class="w-2 h-2 rounded-full bg-blue-400"></span> Microsoft Azure
+                                    </span>
+                                    <span class="text-white font-extrabold">14% <span class="text-slate-400 text-[10px] font-normal">(19개 스토리지)</span></span>
+                                </div>
+                                <div class="w-full bg-[#1b202e] rounded-full h-2 overflow-hidden">
+                                    <div class="bg-gradient-to-r from-blue-500 to-indigo-400 h-2 rounded-full" style="width: 14%"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Summary footer -->
+                        <div class="p-2.5 rounded-lg bg-[#1b202e] border border-[#282f40] flex items-center justify-between text-[11px] font-mono">
+                            <span class="text-slate-400">온프레미스 스텔스 센서:</span>
+                            <span class="text-emerald-400 font-bold">10.77.10.20 (L3 IP 제거)</span>
+                        </div>
                     </div>
                 </div>
 
@@ -3321,6 +3853,37 @@
                 { id: 'sensors', name: '센서 및 파이프라인 상태', icon: '📡' }
             ]
         };
+
+        // DSPM Scope Filter Selection
+        function setDspmScope(scope) {
+            document.querySelectorAll('.dspm-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            if (window.event && window.event.target) {
+                window.event.target.classList.add('active');
+            }
+            console.log('DSPM Scope switched to:', scope);
+        }
+
+        // Toggle between World Map and Cyber Neural Graph
+        function toggleMapGraphView(view) {
+            const mapContainer = document.getElementById('dspm-world-map-container');
+            const mapFloatingCard = document.getElementById('map-floating-card');
+            const btnMap = document.getElementById('btn-view-map');
+            const btnGraph = document.getElementById('btn-view-graph');
+            if (!mapContainer || !btnMap || !btnGraph) return;
+
+            if (view === 'map') {
+                btnMap.className = 'px-2 py-0.5 rounded bg-blue-600 text-white font-semibold';
+                btnGraph.className = 'px-2 py-0.5 rounded bg-[#1b202e] hover:bg-[#20273a] text-slate-300 border border-[#282f40]';
+                if (mapFloatingCard) mapFloatingCard.style.display = 'block';
+            } else {
+                btnGraph.className = 'px-2 py-0.5 rounded bg-blue-600 text-white font-semibold';
+                btnMap.className = 'px-2 py-0.5 rounded bg-[#1b202e] hover:bg-[#20273a] text-slate-300 border border-[#282f40]';
+                const graphSec = document.getElementById('cyber-neural-graph-container');
+                if (graphSec) graphSec.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
 
         // Sidebar Collapse Toggle
         function toggleSidebarCollapse() {
