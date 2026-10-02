@@ -5992,16 +5992,61 @@ trace id 9f1 inet filter forward packet: iif "eth-attack" oif "eth-victim" ip sa
 
         async function switchAiProvider(provider) {
             try {
+                const provType = (provider === 'mock') ? 'mock' : 'ollama';
+                const modelName = (provider === 'mock') ? 'mock' : provider;
                 const res = await fetch('/api/ai/provider/select', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ provider_type: provider, model_name: provider })
+                    body: JSON.stringify({ provider: provType, model: modelName })
                 });
                 const data = await res.json();
-                document.getElementById('provider-status-text').textContent = data.provider_status_label;
-                showToast(`AI 엔진 변경: ${data.provider_status_label}`, 'sky');
+                const statusText = document.getElementById('provider-status-text');
+                if (statusText) statusText.textContent = data.provider_status_label;
+                const dot = document.getElementById('provider-status-dot');
+                if (dot) {
+                    dot.className = data.is_mock_provider ? 'w-1.5 h-1.5 rounded-full bg-amber-400' : 'w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse';
+                }
+                const badge = document.getElementById('provider-badge');
+                if (badge) {
+                    badge.className = data.is_mock_provider
+                        ? 'text-[10px] px-1.5 py-0.2 rounded bg-amber-500/10 text-amber-300 border border-amber-500/30 flex items-center gap-1 font-mono'
+                        : 'text-[10px] px-1.5 py-0.2 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 flex items-center gap-1 font-mono';
+                }
+                showToast(`AI 엔진 변경: ${data.provider_status_label}`, data.is_mock_provider ? 'amber' : 'emerald');
             } catch (err) {
-                showToast(`엔진 전환 실패`, 'red');
+                showToast(`엔진 전환 실패: ${err}`, 'red');
+            }
+        }
+
+        async function fetchAiHealthStatus() {
+            try {
+                const res = await fetch('/api/ai/health');
+                if (!res.ok) return;
+                const data = await res.json();
+                const statusText = document.getElementById('provider-status-text');
+                if (statusText) statusText.textContent = data.provider_status_label;
+                const dot = document.getElementById('provider-status-dot');
+                if (dot) {
+                    dot.className = data.is_mock_provider ? 'w-1.5 h-1.5 rounded-full bg-amber-400' : 'w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse';
+                }
+                const badge = document.getElementById('provider-badge');
+                if (badge) {
+                    badge.className = data.is_mock_provider
+                        ? 'text-[10px] px-1.5 py-0.2 rounded bg-amber-500/10 text-amber-300 border border-amber-500/30 flex items-center gap-1 font-mono'
+                        : 'text-[10px] px-1.5 py-0.2 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 flex items-center gap-1 font-mono';
+                }
+                const sel = document.getElementById('provider-select');
+                if (sel) {
+                    if (data.is_mock_provider) {
+                        sel.value = 'mock';
+                    } else if (data.provider_model && data.provider_model.includes('4b')) {
+                        sel.value = 'qwen3.5:4b';
+                    } else {
+                        sel.value = 'qwen3.5:9b';
+                    }
+                }
+            } catch (err) {
+                console.warn('AI health status fetch fallback:', err);
             }
         }
 
@@ -9338,6 +9383,7 @@ trace id 9f1 inet filter forward packet: iif "eth-attack" oif "eth-victim" ip sa
             initWorldThreatMap();
             initCyberNeuralGraph();
             initWebSocket();
+            fetchAiHealthStatus();
             refreshAllTelemetry();
             loadSecurityHypotheses('MULTI');
             fetchQuarantines();

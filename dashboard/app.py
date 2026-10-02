@@ -139,16 +139,28 @@ action_executor = ActionExecutor(mode=ExecutionMode.DRY_RUN)
 notification_dispatcher = NotificationDispatcher()
 dual_control_manager = DualControlManager()
 
-llm_provider_env = os.getenv("LLM_PROVIDER", "mock").lower()
-if llm_provider_env in ("ollama", "live"):
+llm_provider_env = os.getenv("LLM_PROVIDER", "").lower()
+if llm_provider_env in ("ollama", "live", "real"):
     initial_provider = OllamaProvider(
         endpoint=os.getenv("LLM_BASE_URL", "http://127.0.0.1:11434"),
-        model=os.getenv("LLM_MODEL", "qwen3.5:9b"),
-        timeout_seconds=float(os.getenv("LLM_TIMEOUT", "180.0")),
+        model=os.getenv("LLM_MODEL", "qwen3.5:4b"),
+        timeout_seconds=float(os.getenv("LLM_TIMEOUT", "240.0")),
         enable_fallback=os.getenv("LLM_ENABLE_FALLBACK", "false").lower() in ("true", "1"),
     )
-else:
+elif llm_provider_env == "mock":
     initial_provider = MockLLMProvider()
+else:
+    # Auto-detection: If local Ollama daemon is reachable and model is installed, use real LLM!
+    auto_provider = OllamaProvider(
+        endpoint=os.getenv("LLM_BASE_URL", "http://127.0.0.1:11434"),
+        model=os.getenv("LLM_MODEL", "qwen3.5:4b"),
+        timeout_seconds=float(os.getenv("LLM_TIMEOUT", "240.0")),
+        enable_fallback=False,
+    )
+    if auto_provider.health_check():
+        initial_provider = auto_provider
+    else:
+        initial_provider = MockLLMProvider()
 
 orchestrator = AIOrchestrator(provider=initial_provider, approval_repo=approval_repo)
 interpreter = SecurityEventInterpreter()
@@ -549,6 +561,9 @@ class ProviderSelectRequest(BaseModel):
 def select_ai_provider(req: ProviderSelectRequest):
     prov = (req.provider_type or req.provider or "").lower()
     mod = req.model_name or req.model or "qwen3.5:9b"
+    if "qwen" in prov or "llama" in prov:
+        mod = req.provider_type or req.provider
+        prov = "ollama"
     if prov in ("ollama", "live", "real"):
         new_provider = OllamaProvider(
             endpoint=os.getenv("LLM_BASE_URL", "http://127.0.0.1:11434"),
