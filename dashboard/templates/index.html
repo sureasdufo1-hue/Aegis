@@ -5570,7 +5570,7 @@
 
         function initPristineTheme() {
             const saved = localStorage.getItem('aegis_theme_mode');
-            if (saved === 'light' || !saved) {
+            if (saved === 'light') {
                 document.body.classList.add('theme-light-pristine');
                 document.documentElement.classList.remove('dark');
                 document.documentElement.classList.add('light');
