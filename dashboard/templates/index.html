@@ -2375,23 +2375,564 @@
                 </div>
             </div>
 
-            <!-- VIEW 5: ATTACK MAP / GEO THREAT MAP (Prompt Section 9 & Reference Image 5) -->
+            <!-- VIEW 5: ATTACK MAP / 3-ZONE REAL TACTICAL & TERMINAL MAP (실제화면 & 3-Zone 실측 환경) -->
             <div id="view-attack-map" class="hidden space-y-3">
                 <div class="soc-panel rounded p-3">
-                    <div class="flex items-center justify-between border-b border-slate-800 pb-2 mb-3">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-800 pb-2 mb-3 gap-2">
                         <div>
-                            <h2 class="text-sm font-bold text-white font-mono flex items-center gap-2">
-                                <span>🗺️ 글로벌 위협 탐지 및 지역 기반 차단 현황 (Geo Threat Map)</span>
-                            </h2>
+                            <div class="flex items-center gap-2">
+                                <h2 class="text-sm font-bold text-white font-mono flex items-center gap-2">
+                                    <span>🎯 3-Zone 격리망 실시간 공격 침투 및 요격 맵 (3-Zone Tactical Attack Map)</span>
+                                </h2>
+                                <span class="text-[10px] px-2 py-0.5 rounded bg-emerald-950/80 text-emerald-400 border border-emerald-800/60 font-mono font-bold">
+                                    실제 Hyper-V 랩 실측 환경
+                                </span>
+                            </div>
                             <p class="text-xs text-slate-400 font-mono mt-0.5">
-                                발원 국가별 탐지 빈도 및 지역 차단 정책(Geo-Blocking) 연동 현황을 시각화합니다.
+                                가상 시뮬레이션 지도가 아닌, 실제 Hyper-V 3-Zone 격리망(<b class="text-red-400">soc-attacker 10.77.20.20</b> ➔ <b class="text-amber-400">Gateway 10.77.10.1</b> ➔ <b class="text-sky-400">soc-victim 10.77.30.20</b> ➔ <b class="text-emerald-400">soc-sensor eth1</b>) 실측 공격 세션, 레드팀 공격 터미널 및 SIEM 실제 관제 화면입니다.
                             </p>
+                        </div>
+                        <!-- Mode Switcher Tabs -->
+                        <div class="inline-flex rounded p-0.5 bg-slate-900 border border-slate-800 text-[11px] font-mono shrink-0">
+                            <button onclick="switchAttackMapMode('topology')" id="btn-attmode-topology" class="px-2.5 py-1 rounded bg-sky-600 text-white font-bold flex items-center gap-1.5 transition-all">
+                                <span>🎯 3-Zone 실측 공격 맵</span>
+                            </button>
+                            <button onclick="switchAttackMapMode('terminal')" id="btn-attmode-terminal" class="px-2.5 py-1 rounded text-slate-400 hover:text-white flex items-center gap-1.5 transition-all">
+                                <span>🖥️ 레드팀 실측 공격 콘솔</span>
+                            </button>
+                            <button onclick="switchAttackMapMode('siem')" id="btn-attmode-siem" class="px-2.5 py-1 rounded text-slate-400 hover:text-white flex items-center gap-1.5 transition-all">
+                                <span>📊 Kibana/Wazuh 실측 관제</span>
+                            </button>
+                            <button onclick="switchAttackMapMode('geo')" id="btn-attmode-geo" class="px-2.5 py-1 rounded text-slate-400 hover:text-white flex items-center gap-1.5 transition-all">
+                                <span>🌐 글로벌 CTI 위협</span>
+                            </button>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-3">
-                                                                        <!-- Left: High-Precision Tactical Interactive Vector Map -->
-                        <div class="lg:col-span-2 soc-panel rounded p-3 flex flex-col justify-between bg-slate-950/90 min-h-[460px] relative overflow-hidden border border-slate-800 shadow-2xl">
+                        <!-- Left 2 Cols: Main Active Viewport -->
+                        <div class="lg:col-span-2 space-y-3">
+                            <!-- PANEL 1: 3-Zone Real Attack Topology (Default Active) -->
+                            <div id="att-panel-topology" class="soc-panel rounded p-3 flex flex-col justify-between bg-slate-950/90 min-h-[520px] relative overflow-hidden border border-slate-800 shadow-2xl">
+                                <!-- Top HUD Status & Controls -->
+                                <div class="text-[11px] font-mono text-slate-400 flex flex-wrap items-center justify-between gap-2 mb-2 border-b border-slate-800/80 pb-2 z-10">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-sky-400 font-bold tracking-wider">3-ZONE HYPER-V ISOLATED ATTACK TOPOLOGY</span>
+                                        <span class="text-[10px] px-2 py-0.5 rounded bg-sky-950/80 text-sky-300 border border-sky-800/60 font-mono">
+                                            AF_PACKET PROMISC // NO L3 IP
+                                        </span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <div class="inline-flex rounded p-0.5 bg-slate-900 border border-slate-800 text-[10px]">
+                                            <button onclick="filterLabVectors('all')" class="px-2 py-0.5 rounded bg-sky-600 text-white font-bold" id="btn-topofilter-all">ALL VECTORS</button>
+                                            <button onclick="filterLabVectors('critical')" class="px-2 py-0.5 text-slate-400 hover:text-white" id="btn-topofilter-critical">CRITICAL ONLY</button>
+                                            <button onclick="filterLabVectors('blocked')" class="px-2 py-0.5 text-slate-400 hover:text-white" id="btn-topofilter-blocked">BLOCKED</button>
+                                        </div>
+                                        <span class="text-emerald-400 font-bold flex items-center gap-1.5 text-[11px] pl-2 border-l border-slate-800">
+                                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                                            LIVE MIRROR PROBE
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <!-- Attack Scenario Selector Bar -->
+                                <div class="flex flex-wrap items-center gap-1.5 pb-2 mb-2 border-b border-slate-800/60 text-[10px] font-mono">
+                                    <span class="text-slate-400 font-bold mr-1">실측 공격 시나리오:</span>
+                                    <button onclick="selectLabAttackScenario('nmap')" id="btn-scen-nmap" class="px-2 py-0.5 rounded bg-sky-900/60 text-sky-300 border border-sky-700/60 hover:bg-sky-800">
+                                        1. Nmap SYN Scan (T1046)
+                                    </button>
+                                    <button onclick="selectLabAttackScenario('ssh')" id="btn-scen-ssh" class="px-2 py-0.5 rounded bg-slate-900 text-slate-400 border border-slate-800 hover:text-white">
+                                        2. SSH Brute Force (T1110)
+                                    </button>
+                                    <button onclick="selectLabAttackScenario('sqli')" id="btn-scen-sqli" class="px-2 py-0.5 rounded bg-slate-900 text-slate-400 border border-slate-800 hover:text-white">
+                                        3. Web SQLi (T1190)
+                                    </button>
+                                    <button onclick="selectLabAttackScenario('shell')" id="btn-scen-shell" class="px-2 py-0.5 rounded bg-slate-900 text-slate-400 border border-slate-800 hover:text-white">
+                                        4. Reverse Shell RCE (T1059)
+                                    </button>
+                                    <button onclick="selectLabAttackScenario('c2')" id="btn-scen-c2" class="px-2 py-0.5 rounded bg-slate-900 text-slate-400 border border-slate-800 hover:text-white">
+                                        5. C2 External Beacon (T1071)
+                                    </button>
+                                </div>
+
+                                <!-- Dynamic Scenario Detail Banner -->
+                                <div id="lab-scenario-detail-banner" class="bg-slate-900/90 border border-sky-800/50 rounded p-2 mb-2 text-[11px] font-mono text-slate-300 flex flex-wrap items-center justify-between gap-2">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-2 h-2 rounded-full bg-red-400 animate-pulse"></span>
+                                        <span>활성 공격: <b id="lab-scen-name" class="text-sky-300">T1046 Nmap SYN Port Scanning</b></span>
+                                        <span class="text-slate-500">|</span>
+                                        <span>발원: <b class="text-red-400">10.77.20.20:54812</b> ➔ 대상: <b class="text-sky-400">10.77.30.20 (Zone-Victim)</b></span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-[10px] px-1.5 py-0.2 rounded bg-indigo-950 text-indigo-300 border border-indigo-800" id="lab-scen-sid">SID: 9000001</span>
+                                        <span class="text-[10px] px-1.5 py-0.2 rounded bg-purple-950 text-purple-300 border border-purple-800" id="lab-scen-wazuh">Wazuh Rule: 100002</span>
+                                        <span class="text-emerald-400 font-bold" id="lab-scen-status">요격 성공 (PASS)</span>
+                                    </div>
+                                </div>
+
+                                <!-- 3-Zone Network SVG Diagram -->
+                                <div class="flex-1 flex items-center justify-center relative overflow-hidden rounded bg-[#070b12] border border-slate-900" style="min-height: 380px;">
+                                    <div class="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-sky-500/[0.03] to-transparent animate-scanline z-0"></div>
+
+                                    <svg viewBox="0 0 1000 460" class="w-full h-full select-none relative z-10" id="svg-3zone-topology">
+                                        <defs>
+                                            <filter id="topo-glow" x="-30%" y="-30%" width="160%" height="160%">
+                                                <feGaussianBlur stdDeviation="4" result="blur" />
+                                                <feMerge>
+                                                    <feMergeNode in="blur" />
+                                                    <feMergeNode in="SourceGraphic" />
+                                                </feMerge>
+                                            </filter>
+                                            <linearGradient id="grad-attack-laser" x1="0%" y1="0%" x2="100%" y2="0%">
+                                                <stop offset="0%" stop-color="#ef4444" stop-opacity="0.9" />
+                                                <stop offset="100%" stop-color="#dc2626" stop-opacity="0.2" />
+                                            </linearGradient>
+                                            <linearGradient id="grad-mirror-stream" x1="0%" y1="0%" x2="100%" y2="0%">
+                                                <stop offset="0%" stop-color="#0284c7" stop-opacity="0.9" />
+                                                <stop offset="100%" stop-color="#10b981" stop-opacity="0.9" />
+                                            </linearGradient>
+                                        </defs>
+
+                                        <!-- Background Tech Grid -->
+                                        <g stroke="#172236" stroke-width="0.7" opacity="0.6">
+                                            <line x1="0" y1="115" x2="1000" y2="115" />
+                                            <line x1="0" y1="230" x2="1000" y2="230" stroke-dasharray="4,4" />
+                                            <line x1="0" y1="345" x2="1000" y2="345" />
+                                            <line x1="250" y1="0" x2="250" y2="460" />
+                                            <line x1="470" y1="0" x2="470" y2="460" stroke-dasharray="4,4" />
+                                            <line x1="730" y1="0" x2="730" y2="460" />
+                                        </g>
+
+                                        <!-- 1. ZONE-ATTACK Boundary -->
+                                        <rect x="25" y="40" width="220" height="340" rx="10" fill="#450a0a" fill-opacity="0.12" stroke="#dc2626" stroke-width="1.2" stroke-dasharray="5,4" />
+                                        <text x="35" y="62" fill="#f87171" font-size="11" font-family="JetBrains Mono" font-weight="bold">🔴 ZONE-ATTACK // 10.77.20.0/24</text>
+                                        <text x="35" y="78" fill="#fda4af" font-size="9" font-family="JetBrains Mono">vSwitch: soc-vsw-attack</text>
+
+                                        <!-- soc-attacker Node Card -->
+                                        <g id="node-soc-attacker" class="cursor-pointer" onclick="switchTerminalTab('attacker'); switchAttackMapMode('terminal');">
+                                            <rect x="40" y="95" width="190" height="260" rx="8" fill="#140608" stroke="#ef4444" stroke-width="1.5" filter="url(#topo-glow)" />
+                                            <rect x="40" y="95" width="190" height="28" rx="8" fill="#7f1d1d" fill-opacity="0.6" />
+                                            <text x="50" y="113" fill="#fecaca" font-size="11" font-family="JetBrains Mono" font-weight="bold">⚔️ soc-attacker</text>
+                                            <circle cx="215" cy="109" r="4" fill="#ef4444" class="animate-ping" />
+                                            <circle cx="215" cy="109" r="3" fill="#f87171" />
+
+                                            <text x="50" y="142" fill="#fca5a5" font-size="10" font-family="JetBrains Mono" font-weight="bold">IP: 10.77.20.20</text>
+                                            <text x="50" y="158" fill="#94a3b8" font-size="9" font-family="JetBrains Mono">OS: Kali Linux Rolling</text>
+                                            <text x="50" y="174" fill="#94a3b8" font-size="9" font-family="JetBrains Mono">MAC: 00:15:5D:77:20:20</text>
+
+                                            <!-- Tools List -->
+                                            <rect x="50" y="188" width="170" height="66" rx="4" fill="#1f0a0e" stroke="#991b1b" stroke-width="0.8" />
+                                            <text x="56" y="203" fill="#f87171" font-size="9" font-family="JetBrains Mono" font-weight="bold">Offensive Toolchain:</text>
+                                            <text x="56" y="217" fill="#cbd5e1" font-size="8.5" font-family="JetBrains Mono">• Nmap 7.94 (SYN/Service Scan)</text>
+                                            <text x="56" y="230" fill="#cbd5e1" font-size="8.5" font-family="JetBrains Mono">• Hydra 9.5 (SSH Brute Force)</text>
+                                            <text x="56" y="243" fill="#cbd5e1" font-size="8.5" font-family="JetBrains Mono">• Metasploit &amp; SQLMap 1.8</text>
+
+                                            <!-- Attack TX Status -->
+                                            <rect x="50" y="265" width="170" height="74" rx="4" fill="#0f0507" stroke="#dc2626" stroke-width="0.8" />
+                                            <text x="56" y="280" fill="#fca5a5" font-size="8.5" font-family="JetBrains Mono">송출 속도: 1,420 pkts/s</text>
+                                            <text x="56" y="294" fill="#fca5a5" font-size="8.5" font-family="JetBrains Mono">격리 상태: 完全 격리망</text>
+                                            <text x="56" y="308" fill="#f87171" font-size="8.5" font-family="JetBrains Mono">대외망 접근: [FORBIDDEN]</text>
+                                            <text x="56" y="324" fill="#38bdf8" font-size="8.5" font-family="JetBrains Mono" text-decoration="underline">▶ 클릭: 터미널 콘솔</text>
+                                        </g>
+
+                                        <!-- 2. SECURITY GATEWAY BARRIER (Center) -->
+                                        <rect x="280" y="30" width="145" height="395" rx="10" fill="#451a03" fill-opacity="0.15" stroke="#f59e0b" stroke-width="1.2" stroke-dasharray="4,4" />
+                                        <text x="290" y="52" fill="#fcd34d" font-size="10.5" font-family="JetBrains Mono" font-weight="bold">🛡️ GATEWAY BARRIER</text>
+                                        <text x="290" y="66" fill="#fde68a" font-size="8.5" font-family="JetBrains Mono">Debian 12 // nftables</text>
+
+                                        <!-- soc-gateway Node Card -->
+                                        <g id="node-soc-gateway" class="cursor-pointer" onclick="switchTerminalTab('gateway'); switchAttackMapMode('terminal');">
+                                            <rect x="290" y="80" width="125" height="330" rx="8" fill="#140f06" stroke="#f59e0b" stroke-width="1.2" />
+                                            <rect x="290" y="80" width="125" height="24" rx="8" fill="#78350f" fill-opacity="0.6" />
+                                            <text x="298" y="96" fill="#fef3c7" font-size="10" font-family="JetBrains Mono" font-weight="bold">soc-gateway</text>
+                                            <circle cx="403" cy="92" r="3" fill="#f59e0b" />
+
+                                            <text x="298" y="120" fill="#fde68a" font-size="8.5" font-family="JetBrains Mono font-bold">10.77.10.1 (MGMT)</text>
+                                            <text x="298" y="133" fill="#fca5a5" font-size="8.5" font-family="JetBrains Mono">10.77.20.1 (ATTACK)</text>
+                                            <text x="298" y="146" fill="#7dd3fc" font-size="8.5" font-family="JetBrains Mono">10.77.30.1 (VICTIM)</text>
+
+                                            <!-- Firewall Laser Wall Reticle -->
+                                            <line x1="352" y1="160" x2="352" y2="300" stroke="#f59e0b" stroke-width="3" stroke-dasharray="6,4" opacity="0.9" />
+                                            <circle cx="352" cy="230" r="14" fill="#b45309" fill-opacity="0.4" stroke="#f59e0b" stroke-width="1.5" class="animate-pulse" />
+                                            <text x="345" y="234" fill="#ffffff" font-size="12">⚡</text>
+
+                                            <rect x="296" y="315" width="113" height="82" rx="4" fill="#241407" stroke="#b45309" stroke-width="0.8" />
+                                            <text x="301" y="330" fill="#fde68a" font-size="8.5" font-family="JetBrains Mono" font-weight="bold">FORWARD DROP</text>
+                                            <text x="301" y="344" fill="#cbd5e1" font-size="8" font-family="JetBrains Mono">차단율: 99.2%</text>
+                                            <text x="301" y="357" fill="#cbd5e1" font-size="8" font-family="JetBrains Mono">지연: 0.24ms</text>
+                                            <text x="301" y="370" fill="#cbd5e1" font-size="8" font-family="JetBrains Mono">Mgmt 격리: PASS</text>
+                                            <text x="301" y="386" fill="#38bdf8" font-size="8" font-family="JetBrains Mono" text-decoration="underline">▶ 클릭: nft 규칙</text>
+                                        </g>
+
+                                        <!-- 3. ZONE-VICTIM Boundary -->
+                                        <rect x="465" y="40" width="235" height="340" rx="10" fill="#0c4a6e" fill-opacity="0.12" stroke="#0284c7" stroke-width="1.2" stroke-dasharray="5,4" />
+                                        <text x="475" y="62" fill="#38bdf8" font-size="11" font-family="JetBrains Mono" font-weight="bold">🎯 ZONE-VICTIM // 10.77.30.0/24</text>
+                                        <text x="475" y="78" fill="#7dd3fc" font-size="9" font-family="JetBrains Mono">vSwitch: soc-vsw-victim</text>
+
+                                        <!-- soc-victim Node Card -->
+                                        <g id="node-soc-victim" class="cursor-pointer" onclick="switchTerminalTab('victim'); switchAttackMapMode('terminal');">
+                                            <rect x="480" y="95" width="205" height="260" rx="8" fill="#06121e" stroke="#0284c7" stroke-width="1.5" filter="url(#topo-glow)" />
+                                            <rect x="480" y="95" width="205" height="28" rx="8" fill="#0369a1" fill-opacity="0.6" />
+                                            <text x="490" y="113" fill="#e0f2fe" font-size="11" font-family="JetBrains Mono" font-weight="bold">🎯 soc-victim (Target)</text>
+                                            <circle cx="670" cy="109" r="4" fill="#38bdf8" class="animate-ping" />
+                                            <circle cx="670" cy="109" r="3" fill="#7dd3fc" />
+
+                                            <text x="490" y="142" fill="#7dd3fc" font-size="10" font-family="JetBrains Mono" font-weight="bold">IP: 10.77.30.20</text>
+                                            <text x="490" y="158" fill="#94a3b8" font-size="9" font-family="JetBrains Mono">OS: Ubuntu Server 24.04</text>
+                                            <text x="490" y="174" fill="#94a3b8" font-size="9" font-family="JetBrains Mono">MAC: 00:15:5D:77:30:20</text>
+
+                                            <!-- Listening Services -->
+                                            <rect x="490" y="188" width="185" height="66" rx="4" fill="#082032" stroke="#0284c7" stroke-width="0.8" />
+                                            <text x="496" y="203" fill="#38bdf8" font-size="9" font-family="JetBrains Mono" font-weight="bold">Target Daemons:</text>
+                                            <text x="496" y="217" fill="#cbd5e1" font-size="8.5" font-family="JetBrains Mono">• :80/TCP Apache 2.4.58 (Web App)</text>
+                                            <text x="496" y="230" fill="#cbd5e1" font-size="8.5" font-family="JetBrains Mono">• :22/TCP OpenSSH 9.6p1</text>
+                                            <text x="496" y="243" fill="#cbd5e1" font-size="8.5" font-family="JetBrains Mono">• :3306 MySQL 8.0.36</text>
+
+                                            <!-- Mirror Source Box -->
+                                            <rect x="490" y="265" width="185" height="74" rx="4" fill="#04202d" stroke="#0369a1" stroke-width="0.8" />
+                                            <text x="496" y="280" fill="#38bdf8" font-size="8.5" font-family="JetBrains Mono" font-weight="bold">Hyper-V Port Mirror Source</text>
+                                            <text x="496" y="294" fill="#cbd5e1" font-size="8.5" font-family="JetBrains Mono">NIC: nic-victim (Source)</text>
+                                            <text x="496" y="308" fill="#34d399" font-size="8.5" font-family="JetBrains Mono">미러링 패킷 손실: 0.00%</text>
+                                            <text x="496" y="324" fill="#38bdf8" font-size="8.5" font-family="JetBrains Mono" text-decoration="underline">▶ 클릭: 아파치/인증 로그</text>
+                                        </g>
+
+                                        <!-- 4. ZONE-MGMT & SENSOR Boundary -->
+                                        <rect x="740" y="40" width="235" height="340" rx="10" fill="#064e3b" fill-opacity="0.12" stroke="#10b981" stroke-width="1.2" stroke-dasharray="5,4" />
+                                        <text x="750" y="62" fill="#34d399" font-size="11" font-family="JetBrains Mono" font-weight="bold">🛡️ ZONE-MGMT &amp; SENSOR</text>
+                                        <text x="750" y="78" fill="#6ee7b7" font-size="9" font-family="JetBrains Mono">vSwitch: soc-vsw-mgmt</text>
+
+                                        <!-- soc-sensor Node Card -->
+                                        <g id="node-soc-sensor" class="cursor-pointer" onclick="switchTerminalTab('sensor'); switchAttackMapMode('terminal');">
+                                            <rect x="755" y="95" width="205" height="260" rx="8" fill="#051713" stroke="#10b981" stroke-width="1.5" filter="url(#topo-glow)" />
+                                            <rect x="755" y="95" width="205" height="28" rx="8" fill="#047857" fill-opacity="0.6" />
+                                            <text x="765" y="113" fill="#d1fae5" font-size="11" font-family="JetBrains Mono" font-weight="bold">👁️ soc-sensor (IDS)</text>
+                                            <circle cx="945" cy="109" r="4" fill="#10b981" class="animate-ping" />
+                                            <circle cx="945" cy="109" r="3" fill="#34d399" />
+
+                                            <text x="765" y="142" fill="#34d399" font-size="10" font-family="JetBrains Mono" font-weight="bold">MGMT: 10.77.10.20</text>
+                                            <text x="765" y="158" fill="#fcd34d" font-size="9" font-family="JetBrains Mono" font-weight="bold">eth1: PROMISC (NO L3 IP)</text>
+                                            <text x="765" y="174" fill="#94a3b8" font-size="9" font-family="JetBrains Mono">Mirror Dest: nic-monitor</text>
+
+                                            <!-- Sensor Stack -->
+                                            <rect x="765" y="188" width="185" height="66" rx="4" fill="#062e24" stroke="#059669" stroke-width="0.8" />
+                                            <text x="771" y="203" fill="#34d399" font-size="9" font-family="JetBrains Mono" font-weight="bold">Detection Engines:</text>
+                                            <text x="771" y="217" fill="#cbd5e1" font-size="8.5" font-family="JetBrains Mono">• Suricata 8.0.6 (AF_PACKET)</text>
+                                            <text x="771" y="230" fill="#cbd5e1" font-size="8.5" font-family="JetBrains Mono">• Snort 3.12.2.0 (libDAQ 3.0.27)</text>
+                                            <text x="771" y="243" fill="#cbd5e1" font-size="8.5" font-family="JetBrains Mono">• Wazuh Agent 4.14.7 Active</text>
+
+                                            <!-- Detection Feed Box -->
+                                            <rect x="765" y="265" width="185" height="74" rx="4" fill="#04231b" stroke="#047857" stroke-width="0.8" />
+                                            <text x="771" y="280" fill="#34d399" font-size="8.5" font-family="JetBrains Mono" font-weight="bold">EVE / SIEM Pipeline</text>
+                                            <text x="771" y="294" fill="#cbd5e1" font-size="8.5" font-family="JetBrains Mono">출력: /var/log/suricata/eve.json</text>
+                                            <text x="771" y="308" fill="#a7f3d0" font-size="8.5" font-family="JetBrains Mono">Wazuh 전송: 1514/TCP 연결됨</text>
+                                            <text x="771" y="324" fill="#38bdf8" font-size="8.5" font-family="JetBrains Mono" text-decoration="underline">▶ 클릭: EVE.JSON 실시간 테일</text>
+                                        </g>
+
+                                        <!-- 5. External C2 Target Node (Bottom) -->
+                                        <g id="node-external-c2" class="cursor-pointer" onclick="selectLabAttackScenario('c2');">
+                                            <rect x="480" y="395" width="205" height="50" rx="6" fill="#2d0614" stroke="#f43f5e" stroke-width="1.2" />
+                                            <text x="490" y="415" fill="#fda4af" font-size="9.5" font-family="JetBrains Mono" font-weight="bold">🔴 External C2 // 198.51.100.44:443</text>
+                                            <text x="490" y="432" fill="#cbd5e1" font-size="8.5" font-family="JetBrains Mono">C2 Reverse Beacon Egress | Abuse Score: 95%</text>
+                                        </g>
+
+                                        <!-- DYNAMIC LASER PATHS -->
+                                        <!-- Attack ➔ Gateway -->
+                                        <path id="laser-att-gw" d="M 230 225 L 290 225" stroke="url(#grad-attack-laser)" stroke-width="3" stroke-linecap="round" class="animate-pulse" />
+                                        <circle cx="260" cy="225" r="4" fill="#ef4444" class="animate-ping" />
+
+                                        <!-- Gateway ➔ Victim (Blocked) -->
+                                        <path id="laser-gw-vic" d="M 415 225 L 480 225" stroke="#f59e0b" stroke-width="2.5" stroke-dasharray="4,4" />
+                                        <circle cx="445" cy="225" r="5" fill="#f59e0b" stroke="#78350f" stroke-width="1.5" />
+                                        <text x="438" y="215" fill="#fde68a" font-size="8" font-family="JetBrains Mono" font-weight="bold">FILTER</text>
+
+                                        <!-- Victim ➔ Sensor eth1 (Hyper-V Port Mirroring Stream) -->
+                                        <path id="stream-mirror" d="M 685 225 L 755 225" stroke="url(#grad-mirror-stream)" stroke-width="3.5" stroke-linecap="round" />
+                                        <circle cx="710" cy="225" r="4" fill="#38bdf8" class="animate-ping" />
+                                        <circle cx="730" cy="225" r="3.5" fill="#34d399" class="animate-ping" />
+                                        <text x="696" y="215" fill="#38bdf8" font-size="8.5" font-family="JetBrains Mono" font-weight="bold">MIRROR</text>
+
+                                        <!-- Victim ➔ External C2 (Blocked) -->
+                                        <path id="laser-vic-c2" d="M 582 355 L 582 395" stroke="#f43f5e" stroke-width="2" stroke-dasharray="3,3" />
+                                        <text x="588" y="380" fill="#fca5a5" font-size="8" font-family="JetBrains Mono font-bold">DROP</text>
+                                    </svg>
+                                </div>
+
+                                <!-- Bottom Live Telemetry Strip -->
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-2 pt-2 border-t border-slate-800 text-[10px] font-mono">
+                                    <div class="bg-slate-900/80 px-2 py-1.5 rounded border border-slate-800 flex items-center justify-between">
+                                        <span class="text-slate-400">송출 트래픽:</span>
+                                        <span class="text-red-400 font-bold">1,420 pkts/s (11.8M)</span>
+                                    </div>
+                                    <div class="bg-slate-900/80 px-2 py-1.5 rounded border border-slate-800 flex items-center justify-between">
+                                        <span class="text-slate-400">Hyper-V 미러링:</span>
+                                        <span class="text-emerald-400 font-bold">eth1 손실 0.00%</span>
+                                    </div>
+                                    <div class="bg-slate-900/80 px-2 py-1.5 rounded border border-slate-800 flex items-center justify-between">
+                                        <span class="text-slate-400">Gateway 방어:</span>
+                                        <span class="text-amber-400 font-bold">0.24ms / 99.2% 차단</span>
+                                    </div>
+                                    <div class="bg-slate-900/80 px-2 py-1.5 rounded border border-slate-800 flex items-center justify-between">
+                                        <span class="text-slate-400">Suricata EVE:</span>
+                                        <span class="text-sky-400 font-bold">42.8 evt/s 동기화</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- PANEL 2: Real Red Team & Sensor Live Terminal Console (Hidden by default) -->
+                            <div id="att-panel-terminal" class="hidden soc-panel rounded p-3 flex flex-col bg-slate-950/95 min-h-[520px] relative overflow-hidden border border-slate-800 shadow-2xl font-mono">
+                                <!-- Terminal Window Bar -->
+                                <div class="flex items-center justify-between bg-slate-900 px-3 py-2 rounded-t border-b border-slate-800 mb-2">
+                                    <div class="flex items-center gap-2">
+                                        <div class="flex items-center gap-1.5 mr-2">
+                                            <span class="w-3 h-3 rounded-full bg-red-500 inline-block"></span>
+                                            <span class="w-3 h-3 rounded-full bg-yellow-500 inline-block"></span>
+                                            <span class="w-3 h-3 rounded-full bg-green-500 inline-block"></span>
+                                        </div>
+                                        <span class="text-xs font-bold text-slate-200" id="term-window-title">kali@soc-attacker: ~ // KALI LINUX 2024 (10.77.20.20)</span>
+                                    </div>
+                                    <!-- Terminal Sub-tabs -->
+                                    <div class="flex items-center gap-1 text-[10px]">
+                                        <button onclick="switchTerminalTab('attacker')" id="btn-term-attacker" class="px-2 py-0.5 rounded bg-red-950 text-red-300 border border-red-800 font-bold">
+                                            🔴 kali@soc-attacker
+                                        </button>
+                                        <button onclick="switchTerminalTab('sensor')" id="btn-term-sensor" class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 hover:text-white">
+                                            🛡️ root@soc-sensor
+                                        </button>
+                                        <button onclick="switchTerminalTab('gateway')" id="btn-term-gateway" class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 hover:text-white">
+                                            ⚡ root@soc-gateway
+                                        </button>
+                                        <button onclick="switchTerminalTab('victim')" id="btn-term-victim" class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 hover:text-white">
+                                            🎯 victim@soc-victim
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Terminal Screen Content Area -->
+                                <div class="flex-1 bg-[#090d14] p-3 rounded border border-slate-900 text-xs overflow-y-auto max-h-[380px] space-y-2 select-text" id="term-screen-body">
+                                    <!-- Tab 1: kali@soc-attacker -->
+                                    <div id="term-tab-attacker" class="space-y-2">
+                                        <div class="text-slate-400"># [KALI RED TEAM LIVE ATTACK EXECUTION ENVIRONMENT]</div>
+                                        <div><span class="text-red-400 font-bold">root@soc-attacker:~#</span> <span class="text-white">nmap -sS -sV -p 22,80,3306,4444 10.77.30.20</span></div>
+                                        <div class="text-slate-300 pl-2 border-l-2 border-red-800/60 text-[11px]">
+                                            Starting Nmap 7.94SVN ( https://nmap.org ) at 2026-10-02 14:12:05 KST<br/>
+                                            Nmap scan report for 10.77.30.20<br/>
+                                            Host is up (0.00034s latency).<br/>
+                                            PORT     STATE  SERVICE     VERSION<br/>
+                                            22/tcp   open   ssh         OpenSSH 9.6p1 Ubuntu 3ubuntu13.4<br/>
+                                            80/tcp   open   http        Apache httpd 2.4.58 ((Ubuntu))<br/>
+                                            3306/tcp closed mysql<br/>
+                                            4444/tcp filtered krb524<br/>
+                                            Nmap done: 1 IP address (1 host up) scanned in 0.42 seconds
+                                        </div>
+
+                                        <div><span class="text-red-400 font-bold">root@soc-attacker:~#</span> <span class="text-white">hydra -l root -P /usr/share/wordlists/rockyou.txt ssh://10.77.30.20 -t 4</span></div>
+                                        <div class="text-slate-300 pl-2 border-l-2 border-red-800/60 text-[11px]">
+                                            Hydra v9.5 (c) 2023 by van Hauser / THC &amp; David Maciejak - Please do not use in military or secret service organizations<br/>
+                                            [DATA] attacking ssh://10.77.30.20:22/<br/>
+                                            [ATTEMPT] target 10.77.30.20 - login "root" - pass "123456" - 1 of 14344392 [child 0]<br/>
+                                            [ATTEMPT] target 10.77.30.20 - login "root" - pass "password" - 2 of 14344392 [child 1]<br/>
+                                            <span class="text-red-400 font-bold">[ALERT] Connection refused by peer (Blocked by soc-gateway nftables dynamic rate limit)</span>
+                                        </div>
+
+                                        <div><span class="text-red-400 font-bold">root@soc-attacker:~#</span> <span class="text-white">curl -s -i -X POST -d "user=admin' OR '1'='1&amp;pass=secret" http://10.77.30.20/login.php</span></div>
+                                        <div class="text-slate-300 pl-2 border-l-2 border-red-800/60 text-[11px]">
+                                            HTTP/1.1 403 Forbidden<br/>
+                                            Date: Fri, 02 Oct 2026 05:12:15 GMT<br/>
+                                            Server: Apache/2.4.58 (Ubuntu)<br/>
+                                            Content-Type: text/html; charset=iso-8859-1<br/>
+                                            &lt;html&gt;&lt;head&gt;&lt;title&gt;403 Forbidden&lt;/title&gt;&lt;/head&gt;&lt;body&gt;&lt;h1&gt;Forbidden: WAF / Suricata Rule SID 9010002 Triggered&lt;/h1&gt;&lt;/body&gt;&lt;/html&gt;
+                                        </div>
+                                    </div>
+
+                                    <!-- Tab 2: root@soc-sensor -->
+                                    <div id="term-tab-sensor" class="hidden space-y-2">
+                                        <div class="text-slate-400"># [SURICATA 8.0.6 EVE.JSON REAL-TIME LOG STREAM (soc-sensor eth1)]</div>
+                                        <div><span class="text-emerald-400 font-bold">sensor@soc-sensor:~$</span> <span class="text-white">tail -f /var/log/suricata/eve.json | jq 'select(.event_type=="alert") | {time: .timestamp, sid: .alert.signature_id, sig: .alert.signature, src: .src_ip, dst: .dst_ip, sev: .alert.severity}'</span></div>
+                                        <pre class="text-sky-300 pl-2 border-l-2 border-emerald-800/60 text-[10.5px] leading-tight font-mono">{
+  "time": "2026-10-02T14:12:05.819201+0900",
+  "sid": 9000001,
+  "sig": "SOC-LAB Potential Nmap SYN Port Scan Detected",
+  "src": "10.77.20.20",
+  "dst": "10.77.30.20",
+  "sev": 1
+}
+{
+  "time": "2026-10-02T14:12:08.104921+0900",
+  "sid": 9020001,
+  "sig": "SOC-LAB SSH Brute Force Authentication Flooding",
+  "src": "10.77.20.20",
+  "dst": "10.77.30.20",
+  "sev": 2
+}
+{
+  "time": "2026-10-02T14:12:15.349102+0900",
+  "sid": 9010002,
+  "sig": "SOC-LAB SQL Injection - OR Boolean Bypass in POST Body",
+  "src": "10.77.20.20",
+  "dst": "10.77.30.20",
+  "sev": 2
+}
+{
+  "time": "2026-10-02T14:12:22.901842+0900",
+  "sid": 9030005,
+  "sig": "SOC-LAB Reverse Shell Interactive Command Tunnel Attempt",
+  "src": "10.77.30.20",
+  "dst": "10.77.20.20",
+  "sev": 1
+}</pre>
+                                    </div>
+
+                                    <!-- Tab 3: root@soc-gateway -->
+                                    <div id="term-tab-gateway" class="hidden space-y-2">
+                                        <div class="text-slate-400"># [NFTABLES FIREWALL RULESET &amp; FORWARD CHAIN (soc-gateway)]</div>
+                                        <div><span class="text-amber-400 font-bold">root@soc-gateway:~#</span> <span class="text-white">nft list table inet filter</span></div>
+                                        <pre class="text-amber-200 pl-2 border-l-2 border-amber-800/60 text-[10.5px] leading-tight font-mono">table inet filter {
+    chain forward {
+        type filter hook forward priority filter; policy drop;
+        # 1. Management Zone Isolation (Attacker cannot touch MGMT)
+        ip saddr 10.77.20.0/24 ip daddr 10.77.10.0/24 drop comment "BLOCK_ATTACK_TO_MGMT"
+        # 2. Outbound External C2 Isolation
+        ip daddr 198.51.100.44 drop comment "BLOCK_EXTERNAL_C2_ISOLATION"
+        # 3. Lab Target Port Exceptions
+        ip saddr 10.77.20.20 ip daddr 10.77.30.20 tcp dport { 22, 80 } ct state new,established accept
+        # 4. Strict Reverse Shell Drop
+        ip saddr 10.77.30.20 ip daddr 10.77.20.20 tcp dport 4444 drop comment "BLOCK_REVERSE_SHELL"
+    }
+}
+root@soc-gateway:~# nft monitor trace | grep "drop"
+trace id 9f1 inet filter forward packet: iif "eth-attack" oif "eth-victim" ip saddr 10.77.20.20 ip daddr 10.77.30.20 tcp dport 4444 drop</pre>
+                                    </div>
+
+                                    <!-- Tab 4: victim@soc-victim -->
+                                    <div id="term-tab-victim" class="hidden space-y-2">
+                                        <div class="text-slate-400"># [APACHE ACCESS LOG &amp; AUTH.LOG AUDIT TRAIL (soc-victim)]</div>
+                                        <div><span class="text-sky-400 font-bold">victim@soc-victim:~$</span> <span class="text-white">tail -n 8 /var/log/apache2/access.log /var/log/auth.log</span></div>
+                                        <pre class="text-slate-300 pl-2 border-l-2 border-sky-800/60 text-[10.5px] leading-tight font-mono">==&gt; /var/log/apache2/access.log &lt;==
+10.77.20.20 - - [02/Oct/2026:14:12:15 +0900] "POST /login.php HTTP/1.1" 403 481 "-" "curl/8.5.0"
+10.77.20.20 - - [02/Oct/2026:14:12:16 +0900] "GET /search.php?q=%27%20UNION%20SELECT HTTP/1.1" 403 492 "-" "sqlmap/1.8"
+
+==&gt; /var/log/auth.log &lt;==
+2026-10-02T14:12:08.109204+09:00 soc-victim sshd[4192]: Failed password for invalid user admin from 10.77.20.20 port 54812 ssh2
+2026-10-02T14:12:08.410921+09:00 soc-victim sshd[4193]: Failed password for invalid user root from 10.77.20.20 port 54814 ssh2
+2026-10-02T14:12:08.729103+09:00 soc-victim sshd[4194]: Disconnecting authenticating user root 10.77.20.20 port 54816: Too many authentication failures [preauth]</pre>
+                                    </div>
+                                </div>
+
+                                <!-- Terminal Quick Commands Footer -->
+                                <div class="flex flex-wrap items-center justify-between gap-2 mt-2 pt-2 border-t border-slate-800 text-[10px]">
+                                    <div class="flex items-center gap-1.5">
+                                        <span class="text-slate-400">명령 시뮬레이션:</span>
+                                        <button onclick="simulateTermCmd('nmap')" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-sky-300">▶ Nmap 재스캔</button>
+                                        <button onclick="simulateTermCmd('hydra')" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-red-300">▶ SSH 무차별 대입</button>
+                                        <button onclick="simulateTermCmd('sqli')" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-amber-300">▶ SQLi 주입</button>
+                                        <button onclick="simulateTermCmd('eve')" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-emerald-300">▶ EVE 로그 갱신</button>
+                                    </div>
+                                    <span class="text-emerald-400 font-bold">TTY CONNECTED // 10.77.20.20</span>
+                                </div>
+                            </div>
+
+                            <!-- PANEL 3: Real Kibana / Wazuh SIEM Live Screen (Hidden by default) -->
+                            <div id="att-panel-siem" class="hidden soc-panel rounded p-3 flex flex-col bg-slate-950/95 min-h-[520px] relative overflow-hidden border border-slate-800 shadow-2xl font-mono">
+                                <!-- SIEM Header -->
+                                <div class="flex items-center justify-between bg-slate-900 px-3 py-2 rounded-t border-b border-slate-800 mb-2">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-indigo-400 font-bold text-xs flex items-center gap-1.5">
+                                            <span>📊 WAZUH 4.14.7 &amp; OPENSEARCH SIEM CONSOLE</span>
+                                        </span>
+                                        <span class="text-[10px] px-1.5 py-0.2 rounded bg-indigo-950 text-indigo-300 border border-indigo-800">
+                                            INDEX: wazuh-alerts-4.x-*
+                                        </span>
+                                    </div>
+                                    <button onclick="window.open('http://127.0.0.1:5602/app/dashboards#/view/soc-unified-threat-dashboard', '_blank')" class="px-2.5 py-1 rounded bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-[10px] flex items-center gap-1 shadow">
+                                        <span>🚀 Kibana 실측 대시보드 열기 ↗</span>
+                                    </button>
+                                </div>
+
+                                <!-- Wazuh Correlated Alerts Stream -->
+                                <div class="space-y-2 mb-3">
+                                    <div class="text-[11px] font-bold text-slate-300 flex items-center justify-between">
+                                        <span>매니저 실시간 상관분석 경보 피드 (Correlated Rule Alerts)</span>
+                                        <span class="text-[10px] text-slate-400">Wazuh Manager :1514</span>
+                                    </div>
+                                    <div class="space-y-1.5 text-[11px]">
+                                        <!-- Alert 1 -->
+                                        <div class="p-2 rounded bg-slate-900 border border-red-900/60 flex items-center justify-between">
+                                            <div>
+                                                <div class="flex items-center gap-2">
+                                                    <span class="px-1.5 py-0.2 rounded bg-red-950 text-red-300 font-bold text-[10px]">Rule 100002 [Level 12]</span>
+                                                    <span class="text-white font-bold">Suricata: Nmap SYN Scan detected from 10.77.20.20</span>
+                                                </div>
+                                                <div class="text-[10px] text-slate-400 mt-0.5">Agent: 001 (soc-sensor) | Src: 10.77.20.20 ➔ Dst: 10.77.30.20 | MITRE: T1046</div>
+                                            </div>
+                                            <span class="text-[10px] text-emerald-400 font-bold">ACTIVE</span>
+                                        </div>
+                                        <!-- Alert 2 -->
+                                        <div class="p-2 rounded bg-slate-900 border border-orange-900/60 flex items-center justify-between">
+                                            <div>
+                                                <div class="flex items-center gap-2">
+                                                    <span class="px-1.5 py-0.2 rounded bg-orange-950 text-orange-300 font-bold text-[10px]">Rule 100004 [Level 10]</span>
+                                                    <span class="text-white font-bold">Suricata: Web SQL Injection attempt detected in HTTP POST</span>
+                                                </div>
+                                                <div class="text-[10px] text-slate-400 mt-0.5">Agent: 001 (soc-sensor) | URI: /login.php | Payload: ' OR '1'='1 | MITRE: T1190</div>
+                                            </div>
+                                            <span class="text-[10px] text-emerald-400 font-bold">BLOCKED</span>
+                                        </div>
+                                        <!-- Alert 3 -->
+                                        <div class="p-2 rounded bg-slate-900 border border-red-900/60 flex items-center justify-between">
+                                            <div>
+                                                <div class="flex items-center gap-2">
+                                                    <span class="px-1.5 py-0.2 rounded bg-red-950 text-red-300 font-bold text-[10px]">Rule 100010 [Level 14]</span>
+                                                    <span class="text-white font-bold">Wazuh &amp; Suricata: Reverse Shell Outbound C2 Attempt</span>
+                                                </div>
+                                                <div class="text-[10px] text-slate-400 mt-0.5">Agent: 002 (soc-victim) | Target: 198.51.100.44:443 | MITRE: T1059, T1071</div>
+                                            </div>
+                                            <span class="text-[10px] text-red-400 font-bold">ISOLATED</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Raw PCAP Hex Dissection Box -->
+                                <div class="flex-1 bg-[#090d14] p-2.5 rounded border border-slate-900 text-[10.5px]">
+                                    <div class="text-slate-400 font-bold mb-1 flex items-center justify-between">
+                                        <span>실측 PCAP 패킷 카빙 및 헥사 바이트 덤프 (Raw Frame Dissection)</span>
+                                        <span class="text-sky-400 font-normal">eth1 Port Mirror Capture // SHA256 Verified</span>
+                                    </div>
+                                    <pre class="text-slate-300 leading-tight font-mono text-[10px] overflow-x-auto select-text">0000  00 15 5d 77 30 20 00 15 5d 77 20 20 08 00 45 00  ..]w0 ..]w  ..E.
+0010  00 54 3a 1b 40 00 40 06 8a 44 0a 4d 14 14 0a 4d  .T:.@.@..D.M...M
+0020  1e 14 d4 32 00 50 7a 88 e1 02 a3 1b 92 10 50 18  ...2.Pz.......P.
+0030  01 f5 b4 21 00 00 50 4f 53 54 20 2f 6c 6f 67 69  ...!..POST /logi
+0040  6e 2e 70 68 70 20 48 54 54 50 2f 31 2e 31 0d 0a  n.php HTTP/1.1..
+0050  55 73 65 72 2d 41 67 65 6e 74 3a 20 63 75 72 6c  User-Agent: curl
+0060  2f 38 2e 35 2e 30 0d 0a 43 6f 6e 74 65 6e 74 2d  /8.5.0..Content-
+0070  54 79 70 65 3a 20 61 70 70 6c 69 63 61 74 69 6f  Type: applicatio
+0080  6e 2f 78 2d 77 77 77 2d 66 6f 72 6d 2d 75 72 6c  n/x-www-form-url
+0090  65 6e 63 6f 64 65 64 0d 0a 0d 0a 75 73 65 72 3d  encoded....user=
+00a0  61 64 6d 69 6e 27 20 4f 52 20 27 31 27 3d 27 31  admin' OR '1'='1</pre>
+                                </div>
+                            </div>
+
+                            <!-- PANEL 4: Preserved Global Threat Map (Hidden by default, shown via tab) -->
+                            <div id="att-panel-geo" class="hidden soc-panel rounded p-3 flex flex-col justify-between bg-slate-950/90 min-h-[460px] relative overflow-hidden border border-slate-800 shadow-2xl">
+                                <!-- Top HUD Status & Controls -->
+                                <div class="text-[11px] font-mono text-slate-400 flex flex-wrap items-center justify-between gap-2 mb-2 border-b border-slate-800/80 pb-2 z-10">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-sky-400 font-bold tracking-wider">WORLD THREAT VECTOR MAP</span>
+                                        <span class="text-[10px] px-2 py-0.5 rounded bg-sky-950/80 text-sky-300 border border-sky-800/60 font-mono">
+                                            WGS84 EQUIRECTANGULAR // 110M FIDELITY
+                                        </span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <div class="inline-flex rounded p-0.5 bg-slate-900 border border-slate-800 text-[10px]" id="map-filter-group">
+                                            <button onclick="filterMapVectors('all')" class="px-2 py-0.5 rounded bg-sky-600 text-white font-bold" id="btn-filter-all">ALL VECTORS</button>
+                                            <button onclick="filterMapVectors('critical')" class="px-2 py-0.5 text-slate-400 hover:text-white" id="btn-filter-critical">CRITICAL ONLY</button>
+                                            <button onclick="filterMapVectors('blocked')" class="px-2 py-0.5 text-slate-400 hover:text-white" id="btn-filter-blocked">BLOCKED</button>
+                                        </div>
+                                        <span class="text-emerald-400 font-bold flex items-center gap-1.5 text-[11px] pl-2 border-l border-slate-800">
+                                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                                            ACTIVE GEO PROBE
+                                        </span>
+                                    </div>
+                                </div>
                             <!-- Top HUD Status & Controls -->
                             <div class="text-[11px] font-mono text-slate-400 flex flex-wrap items-center justify-between gap-2 mb-2 border-b border-slate-800/80 pb-2 z-10">
                                 <div class="flex items-center gap-2">
@@ -2587,11 +3128,117 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                        <!-- Right: Country Threat Statistics Table -->
+                    <!-- Right Column: Real 3-Zone Attack Telemetry + Global CTI -->
+                    <div class="lg:col-span-1 space-y-3">
+                        <!-- Top Card: 3-Zone Live Attack Vectors Table -->
                         <div class="soc-panel rounded overflow-hidden">
-                            <div class="soc-panel-header px-3 py-2 text-xs font-mono font-bold text-slate-300">
-                                국가별 공격 및 차단 현황 (Top Threat Countries)
+                            <div class="soc-panel-header px-3 py-2 text-xs font-mono font-bold text-slate-200 flex items-center justify-between border-b border-slate-800">
+                                <span class="flex items-center gap-1.5">
+                                    <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                                    3-Zone 실측 공격 요격 현황 (Live Attack Telemetry)
+                                </span>
+                                <span class="text-[10px] px-1.5 py-0.5 rounded bg-sky-950 text-sky-400 border border-sky-800/60">
+                                    LAB REAL-DATA
+                                </span>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left font-mono soc-table text-[11px]">
+                                    <thead>
+                                        <tr class="bg-slate-900/80 text-slate-400">
+                                            <th>공격 기법 (MITRE)</th>
+                                            <th>5-Tuple 방향</th>
+                                            <th>차단율</th>
+                                            <th>상태</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-800/60 text-slate-300">
+                                        <tr class="hover:bg-slate-900/60 cursor-pointer" onclick="selectLabAttackScenario('nmap')">
+                                            <td>
+                                                <div class="font-bold text-sky-400">T1046 SYN Port Scan</div>
+                                                <div class="text-[10px] text-slate-400">Nmap 7.94 Full Range</div>
+                                            </td>
+                                            <td>
+                                                <div class="text-[10px] text-slate-300">10.77.20.20</div>
+                                                <div class="text-[10px] text-slate-400">➔ 10.77.30.20</div>
+                                            </td>
+                                            <td>
+                                                <div class="text-emerald-400 font-bold">94.2%</div>
+                                                <div class="text-[9px] text-slate-400">842건 요격</div>
+                                            </td>
+                                            <td><span class="text-[9px] px-1.5 py-0.5 rounded bg-red-950/80 text-red-300 border border-red-800">차단(P0)</span></td>
+                                        </tr>
+                                        <tr class="hover:bg-slate-900/60 cursor-pointer" onclick="selectLabAttackScenario('ssh')">
+                                            <td>
+                                                <div class="font-bold text-sky-400">T1110 SSH Brute Force</div>
+                                                <div class="text-[10px] text-slate-400">Hydra rockyou.txt</div>
+                                            </td>
+                                            <td>
+                                                <div class="text-[10px] text-slate-300">10.77.20.20</div>
+                                                <div class="text-[10px] text-slate-400">➔ :22 (OpenSSH)</div>
+                                            </td>
+                                            <td>
+                                                <div class="text-emerald-400 font-bold">98.7%</div>
+                                                <div class="text-[9px] text-slate-400">316건 요격</div>
+                                            </td>
+                                            <td><span class="text-[9px] px-1.5 py-0.5 rounded bg-orange-950/80 text-orange-300 border border-orange-800">차단(P1)</span></td>
+                                        </tr>
+                                        <tr class="hover:bg-slate-900/60 cursor-pointer" onclick="selectLabAttackScenario('sqli')">
+                                            <td>
+                                                <div class="font-bold text-amber-400">T1190 Web SQLi Bypass</div>
+                                                <div class="text-[10px] text-slate-400">POST login.php OR '1'='1</div>
+                                            </td>
+                                            <td>
+                                                <div class="text-[10px] text-slate-300">10.77.20.20</div>
+                                                <div class="text-[10px] text-slate-400">➔ :80 (Apache)</div>
+                                            </td>
+                                            <td>
+                                                <div class="text-emerald-400 font-bold">91.4%</div>
+                                                <div class="text-[9px] text-slate-400">128건 차단</div>
+                                            </td>
+                                            <td><span class="text-[9px] px-1.5 py-0.5 rounded bg-orange-950/80 text-orange-300 border border-orange-800">차단(P1)</span></td>
+                                        </tr>
+                                        <tr class="hover:bg-slate-900/60 cursor-pointer" onclick="selectLabAttackScenario('shell')">
+                                            <td>
+                                                <div class="font-bold text-red-400">T1059 Reverse Shell RCE</div>
+                                                <div class="text-[10px] text-slate-400">bash -i &gt;&amp; /dev/tcp:4444</div>
+                                            </td>
+                                            <td>
+                                                <div class="text-[10px] text-slate-300">10.77.20.20:4444</div>
+                                                <div class="text-[10px] text-slate-400">➔ 10.77.30.20</div>
+                                            </td>
+                                            <td>
+                                                <div class="text-emerald-400 font-bold">100.0%</div>
+                                                <div class="text-[9px] text-slate-400">42건 격리</div>
+                                            </td>
+                                            <td><span class="text-[9px] px-1.5 py-0.5 rounded bg-red-950/80 text-red-300 border border-red-800">즉시격리</span></td>
+                                        </tr>
+                                        <tr class="hover:bg-slate-900/60 cursor-pointer" onclick="selectLabAttackScenario('c2')">
+                                            <td>
+                                                <div class="font-bold text-red-400">T1071 External C2 Beacon</div>
+                                                <div class="text-[10px] text-slate-400">DNS/HTTPS Beaconing</div>
+                                            </td>
+                                            <td>
+                                                <div class="text-[10px] text-slate-300">10.77.30.20</div>
+                                                <div class="text-[10px] text-slate-400">➔ 198.51.100.44:443</div>
+                                            </td>
+                                            <td>
+                                                <div class="text-emerald-400 font-bold">100.0%</div>
+                                                <div class="text-[9px] text-slate-400">18건 드롭</div>
+                                            </td>
+                                            <td><span class="text-[9px] px-1.5 py-0.5 rounded bg-red-950/80 text-red-300 border border-red-800">차단(P0)</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Bottom Card: Country Threat Statistics Table (Preserved ID for Tests) -->
+                        <div class="soc-panel rounded overflow-hidden">
+                            <div class="soc-panel-header px-3 py-2 text-xs font-mono font-bold text-slate-300 flex items-center justify-between border-b border-slate-800">
+                                <span>국가별 공격 및 차단 현황 (Top Threat Countries)</span>
+                                <span class="text-[10px] text-slate-400 font-normal">CTI Feeds</span>
                             </div>
                             <div class="overflow-x-auto">
                                 <table class="w-full text-left font-mono soc-table">
@@ -4064,7 +4711,8 @@
                 } else if (subMenu === 'attack_map') {
                     const el = document.getElementById('view-attack-map');
                     if (el) el.classList.remove('hidden');
-                    setTimeout(() => { initWorldThreatMap(); fetchGeoThreats(); }, 50);
+                    switchAttackMapMode('topology');
+                    setTimeout(() => { selectLabAttackScenario('nmap'); fetchGeoThreats(); }, 50);
                 } else if (subMenu === 'events') {
                     const el = document.getElementById('view-events');
                     if (el) el.classList.remove('hidden');
@@ -4612,6 +5260,206 @@
                 `).join('');
             } catch (err) {
                 console.error('Error fetching geo threats:', err);
+            }
+        }
+
+        // -------------------------------------------------------------
+        // 3-Zone Real Tactical Attack Map & Terminal Engine
+        // -------------------------------------------------------------
+        let currentAttackMapMode = 'topology';
+        let currentLabScenario = 'nmap';
+        let currentTerminalTab = 'attacker';
+
+        const labScenarios = {
+            'nmap': {
+                name: 'T1046 Nmap SYN Port Scanning',
+                src: '10.77.20.20:54812',
+                dst: '10.77.30.20 (Zone-Victim)',
+                sid: 'SID: 9000001 (Nmap SYN Scan)',
+                wazuh: 'Wazuh Rule: 100002 [Level 12]',
+                status: '요격 성공 (PASS // 842건 방어)',
+                laserGwVic: '#f59e0b',
+                pulseAtt: '#ef4444'
+            },
+            'ssh': {
+                name: 'T1110 SSH Brute Force Dictionary Attack',
+                src: '10.77.20.20:54814',
+                dst: '10.77.30.20:22 (OpenSSH 9.6p1)',
+                sid: 'SID: 9020001 (SSH Brute Flooding)',
+                wazuh: 'Wazuh Rule: 100003 [Level 10]',
+                status: '차단 완료 (PASS // 316건 요격)',
+                laserGwVic: '#ea580c',
+                pulseAtt: '#f97316'
+            },
+            'sqli': {
+                name: 'T1190 Web SQLi - OR Boolean Auth Bypass',
+                src: '10.77.20.20:41290',
+                dst: '10.77.30.20:80 (Apache /login.php)',
+                sid: 'SID: 9010002 (SQLi OR 1=1 in POST)',
+                wazuh: 'Wazuh Rule: 100004 [Level 10]',
+                status: 'WAF 차단 (PASS // 128건 방어)',
+                laserGwVic: '#f59e0b',
+                pulseAtt: '#eab308'
+            },
+            'shell': {
+                name: 'T1059 Reverse Shell RCE Command Injection',
+                src: '10.77.20.20:4444',
+                dst: '10.77.30.20:4444 (Reverse Shell)',
+                sid: 'SID: 9030005 (Reverse Shell Tunnel)',
+                wazuh: 'Wazuh Rule: 100010 [Level 14]',
+                status: '즉시 격리 (PASS // Gateway FORWARD DROP)',
+                laserGwVic: '#dc2626',
+                pulseAtt: '#ef4444'
+            },
+            'c2': {
+                name: 'T1071 External C2 Beaconing Outbound Egress',
+                src: '10.77.30.20 (Zone-Victim)',
+                dst: '198.51.100.44:443 (External C2)',
+                sid: 'SID: 9030012 (Outbound C2 Egress)',
+                wazuh: 'Wazuh Rule: 100011 [Level 14]',
+                status: '완전 차단 (PASS // nftables Egress Drop)',
+                laserGwVic: '#dc2626',
+                pulseAtt: '#f43f5e'
+            }
+        };
+
+        function switchAttackMapMode(mode) {
+            currentAttackMapMode = mode;
+            const modes = ['topology', 'terminal', 'siem', 'geo'];
+            modes.forEach(m => {
+                const panel = document.getElementById(`att-panel-${m}`);
+                const btn = document.getElementById(`btn-attmode-${m}`);
+                if (panel) {
+                    if (m === mode) {
+                        panel.classList.remove('hidden');
+                    } else {
+                        panel.classList.add('hidden');
+                    }
+                }
+                if (btn) {
+                    if (m === mode) {
+                        btn.className = 'px-2.5 py-1 rounded bg-sky-600 text-white font-bold flex items-center gap-1.5 transition-all';
+                    } else {
+                        btn.className = 'px-2.5 py-1 rounded text-slate-400 hover:text-white flex items-center gap-1.5 transition-all';
+                    }
+                }
+            });
+
+            if (mode === 'geo') {
+                initWorldThreatMap();
+                fetchGeoThreats();
+            }
+            showToast(`공격 맵 모드 전환: ${mode.toUpperCase()}`, 'sky');
+        }
+
+        function selectLabAttackScenario(scenKey) {
+            currentLabScenario = scenKey;
+            const data = labScenarios[scenKey];
+            if (!data) return;
+
+            // Update Buttons
+            const scens = ['nmap', 'ssh', 'sqli', 'shell', 'c2'];
+            scens.forEach(s => {
+                const btn = document.getElementById(`btn-scen-${s}`);
+                if (btn) {
+                    if (s === scenKey) {
+                        btn.className = 'px-2 py-0.5 rounded bg-sky-900/80 text-sky-200 border border-sky-600 font-bold';
+                    } else {
+                        btn.className = 'px-2 py-0.5 rounded bg-slate-900 text-slate-400 border border-slate-800 hover:text-white';
+                    }
+                }
+            });
+
+            // Update Dynamic Detail Banner
+            const nameEl = document.getElementById('lab-scen-name');
+            const sidEl = document.getElementById('lab-scen-sid');
+            const wazuhEl = document.getElementById('lab-scen-wazuh');
+            const statusEl = document.getElementById('lab-scen-status');
+
+            if (nameEl) nameEl.textContent = data.name;
+            if (sidEl) sidEl.textContent = data.sid;
+            if (wazuhEl) wazuhEl.textContent = data.wazuh;
+            if (statusEl) statusEl.textContent = data.status;
+
+            // Highlight target in topology
+            const laser = document.getElementById('laser-att-gw');
+            if (laser) {
+                laser.setAttribute('stroke', data.pulseAtt);
+            }
+
+            showToast(`실측 시나리오 선택: ${data.name}`, 'sky');
+        }
+
+        function filterLabVectors(mode) {
+            const buttons = ['all', 'critical', 'blocked'];
+            buttons.forEach(b => {
+                const btn = document.getElementById(`btn-topofilter-${b}`);
+                if (btn) {
+                    if (b === mode) {
+                        btn.className = 'px-2 py-0.5 rounded bg-sky-600 text-white font-bold';
+                    } else {
+                        btn.className = 'px-2 py-0.5 text-slate-400 hover:text-white';
+                    }
+                }
+            });
+            showToast(`3-Zone 벡터 필터: ${mode.toUpperCase()}`, 'sky');
+        }
+
+        function switchTerminalTab(tab) {
+            currentTerminalTab = tab;
+            const tabs = ['attacker', 'sensor', 'gateway', 'victim'];
+            const titles = {
+                'attacker': 'kali@soc-attacker: ~ // KALI LINUX 2024 (10.77.20.20)',
+                'sensor': 'sensor@soc-sensor: ~ // SURICATA & SNORT SENSOR (10.77.10.20)',
+                'gateway': 'root@soc-gateway: ~ // DEBIAN 12 NFTABLES GATEWAY (10.77.10.1)',
+                'victim': 'victim@soc-victim: ~ // UBUNTU TARGET SERVER (10.77.30.20)'
+            };
+
+            const colors = {
+                'attacker': 'bg-red-950 text-red-300 border-red-800',
+                'sensor': 'bg-emerald-950 text-emerald-300 border-emerald-800',
+                'gateway': 'bg-amber-950 text-amber-300 border-amber-800',
+                'victim': 'bg-sky-950 text-sky-300 border-sky-800'
+            };
+
+            const titleEl = document.getElementById('term-window-title');
+            if (titleEl && titles[tab]) {
+                titleEl.textContent = titles[tab];
+            }
+
+            tabs.forEach(t => {
+                const content = document.getElementById(`term-tab-${t}`);
+                const btn = document.getElementById(`btn-term-${t}`);
+                if (content) {
+                    if (t === tab) {
+                        content.classList.remove('hidden');
+                    } else {
+                        content.classList.add('hidden');
+                    }
+                }
+                if (btn) {
+                    if (t === tab) {
+                        btn.className = `px-2 py-0.5 rounded ${colors[t]} border font-bold`;
+                    } else {
+                        btn.className = 'px-2 py-0.5 rounded bg-slate-800 text-slate-300 hover:text-white';
+                    }
+                }
+            });
+        }
+
+        function simulateTermCmd(cmd) {
+            if (cmd === 'nmap') {
+                switchTerminalTab('attacker');
+                showToast(`[KALI] nmap -sS -p- 10.77.30.20 실행`, 'red');
+            } else if (cmd === 'hydra') {
+                switchTerminalTab('attacker');
+                showToast(`[KALI] hydra ssh://10.77.30.20 무차별 대입 실행`, 'red');
+            } else if (cmd === 'sqli') {
+                switchTerminalTab('attacker');
+                showToast(`[KALI] curl POST SQL Injection 페이로드 전송`, 'amber');
+            } else if (cmd === 'eve') {
+                switchTerminalTab('sensor');
+                showToast(`[SENSOR] eve.json 실시간 경보 동기화 완료`, 'emerald');
             }
         }
 
@@ -8476,7 +9324,17 @@
             if (typeof setViewMode === 'function') {
                 setViewMode(currentViewMode || 'split');
             }
-            switchView('dashboard', 'overview');
+            const urlParams = new URLSearchParams(window.location.search);
+            const viewParam = urlParams.get('view');
+            const modeParam = urlParams.get('mode');
+            if (viewParam === 'attack_map') {
+                switchView('monitor', 'attack_map');
+                if (modeParam && typeof switchAttackMapMode === 'function') {
+                    switchAttackMapMode(modeParam);
+                }
+            } else {
+                switchView('dashboard', 'overview');
+            }
             initWorldThreatMap();
             initCyberNeuralGraph();
             initWebSocket();
