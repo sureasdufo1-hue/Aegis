@@ -66,7 +66,7 @@
                 ↓
 [FastAPI 웹 관제 콘솔 (:8501)]
   - 실시간 KPI 집계: 총 탐지 84건, 긴급 18건, 경고 60건, 상관사고 10건
-  - Three.js WebGL 3D 홀로그램 실드 & 실시간 요격 매트릭스 허브 시각화
+  - Obsidian Engine 기반 D3.js 사이버 신경망 지식 그래프 & 침투 경로 추적 시각화
   - 한국어 / 영문 원문 나란히 보기 (Split View)
                 ↓
 [AI-Orchestrated SOC Copilot (심층 조사 트리거)]

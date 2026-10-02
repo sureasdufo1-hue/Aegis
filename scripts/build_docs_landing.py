@@ -181,20 +181,20 @@ HTML_TEMPLATE = """<!DOCTYPE html>
               <span class="w-3 h-3 rounded-full bg-rose-500/80 inline-block"></span>
               <span class="w-3 h-3 rounded-full bg-amber-500/80 inline-block"></span>
               <span class="w-3 h-3 rounded-full bg-emerald-500/80 inline-block"></span>
-              <span class="ml-2 font-mono text-[11px] text-slate-300 font-semibold hidden sm:inline">Aegis SOC Command Center // 3D Cyber Intercept Matrix & Real-time AI Copilot Telemetry</span>
+              <span class="ml-2 font-mono text-[11px] text-slate-300 font-semibold hidden sm:inline">Aegis SOC Command Center // Cyber Neural Knowledge Graph & Real-time AI Copilot Telemetry</span>
             </div>
             <div class="flex items-center space-x-3">
               <span class="text-emerald-400 font-mono text-[11px] flex items-center gap-1">
                 <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> LIVE MONITORING
               </span>
-              <button onclick="openLightbox('assets/full_dashboard.png', '통합 보안관제 대시보드 메인 뷰', '실시간 3D 위협 요격 매트릭스, 84건 통합 경보 텔레메트리, AI 코파일럿 및 다단계 복합 침해사고 분석 화면')" 
+              <button onclick="openLightbox('assets/full_dashboard.png', '통합 보안관제 대시보드 메인 뷰', '실시간 사이버 신경망 지식 그래프, 84건 통합 경보 텔레메트리, AI 코파일럿 및 다단계 복합 침해사고 분석 화면')" 
                       class="px-2.5 py-1 rounded bg-cyan-950 text-cyan-300 border border-cyan-700 hover:bg-cyan-900 transition-colors text-[11px] font-semibold flex items-center gap-1">
                 <span>🔍 확대 보기</span>
               </button>
             </div>
           </div>
           <!-- Screenshot Image -->
-          <div class="relative overflow-hidden cursor-pointer" onclick="openLightbox('assets/full_dashboard.png', '통합 보안관제 대시보드 메인 뷰', '실시간 3D 위협 요격 매트릭스, 84건 통합 경보 텔레메트리, AI 코파일럿 및 다단계 복합 침해사고 분석 화면')">
+          <div class="relative overflow-hidden cursor-pointer" onclick="openLightbox('assets/full_dashboard.png', '통합 보안관제 대시보드 메인 뷰', '실시간 사이버 신경망 지식 그래프, 84건 통합 경보 텔레메트리, AI 코파일럿 및 다단계 복합 침해사고 분석 화면')">
             <img src="assets/full_dashboard.png" alt="Aegis SOC Full Dashboard Overview" class="w-full object-cover transform group-hover:scale-[1.01] transition-transform duration-300">
             <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent pointer-events-none"></div>
             <!-- Overlay Info Badge -->
@@ -581,33 +581,33 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
       <div class="space-y-12">
 
-        <!-- ================= FEATURE 01: 3D WEBGL MATRIX ================= -->
+        <!-- ================= FEATURE 01: CYBER NEURAL KNOWLEDGE GRAPH ================= -->
         <div class="glass-card rounded-2xl border border-cyan-900/60 p-6 sm:p-8 relative overflow-hidden">
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             <div class="lg:col-span-5 space-y-4">
               <div class="flex items-center gap-2">
                 <span class="w-8 h-8 rounded-lg bg-cyan-950 text-cyan-400 border border-cyan-700 flex items-center justify-center font-mono font-bold text-sm">01</span>
-                <span class="text-xs font-mono font-bold text-cyan-400 uppercase tracking-wider">AI for Sec: 3D Intercept</span>
+                <span class="text-xs font-mono font-bold text-cyan-400 uppercase tracking-wider">AI for Sec: Neural Topology</span>
               </div>
-              <h3 class="text-xl sm:text-2xl font-extrabold text-white">3D WebGL 실시간 위협 요격 매트릭스</h3>
+              <h3 class="text-xl sm:text-2xl font-extrabold text-white">사이버 신경망 지식 그래프 (Obsidian Engine)</h3>
               <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                Three.js WebGL GPU 렌더러를 기반으로 외부 공격 발원지(<code class="text-rose-400">10.77.20.0/24</code>)에서 유입되는 미인가 위협 패킷을 붉은색 파티클 벡터로 실시간 추적하고, 중앙 AI 코어 쉴드가 청록색 충격파(Shockwaves)를 발생시키며 100% 요격하는 시각적 사이버 방어 상태를 제공합니다.
+                Obsidian 스타일의 D3.js Force-Directed 시뮬레이션을 탑재하여 공격자(<code class="text-rose-400">10.77.20.20</code>), 게이트웨이, 타깃 서버(<code class="text-cyan-400">10.77.30.20</code>), 탐지 룰(SID), MITRE ATT&CK TTP 및 HITL 차단 티켓까지 7대 보안 개체 간의 인과관계를 동적 신경망으로 시각화합니다.
               </p>
               <ul class="space-y-1.5 text-xs text-slate-300">
-                <li class="flex items-center gap-2"><span class="text-cyan-400">✔</span> 마우스 드래그 360도 자유 회전 및 줌인/줌아웃 인터랙션</li>
-                <li class="flex items-center gap-2"><span class="text-cyan-400">✔</span> 실시간 IDS 경보 텔레메트리 연동 & 부하 테스트 스트레스 모드</li>
-                <li class="flex items-center gap-2"><span class="text-cyan-400">✔</span> 보호 인프라(Victim 10.77.30.20, Gateway 10.77.10.1, Wazuh) 가시화</li>
+                <li class="flex items-center gap-2"><span class="text-cyan-400">✔</span> <strong>⚡ 침투 경로 추적 (traceAttackPath)</strong>: Attacker ➔ SQLi (SID 9010001) ➔ Gateway ➔ Victim ➔ HITL Ticket 원클릭 킬체인 하이라이트</li>
+                <li class="flex items-center gap-2"><span class="text-cyan-400">✔</span> <strong>❄️ 물리 고정 (toggleGraphPhysics)</strong>: D3 물리 시뮬레이션 일시정지 및 안정적인 토폴로지 분석 지원</li>
+                <li class="flex items-center gap-2"><span class="text-cyan-400">✔</span> <strong>🔍 실시간 개체 검색 & 심층 인스펙터</strong>: IP/SID/TTP 검색 시 노드 자동 포커싱 및 우측 패널 위험도·격리 액션 연동</li>
               </ul>
               <div class="pt-2">
-                <button onclick="openLightbox('assets/threat_matrix_screen.png', '3D WebGL 실시간 위협 요격 매트릭스 화면', 'Three.js GPU 파티클 요격 시뮬레이션, 외부 공격 벡터 추적 및 360도 회전 탐색 화면')" 
+                <button onclick="openLightbox('assets/cyber_neural_knowledge_graph.png', '사이버 신경망 지식 그래프 (Cyber Neural Knowledge Graph)', 'Obsidian Engine 기반 D3 Force 위협 토폴로지 시뮬레이션, 침투 경로 추적 및 심층 개체 인스펙터 화면')" 
                         class="px-4 py-2 rounded-lg bg-cyan-950 hover:bg-cyan-900 text-cyan-300 border border-cyan-700 text-xs font-semibold flex items-center gap-1.5 transition-colors">
                   <span>🔍 스크린샷 4K 확대 보기</span>
                 </button>
               </div>
             </div>
             <div class="lg:col-span-7">
-              <div class="rounded-xl overflow-hidden border border-cyan-800/60 shadow-xl cursor-pointer group" onclick="openLightbox('assets/threat_matrix_screen.png', '3D WebGL 실시간 위협 요격 매트릭스 화면', 'Three.js GPU 파티클 요격 시뮬레이션, 외부 공격 벡터 추적 및 360도 회전 탐색 화면')">
-                <img src="assets/threat_matrix_screen.png" alt="3D Threat Matrix" class="w-full object-cover group-hover:scale-[1.02] transition-transform duration-300">
+              <div class="rounded-xl overflow-hidden border border-cyan-800/60 shadow-xl cursor-pointer group" onclick="openLightbox('assets/cyber_neural_knowledge_graph.png', '사이버 신경망 지식 그래프 (Cyber Neural Knowledge Graph)', 'Obsidian Engine 기반 D3 Force 위협 토폴로지 시뮬레이션, 침투 경로 추적 및 심층 개체 인스펙터 화면')">
+                <img src="assets/cyber_neural_knowledge_graph.png" alt="Cyber Neural Knowledge Graph" class="w-full object-cover group-hover:scale-[1.02] transition-transform duration-300">
               </div>
             </div>
           </div>
@@ -932,27 +932,27 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
         <!-- Item 1: Full Dashboard -->
         <div class="gallery-item aiforsec glass-card rounded-xl overflow-hidden border border-slate-800 hover:border-cyan-500/50 transition-all group cursor-pointer"
-             onclick="openLightbox('assets/full_dashboard.png', '통합 보안관제 대시보드 메인 뷰', '실시간 3D 위협 요격 매트릭스, 84건 통합 경보 텔레메트리, AI 코파일럿 및 다단계 복합 침해사고 분석 화면')">
+             onclick="openLightbox('assets/full_dashboard.png', '통합 보안관제 대시보드 메인 뷰', '실시간 사이버 신경망 지식 그래프, 84건 통합 경보 텔레메트리, AI 코파일럿 및 다단계 복합 침해사고 분석 화면')">
           <div class="relative overflow-hidden aspect-video bg-slate-900">
             <img src="assets/full_dashboard.png" alt="Full Dashboard" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
             <span class="absolute top-2 left-2 text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">AI for Sec // CONSOLE</span>
           </div>
           <div class="p-4">
             <h4 class="font-bold text-white text-sm group-hover:text-cyan-400 transition-colors">실시간 보안관제 메인 콘솔 통합 상황판</h4>
-            <p class="text-xs text-slate-400 mt-1 line-clamp-2">3D 위협 요격 허브, ECharts 공격 유형 점유율, 실시간 경보 텔레메트리 스트림 종합 뷰</p>
+            <p class="text-xs text-slate-400 mt-1 line-clamp-2">사이버 신경망 지식 그래프, ECharts 공격 유형 점유율, 실시간 경보 텔레메트리 스트림 종합 뷰</p>
           </div>
         </div>
 
-        <!-- Item 2: Threat Matrix -->
+        <!-- Item 2: Cyber Neural Knowledge Graph -->
         <div class="gallery-item aiforsec glass-card rounded-xl overflow-hidden border border-slate-800 hover:border-cyan-500/50 transition-all group cursor-pointer"
-             onclick="openLightbox('assets/threat_matrix_screen.png', '3D WebGL 실시간 위협 요격 매트릭스', 'Three.js GPU 파티클 요격 시뮬레이션, 외부 공격 벡터 추적 및 360도 회전 탐색 화면')">
+             onclick="openLightbox('assets/cyber_neural_knowledge_graph.png', '사이버 신경망 지식 그래프 (Cyber Neural Knowledge Graph)', 'Obsidian Engine 기반 D3 Force 위협 토폴로지 시뮬레이션, 침투 경로 추적 및 심층 개체 인스펙터 화면')">
           <div class="relative overflow-hidden aspect-video bg-slate-900">
-            <img src="assets/threat_matrix_screen.png" alt="Threat Matrix" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-            <span class="absolute top-2 left-2 text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">AI for Sec // 3D MATRIX</span>
+            <img src="assets/cyber_neural_knowledge_graph.png" alt="Cyber Neural Knowledge Graph" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+            <span class="absolute top-2 left-2 text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">AI for Sec // NEURAL GRAPH</span>
           </div>
           <div class="p-4">
-            <h4 class="font-bold text-white text-sm group-hover:text-cyan-400 transition-colors">3D 사이버 위협 요격 매트릭스 전경</h4>
-            <p class="text-xs text-slate-400 mt-1 line-clamp-2">GPU 가속 기반 실시간 패킷 요격 파티클 및 보호 인프라 실드 상태 시각화</p>
+            <h4 class="font-bold text-white text-sm group-hover:text-cyan-400 transition-colors">사이버 신경망 지식 그래프 전경</h4>
+            <p class="text-xs text-slate-400 mt-1 line-clamp-2">Obsidian 엔진 기반 D3 Force 노드 토폴로지, 침투 경로 추적(Kill-chain) 및 엔티티 분석</p>
           </div>
         </div>
 
@@ -969,15 +969,15 @@ HTML_TEMPLATE = """<!DOCTYPE html>
           </div>
         </div>
 
-        <!-- Item 4: 3D Threat Hub & XAI Radar -->
+        <!-- Item 4: XAI Radar & Console Analysis -->
         <div class="gallery-item secforai glass-card rounded-xl overflow-hidden border border-slate-800 hover:border-emerald-500/50 transition-all group cursor-pointer"
              onclick="openLightbox('ai/evidence_annotated/evidence_01_main_console_3d_hub.jpg', 'XAI 피처 기여도 및 메인 콘솔 주간 위협 모니터링', '6대 보안 관제 피처 기여도 및 위험도 레이더 분석 화면')">
           <div class="relative overflow-hidden aspect-video bg-slate-900">
-            <img src="ai/evidence_annotated/evidence_01_main_console_3d_hub.jpg" alt="3D Threat Hub" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+            <img src="ai/evidence_annotated/evidence_01_main_console_3d_hub.jpg" alt="XAI Radar Console" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
             <span class="absolute top-2 left-2 text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">Sec for AI // XAI RADAR</span>
           </div>
           <div class="p-4">
-            <h4 class="font-bold text-white text-sm group-hover:text-emerald-400 transition-colors">XAI 레이더 피처 기여도 & 3D 위협 허브</h4>
+            <h4 class="font-bold text-white text-sm group-hover:text-emerald-400 transition-colors">XAI 레이더 피처 기여도 & 메인 관제 콘솔</h4>
             <p class="text-xs text-slate-400 mt-1 line-clamp-2">6대 관제 피처 기여도로 AI 판단 블랙박스 제거 및 신뢰성 검증 화면</p>
           </div>
         </div>
@@ -1601,7 +1601,7 @@ HTML_FOOTER = """
         <a href="https://github.com/sureasdufo1-hue/Aegis/blob/main/README.md" target="_blank" class="hover:text-cyan-400 transition-colors">README Documentation</a>
       </div>
       <p>Aegis SOC Detection & Monitoring Lab • AI for Sec ⇄ Sec for AI Dual Architecture</p>
-      <p class="text-slate-600">Built with Suricata 8.0.6, Snort 3.12.2, Wazuh 4.14.7, Hyper-V, FastAPI, Three.js WebGL & Python 3.13</p>
+      <p class="text-slate-600">Built with Suricata 8.0.6, Snort 3.12.2, Wazuh 4.14.7, Hyper-V, FastAPI, D3.js Knowledge Graph & Python 3.13</p>
     </div>
   </footer>
 
@@ -1732,12 +1732,14 @@ def main():
     OUTPUT_FILE.write_text(full_html, encoding="utf-8")
     print(f"[+] Successfully wrote {len(full_html):,} bytes to {OUTPUT_FILE}")
 
-    # Verification: check all local img src paths exist
+    # Verification: check all local img src paths and openLightbox targets exist
     srcs = re.findall(r'src=["\']([^"\']+)["\']', full_html)
+    lb_targets = re.findall(r'openLightbox\(["\']([^"\']+)["\']', full_html)
+    all_refs = set(srcs + lb_targets)
     missing = []
     checked = 0
-    for s in srcs:
-        if s.startswith('http'):
+    for s in all_refs:
+        if s.startswith('http') or s.startswith('#'):
             continue
         p = DOCS_DIR / s
         checked += 1
@@ -1748,7 +1750,7 @@ def main():
         print(f"[!] Warning: Missing {len(missing)} images: {missing}")
         sys.exit(1)
     else:
-        print(f"[+] Verified {checked} local image references: all exist on disk!")
+        print(f"[+] Verified {checked} unique image references (img src + openLightbox): all exist on disk!")
 
 if __name__ == "__main__":
     main()
